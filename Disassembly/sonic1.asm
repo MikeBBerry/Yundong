@@ -203,21 +203,20 @@ SetupValues:	dc.w $8000		; XREF: PortA_Ok
 
 GameProgram:
 		tst.w	($C00004).l
-		btst	#6,($A1000D).l
-		move.b	($A10001).l,d0
-		andi.b	#$C0,d0
-		move.b	d0,($FFFFFFF8).w
-
-GameInit:
 		lea	($FF0000).l,a6
 		moveq	#0,d7
-		move.w	#$3F7F,d6
+		move.w	#$3FFF,d6
 
 GameClrRAM:
 		move.l	d7,(a6)+
 		dbf	d6,GameClrRAM	; fill RAM ($0000-$FDFF) with $0
 
+		move.b	($A10001).l,d0
+		andi.b	#$C0,d0
+		move.b	d0,($FFFFFFF8).w
+
 		loadJumps IntMain
+		
 		bsr.w	VDPSetupGame
 		bsr.w	SoundDriverLoad
 		bsr.w	JoypadInit
@@ -244,7 +243,7 @@ GameModeArray:
 		dc.l	EndingSequence	; End of game sequence ($18)
 		dc.l	Credits		; Credits ($1C)
 		dc.l	SegaScreen	; Sega Screen ($20)
-		rts
+; ===========================================================================
 
 BusError:
 		move.b	#2,($FFFFFC44).w
@@ -23996,11 +23995,12 @@ Obj01_MdNormal:				; XREF: Obj01_Modes
 		move.b	#1,d0
 		
 @not_crawling:
-		
+		move.b	d0,crawling(a0)
 		rts	
 ; ===========================================================================
 
 Obj01_MdAir:				; XREF: Obj01_Modes
+		move.b	#0,crawling(a0)
 		bsr.w	Sonic_JumpHeight
 		bsr.w	Sonic_ChgJumpDir
 		bsr.w	Sonic_LevelBound
@@ -24016,6 +24016,7 @@ loc_12E5C:
 ; ===========================================================================
 
 Obj01_MdRoll:				; XREF: Obj01_Modes
+		move.b	#0,crawling(a0)
 		bsr.w	Sonic_Jump
 		bsr.w	Sonic_RollRepel
 		bsr.w	Sonic_RollSpeed
@@ -24027,6 +24028,7 @@ Obj01_MdRoll:				; XREF: Obj01_Modes
 ; ===========================================================================
 
 Obj01_MdJump:				; XREF: Obj01_Modes
+		move.b	#0,crawling(a0)
 		bsr.w	Sonic_JumpHeight
 		bsr.w	Sonic_ChgJumpDir
 		bsr.w	Sonic_LevelBound
