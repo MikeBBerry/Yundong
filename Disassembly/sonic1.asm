@@ -14,24 +14,70 @@
 align macro
 	cnop 0,\1
 	endm
+
+; =============================================================
+stopZ80		macro
+		move.w    #$100,($A11100).l
+		nop
+		nop
+		nop
+
+@wait\@:    btst    #0,($A11100).l
+		bne.s    @wait\@
+		endm
+
+; =============================================================
+
+startZ80    macro
+		move.w    #0,($A11100).l    ; start the Z80
+		endm
+
+; =============================================================
+
+waitYM		macro
+@wait\@:    move.b    ($A04000).l,d2
+		btst    #7,d2
+		bne.s    @wait\@
+		endm
+
+; ===========================================================================
+VBlankJump	equ $FFFFFFC4
+HBlankJump	equ VBlankJump+6
+; ===========================================================================
+
+loadJumps	macro fromloc
+
+		lea	VBlankJump,a0
+		lea	fromloc,a1
+	rept 3
+		move.l	(a1)+,(a0)+
+	endr
+    endm
+; ===========================================================================
 	
 StartOfRom:
-Vectors:	dc.l $FFFE00, EntryPoint, BusError, AddressError
-		dc.l IllegalInstr, ZeroDivide, ChkInstr, TrapvInstr
+Vectors:	dc.l $FFFE00, EntryPoint
+ErrorTrap:	bra.w	*
+
+		dc.l AddressError, IllegalInstr, ZeroDivide, ChkInstr, TrapvInstr
 		dc.l PrivilegeViol, Trace, Line1010Emu,	Line1111Emu
 		dc.l ErrorExcept, ErrorExcept, ErrorExcept, ErrorExcept
 		dc.l ErrorExcept, ErrorExcept, ErrorExcept, ErrorExcept
 		dc.l ErrorExcept, ErrorExcept, ErrorExcept, ErrorExcept
 		dc.l ErrorExcept, ErrorTrap, ErrorTrap,	ErrorTrap
-		dc.l PalToCRAM,	ErrorTrap, loc_B10, ErrorTrap
+		dc.l HBlankJump, ErrorTrap, VBlankJump, ErrorTrap
 		dc.l ErrorTrap,	ErrorTrap, ErrorTrap, ErrorTrap
 		dc.l ErrorTrap,	ErrorTrap, ErrorTrap, ErrorTrap
 		dc.l ErrorTrap,	ErrorTrap, ErrorTrap, ErrorTrap
 		dc.l ErrorTrap,	ErrorTrap, ErrorTrap, ErrorTrap
 		dc.l ErrorTrap,	ErrorTrap, ErrorTrap, ErrorTrap
 		dc.l ErrorTrap,	ErrorTrap, ErrorTrap, ErrorTrap
-		dc.l ErrorTrap,	ErrorTrap, ErrorTrap, ErrorTrap
-		dc.l ErrorTrap,	ErrorTrap, ErrorTrap, ErrorTrap
+		dc.l ErrorTrap,	ErrorTrap, ErrorTrap, ErrorTrap, ErrorTrap
+
+; ===========================================================================
+IntMain:	jmp	loc_B10
+		jmp	PalToCRAM
+; ===========================================================================
 Console:	dc.b 'SEGA MEGA DRIVE ' ; Hardware system ID
 Date:		dc.b 'OWARI   2016.NOV' ; Release date
 Title_Local:	dc.b 'SPORTS BIKE                                     ' ; Domestic name
@@ -49,12 +95,6 @@ SRAMSupport:	dc.l $20202020		; change to $5241E020 to create	SRAM
 Notes:		dc.b '                                                    '
 Region:		dc.b 'JUE             ' ; Region
 
-; ===========================================================================
-
-ErrorTrap:
-		nop	
-		nop	
-		bra.s	ErrorTrap
 ; ===========================================================================
 
 EntryPoint:
@@ -164,34 +204,9 @@ SetupValues:	dc.w $8000		; XREF: PortA_Ok
 GameProgram:
 		tst.w	($C00004).l
 		btst	#6,($A1000D).l
-		beq.s	CheckSumCheck
-		cmpi.l	#'init',($FFFFFFFC).w ; has checksum routine already run?
-		beq.w	GameInit	; if yes, branch
-
-CheckSumCheck:
-		movea.l	#ErrorTrap,a0	; start	checking bytes after the header	($200)
-		movea.l	#RomEndLoc,a1	; stop at end of ROM
-		move.l	(a1),d0
-		moveq	#0,d1
-
-loc_32C:
-		add.w	(a0)+,d1
-		cmp.l	a0,d0
-		bcc.s	loc_32C
-		movea.l	#Checksum,a1	; read the checksum
-		cmp.w	(a1),d1		; compare correct checksum to the one in ROM
-		bne.w	CheckSumError	; if they don't match, branch
-		lea	($FFFFFE00).w,a6
-		moveq	#0,d7
-		move.w	#$7F,d6
-
-loc_348:
-		move.l	d7,(a6)+
-		dbf	d6,loc_348
 		move.b	($A10001).l,d0
 		andi.b	#$C0,d0
 		move.b	d0,($FFFFFFF8).w
-		move.l	#'init',($FFFFFFFC).w ; set flag so checksum won't be run again
 
 GameInit:
 		lea	($FF0000).l,a6
@@ -201,6 +216,8 @@ GameInit:
 GameClrRAM:
 		move.l	d7,(a6)+
 		dbf	d6,GameClrRAM	; fill RAM ($0000-$FDFF) with $0
+
+		loadJumps IntMain
 		bsr.w	VDPSetupGame
 		bsr.w	SoundDriverLoad
 		bsr.w	JoypadInit
@@ -228,19 +245,6 @@ GameModeArray:
 		dc.l	Credits		; Credits ($1C)
 		dc.l	SegaScreen	; Sega Screen ($20)
 		rts
-
-CheckSumError:
-		bsr.w	VDPSetupGame
-		move.l	#$C0000000,($C00004).l ; set VDP to CRAM write
-		moveq	#$3F,d7
-
-CheckSum_Red:
-		move.w	#$E,($C00000).l	; fill screen with colour red
-		dbf	d7,CheckSum_Red	; repeat $3F more times
-
-CheckSum_Loop:
-		bra.s	CheckSum_Loop
-; ===========================================================================
 
 BusError:
 		move.b	#2,($FFFFFC44).w
@@ -3245,7 +3249,8 @@ Sega_WaitEnd:
 
 Sega_GotoTitle:
 		move.b	#4,($FFFFF600).w ; go to title screen
-		rts	
+	;	rts	
+		jmp	Owarisoft
 ; ===========================================================================
 
 ; ---------------------------------------------------------------------------
@@ -38948,7 +38953,7 @@ MusicIndex:	dc.l Music81, Music82
 		dc.l Music8D, Music8E
 		dc.l Music8F, Music90
 		dc.l Music91, Music92
-		dc.l Music93
+		dc.l Music93, Music94
 ; ---------------------------------------------------------------------------
 ; Type of sound	being played ($90 = music; $70 = normal	sound effect)
 ; ---------------------------------------------------------------------------
@@ -38958,7 +38963,8 @@ SoundTypes:	dc.b $90, $90, $90, $90, $90, $90, $90,	$90, $90, $90, $90, $90, $90
 		dc.b $60, $70, $60, $70, $70, $70, $70,	$70, $70, $70, $70, $70, $70, $70, $7F,	$60
 		dc.b $70, $70, $70, $70, $70, $70, $70,	$70, $70, $70, $70, $70, $70, $70, $70,	$80
 		dc.b $80, $80, $80, $80, $80, $80, $80,	$80, $80, $80, $80, $80, $80, $80, $80,	$90
-		dc.b $90, $90, $90, $90
+		dc.b $90, $90, $90, $90, $90
+		even
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
@@ -41262,6 +41268,8 @@ Music92:	incbin	sound\music92.bin
 		even
 Music93:	incbin	sound\music93.bin
 		even
+Music94:	incbin	"#Owarisoft\owarisoft logo Sound.bin"
+		even
 ; ---------------------------------------------------------------------------
 ; Sound	effect pointers
 ; ---------------------------------------------------------------------------
@@ -41384,6 +41392,9 @@ SegaPCM:	incbin	sound\segapcm.bin
 SegaPCM_End	even
 
 Art_Dust	incbin	artunc\spindust.bin
+
+	include "#Owarisoft/main.asm"
+	inform 0,""
 
 EndOfRom:
 		END
