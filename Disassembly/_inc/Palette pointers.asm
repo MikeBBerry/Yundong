@@ -61,3 +61,6 @@
 	dc.l Pal_Ending
 	dc.w $FB00
 	dc.w $1F
+	dc.l Pal_Notice
+	dc.w $FB20
+	dc.w $17

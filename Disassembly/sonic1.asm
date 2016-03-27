@@ -207,9 +207,10 @@ GameClrRAM:
 		move.b	#0,($FFFFF600).w ; set Game Mode to Sega Screen
 
 MainGameLoop:
-		move.b	($FFFFF600).w,d0 ; load	Game Mode
-		andi.w	#$1C,d0
-		jsr	GameModeArray(pc,d0.w) ; jump to apt location in ROM
+		move.b	($FFFFF600).w,d0
+		andi.w	#$7C,d0
+		movea.l	GameModeArray(pc,d0.w),a0
+		jsr	(a0)
 		bra.s	MainGameLoop
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -217,24 +218,16 @@ MainGameLoop:
 ; ---------------------------------------------------------------------------
 
 GameModeArray:
-		bra.w	SegaScreen	; Sega Screen ($00)
-; ===========================================================================
-		bra.w	TitleScreen	; Title	Screen ($04)
-; ===========================================================================
-		bra.w	Level		; Demo Mode ($08)
-; ===========================================================================
-		bra.w	Level		; Normal Level ($0C)
-; ===========================================================================
-		bra.w	SpecialStage	; Special Stage	($10)
-; ===========================================================================
-		bra.w	ContinueScreen	; Continue Screen ($14)
-; ===========================================================================
-		bra.w	EndingSequence	; End of game sequence ($18)
-; ===========================================================================
-		bra.w	Credits		; Credits ($1C)
-; ===========================================================================
-		rts	
-; ===========================================================================
+		dc.l	NoticeScreen	; Notice Screen ($00)
+		dc.l	TitleScreen	; Title	Screen ($04)
+		dc.l	Level		; Demo Mode ($08)
+		dc.l	Level		; Normal Level ($0C)
+		dc.l	SpecialStage	; Special Stage	($10)
+		dc.l	ContinueScreen	; Continue Screen ($14)
+		dc.l	EndingSequence	; End of game sequence ($18)
+		dc.l	Credits		; Credits ($1C)
+		dc.l	SegaScreen	; Sega Screen ($20)
+		rts
 
 CheckSumError:
 		bsr.w	VDPSetupGame
@@ -841,7 +834,7 @@ loc_10D4:				; XREF: sub_106E
 ; End of function sub_106E
 
 ; ---------------------------------------------------------------------------
-; Subroutine to	move pallets from the RAM to CRAM
+; Subroutine to	move Palettes from the RAM to CRAM
 ; ---------------------------------------------------------------------------
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
@@ -854,9 +847,9 @@ PalToCRAM:
 		move.w	#0,($FFFFF644).w
 		movem.l	a0-a1,-(sp)
 		lea	($C00000).l,a1
-		lea	($FFFFFA80).w,a0 ; load	pallet from RAM
+		lea	($FFFFFA80).w,a0 ; load	Palette from RAM
 		move.l	#$C0000000,4(a1) ; set VDP to CRAM write
-		move.l	(a0)+,(a1)	; move pallet to CRAM
+		move.l	(a0)+,(a1)	; move Palette to CRAM
 		move.l	(a0)+,(a1)
 		move.l	(a0)+,(a1)
 		move.l	(a0)+,(a1)
@@ -2152,7 +2145,7 @@ KosDec_ByteMap:
 ; ===========================================================================
 
 ; ---------------------------------------------------------------------------
-; Pallet cycling routine loading subroutine
+; Palette cycling routine loading subroutine
 ; ---------------------------------------------------------------------------
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
@@ -2163,13 +2156,13 @@ PalCycle_Load:				; XREF: Demo; Level_MainLoop; End_MainLoop
 		moveq	#0,d0
 		move.b	($FFFFFE10).w,d0 ; get level number
 		add.w	d0,d0		; multiply by 2
-		move.w	PalCycle(pc,d0.w),d0 ; load animated pallets offset index into d0
+		move.w	PalCycle(pc,d0.w),d0 ; load animated Palettes offset index into d0
 		jmp	PalCycle(pc,d0.w) ; jump to PalCycle + offset index
 ; End of function PalCycle_Load
 
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
-; Pallet cycling routines
+; Palette cycling routines
 ; ---------------------------------------------------------------------------
 PalCycle:	dc.w PalCycle_GHZ-PalCycle
 		dc.w PalCycle_LZ-PalCycle
@@ -2221,7 +2214,7 @@ PalCycle_LZ:				; XREF: PalCycle
 		lea	(Pal_LZCyc1).l,a0
 		cmpi.b	#3,($FFFFFE11).w ; check if level is SBZ3
 		bne.s	loc_19C0
-		lea	(Pal_SBZ3Cyc1).l,a0 ; load SBZ3	pallet instead
+		lea	(Pal_SBZ3Cyc1).l,a0 ; load SBZ3	Palette instead
 
 loc_19C0:
 		lea	($FFFFFB56).w,a1
@@ -2413,32 +2406,32 @@ locret_1B64:
 ; End of function PalCycle_SBZ
 
 ; ===========================================================================
-Pal_TitleCyc:	incbin	pallet\c_title.bin
-Pal_GHZCyc:	incbin	pallet\c_ghz.bin
-Pal_LZCyc1:	incbin	pallet\c_lz_wat.bin	; waterfalls pallet
-Pal_LZCyc2:	incbin	pallet\c_lz_bel.bin	; conveyor belt pallet
-Pal_LZCyc3:	incbin	pallet\c_lz_buw.bin	; conveyor belt (underwater) pallet
-Pal_SBZ3Cyc1:	incbin	pallet\c_sbz3_w.bin	; waterfalls pallet
-Pal_SLZCyc:	incbin	pallet\c_slz.bin
-Pal_SYZCyc1:	incbin	pallet\c_syz_1.bin
-Pal_SYZCyc2:	incbin	pallet\c_syz_2.bin
+Pal_TitleCyc:	incbin	Palette\c_title.bin
+Pal_GHZCyc:	incbin	Palette\c_ghz.bin
+Pal_LZCyc1:	incbin	Palette\c_lz_wat.bin	; waterfalls Palette
+Pal_LZCyc2:	incbin	Palette\c_lz_bel.bin	; conveyor belt Palette
+Pal_LZCyc3:	incbin	Palette\c_lz_buw.bin	; conveyor belt (underwater) Palette
+Pal_SBZ3Cyc1:	incbin	Palette\c_sbz3_w.bin	; waterfalls Palette
+Pal_SLZCyc:	incbin	Palette\c_slz.bin
+Pal_SYZCyc1:	incbin	Palette\c_syz_1.bin
+Pal_SYZCyc2:	incbin	Palette\c_syz_2.bin
 
 Pal_SBZCycList:
-	include "_inc\SBZ pallet script 1.asm"
+	include "_inc\SBZ Palette script 1.asm"
 
 Pal_SBZCycList2:
-	include "_inc\SBZ pallet script 2.asm"
+	include "_inc\SBZ Palette script 2.asm"
 
-Pal_SBZCyc1:	incbin	pallet\c_sbz_1.bin
-Pal_SBZCyc2:	incbin	pallet\c_sbz_2.bin
-Pal_SBZCyc3:	incbin	pallet\c_sbz_3.bin
-Pal_SBZCyc4:	incbin	pallet\c_sbz_4.bin
-Pal_SBZCyc5:	incbin	pallet\c_sbz_5.bin
-Pal_SBZCyc6:	incbin	pallet\c_sbz_6.bin
-Pal_SBZCyc7:	incbin	pallet\c_sbz_7.bin
-Pal_SBZCyc8:	incbin	pallet\c_sbz_8.bin
-Pal_SBZCyc9:	incbin	pallet\c_sbz_9.bin
-Pal_SBZCyc10:	incbin	pallet\c_sbz_10.bin
+Pal_SBZCyc1:	incbin	Palette\c_sbz_1.bin
+Pal_SBZCyc2:	incbin	Palette\c_sbz_2.bin
+Pal_SBZCyc3:	incbin	Palette\c_sbz_3.bin
+Pal_SBZCyc4:	incbin	Palette\c_sbz_4.bin
+Pal_SBZCyc5:	incbin	Palette\c_sbz_5.bin
+Pal_SBZCyc6:	incbin	Palette\c_sbz_6.bin
+Pal_SBZCyc7:	incbin	Palette\c_sbz_7.bin
+Pal_SBZCyc8:	incbin	Palette\c_sbz_8.bin
+Pal_SBZCyc9:	incbin	Palette\c_sbz_9.bin
+Pal_SBZCyc10:	incbin	Palette\c_sbz_10.bin
 ; ---------------------------------------------------------------------------
 ; Subroutine to	fade out and fade in
 ; ---------------------------------------------------------------------------
@@ -2459,7 +2452,7 @@ Pal_FadeTo2:
 
 Pal_ToBlack:
 		move.w	d1,(a0)+
-		dbf	d0,Pal_ToBlack	; fill pallet with $000	(black)
+		dbf	d0,Pal_ToBlack	; fill Palette with $000	(black)
 		moveq	#$0E,d4					; MJ: prepare maximum colour check
 		moveq	#$00,d6					; MJ: clear d6
 
@@ -2478,7 +2471,7 @@ loc_1DCE:
 ; End of function Pal_FadeTo
 
 ; ---------------------------------------------------------------------------
-; Pallet fade-in subroutine
+; Palette fade-in subroutine
 ; ---------------------------------------------------------------------------
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
@@ -2566,7 +2559,7 @@ loc_1E5C:
 ; End of function Pal_FadeFrom
 
 ; ---------------------------------------------------------------------------
-; Pallet fade-out subroutine
+; Palette fade-out subroutine
 ; ---------------------------------------------------------------------------
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
@@ -2625,7 +2618,7 @@ FCO_NoRed:
 ; End of function Pal_DecColor
 
 ; ---------------------------------------------------------------------------
-; Subroutine to	fill the pallet	with white (special stage)
+; Subroutine to	fill the Palette	with white (special stage)
 ; ---------------------------------------------------------------------------
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
@@ -2813,7 +2806,7 @@ loc_2006:				; XREF: Pal_AddColor2
 ; End of function Pal_AddColor2
 
 ; ---------------------------------------------------------------------------
-; Pallet cycling routine - Sega	logo
+; Palette cycling routine - Sega	logo
 ; ---------------------------------------------------------------------------
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
@@ -2910,11 +2903,11 @@ loc_20BC:
 
 ; ===========================================================================
 
-Pal_Sega1:	incbin	pallet\sega1.bin
-Pal_Sega2:	incbin	pallet\sega2.bin
+Pal_Sega1:	incbin	Palette\sega1.bin
+Pal_Sega2:	incbin	Palette\sega2.bin
 
 ; ---------------------------------------------------------------------------
-; Subroutines to load pallets
+; Subroutines to load Palettes
 ; ---------------------------------------------------------------------------
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
@@ -2954,7 +2947,7 @@ loc_2128:
 ; End of function PalLoad2
 
 ; ---------------------------------------------------------------------------
-; Underwater pallet loading subroutine
+; Underwater Palette loading subroutine
 ; ---------------------------------------------------------------------------
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
@@ -2996,34 +2989,34 @@ loc_2160:
 
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
-; Pallet pointers
+; Palette pointers
 ; ---------------------------------------------------------------------------
 PalPointers:
-	include "_inc\Pallet pointers.asm"
+	include "_inc\Palette pointers.asm"
 
 ; ---------------------------------------------------------------------------
-; Pallet data
+; Palette data
 ; ---------------------------------------------------------------------------
-Pal_SegaBG:	incbin	pallet\sega_bg.bin
-Pal_Title:	incbin	pallet\title.bin
-Pal_LevelSel:	incbin	pallet\levelsel.bin
-Pal_Sonic:	incbin	pallet\sonic.bin
-Pal_GHZ:	incbin	pallet\ghz.bin
-Pal_LZ:		incbin	pallet\lz.bin
-Pal_LZWater:	incbin	pallet\lz_uw.bin	; LZ underwater pallets
-Pal_MZ:		incbin	pallet\mz.bin
-Pal_SLZ:	incbin	pallet\slz.bin
-Pal_SYZ:	incbin	pallet\syz.bin
-Pal_SBZ1:	incbin	pallet\sbz_act1.bin	; SBZ act 1 pallets
-Pal_SBZ2:	incbin	pallet\sbz_act2.bin	; SBZ act 2 & Final Zone pallets
-Pal_Special:	incbin	pallet\special.bin	; special stage pallets
-Pal_SBZ3:	incbin	pallet\sbz_act3.bin	; SBZ act 3 pallets
-Pal_SBZ3Water:	incbin	pallet\sbz_a3uw.bin	; SBZ act 3 (underwater) pallets
-Pal_LZSonWater:	incbin	pallet\son_lzuw.bin	; Sonic (underwater in LZ) pallet
-Pal_SBZ3SonWat:	incbin	pallet\son_sbzu.bin	; Sonic (underwater in SBZ act 3) pallet
-Pal_SpeResult:	incbin	pallet\ssresult.bin	; special stage results screen pallets
-Pal_SpeContinue:incbin	pallet\sscontin.bin	; special stage results screen continue pallet
-Pal_Ending:	incbin	pallet\ending.bin	; ending sequence pallets
+Pal_SegaBG:	incbin	Palette\sega_bg.bin
+Pal_Title:	incbin	Palette\title.bin
+Pal_LevelSel:	incbin	Palette\levelsel.bin
+Pal_Sonic:	incbin	Palette\sonic.bin
+Pal_GHZ:	incbin	Palette\ghz.bin
+Pal_LZ:		incbin	Palette\lz.bin
+Pal_LZWater:	incbin	Palette\lz_uw.bin	; LZ underwater Palettes
+Pal_MZ:		incbin	Palette\mz.bin
+Pal_SLZ:	incbin	Palette\slz.bin
+Pal_SYZ:	incbin	Palette\syz.bin
+Pal_SBZ1:	incbin	Palette\sbz_act1.bin	; SBZ act 1 Palettes
+Pal_SBZ2:	incbin	Palette\sbz_act2.bin	; SBZ act 2 & Final Zone Palettes
+Pal_Special:	incbin	Palette\special.bin	; special stage Palettes
+Pal_SBZ3:	incbin	Palette\sbz_act3.bin	; SBZ act 3 Palettes
+Pal_SBZ3Water:	incbin	Palette\sbz_a3uw.bin	; SBZ act 3 (underwater) Palettes
+Pal_LZSonWater:	incbin	Palette\son_lzuw.bin	; Sonic (underwater in LZ) Palette
+Pal_SBZ3SonWat:	incbin	Palette\son_sbzu.bin	; Sonic (underwater in SBZ act 3) Palette
+Pal_SpeResult:	incbin	Palette\ssresult.bin	; special stage results screen Palettes
+Pal_SpeContinue:incbin	Palette\sscontin.bin	; special stage results screen continue Palette
+Pal_Ending:	incbin	Palette\ending.bin	; ending sequence Palettes
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	delay the program by ($FFFFF62A) frames
@@ -3179,8 +3172,9 @@ loc_2D04:				; XREF: CalcAngle
 
 Angle_Data:	incbin	misc\angles.bin
 
-; ===========================================================================
+NoticeScreen: include	"_notice\code.asm"
 
+; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Sega screen
 ; ---------------------------------------------------------------------------
@@ -3220,7 +3214,7 @@ SegaScreen:				; XREF: GameModeArray
 		moveq	#$1B,d2
 		bsr.w	ShowVDPGraphics
 		moveq	#0,d0
-		bsr.w	PalLoad2	; load Sega logo pallet
+		bsr.w	PalLoad2	; load Sega logo Palette
 		move.w	#-$A,($FFFFF632).w
 		move.w	#0,($FFFFF634).w
 		move.w	#0,($FFFFF662).w
@@ -3229,11 +3223,11 @@ SegaScreen:				; XREF: GameModeArray
 		ori.b	#$40,d0
 		move.w	d0,($C00004).l
 
-Sega_WaitPallet:
+Sega_WaitPalette:
 		move.b	#2,($FFFFF62A).w
 		bsr.w	DelayProgram
 		bsr.w	PalCycle_Sega
-		bne.s	Sega_WaitPallet
+		bne.s	Sega_WaitPalette
 
 		move.b	#$E1,d0
 		bsr.w	PlaySound_Special ; play "SEGA"	sound
@@ -3302,11 +3296,11 @@ Title_ClrObjRam:
 		moveq	#0,d0
 		move.w	#$1F,d1
 
-Title_ClrPallet:
+Title_ClrPalette:
 		move.l	d0,(a1)+
-		dbf	d1,Title_ClrPallet ; fill pallet with 0	(black)
+		dbf	d1,Title_ClrPalette ; fill Palette with 0	(black)
 
-		moveq	#3,d0		; load Sonic's pallet
+		moveq	#3,d0		; load Sonic's Palette
 		bsr.w	PalLoad1
 		move.b	#$8A,($FFFFD080).w ; load "SONIC TEAM PRESENTS"	object
 		jsr	ObjectsLoad
@@ -3336,7 +3330,7 @@ Title_LoadText:
 		move.w	#0,($FFFFFFF0).w ; disable debug mode
 		move.w	#0,($FFFFFFEA).w
 		move.w	#0,($FFFFFE10).w ; set level to	GHZ (00)
-		move.w	#0,($FFFFF634).w ; disable pallet cycling
+		move.w	#0,($FFFFF634).w ; disable Palette cycling
 		bsr.w	LevelSizeLoad
 		bsr.w	DeformBgLayer
 		lea	($FFFFB000).w,a1
@@ -3368,7 +3362,7 @@ Title_LoadText:
 		move.l	#$40000000,($C00004).l
 		lea	(Nem_TIT_1st).l,a0 ; load GHZ patterns
 		bsr.w	NemDec
-		moveq	#1,d0		; load title screen pallet
+		moveq	#1,d0		; load title screen Palette
 		bsr.w	PalLoad1
 		move.b	#$8A,d0		; play title screen music
 		bsr.w	PlaySound_Special
@@ -3485,7 +3479,7 @@ Title_ChkLevSel:
 		move.b	d0,($FFFFFF34).w		; clear background strip 2 draw flags
 		move.b	d0,($FFFFFF30).w		; clear foreground strip draw flag
 		moveq	#2,d0
-		bsr.w	PalLoad2	; load level select pallet
+		bsr.w	PalLoad2	; load level select Palette
 		lea	($FFFFCC00).w,a1
 		moveq	#0,d0
 		move.w	#$DF,d1
@@ -3946,16 +3940,16 @@ Level_LoadPal:
 		move.w	#$1E,($FFFFFE14).w
 		move	#$2300,sr
 		moveq	#3,d0
-		bsr.w	PalLoad2	; load Sonic's pallet line
+		bsr.w	PalLoad2	; load Sonic's Palette line
 		cmpi.b	#1,($FFFFFE10).w ; is level LZ?
 		bne.s	Level_GetBgm	; if not, branch
-		moveq	#$F,d0		; pallet number	$0F (LZ)
+		moveq	#$F,d0		; Palette number	$0F (LZ)
 		cmpi.b	#3,($FFFFFE11).w ; is act number 3?
 		bne.s	Level_WaterPal	; if not, branch
-		moveq	#$10,d0		; pallet number	$10 (SBZ3)
+		moveq	#$10,d0		; Palette number	$10 (SBZ3)
 
 Level_WaterPal:
-		bsr.w	PalLoad3_Water	; load underwater pallet (see d0)
+		bsr.w	PalLoad3_Water	; load underwater Palette (see d0)
 		tst.b	($FFFFFE30).w
 		beq.s	Level_GetBgm
 		move.b	($FFFFFE53).w,($FFFFF64E).w
@@ -3995,11 +3989,11 @@ Level_TtlCard:
 
 loc_3946:
 		moveq	#3,d0
-		bsr.w	PalLoad1	; load Sonic's pallet line
+		bsr.w	PalLoad1	; load Sonic's Palette line
 		bsr.w	LevelSizeLoad
 		bsr.w	DeformBgLayer
 		bset	#2,($FFFFF754).w
-		bsr.w	MainLoadBlockLoad ; load block mappings	and pallets
+		bsr.w	MainLoadBlockLoad ; load block mappings	and Palettes
 		bsr.w	LoadTilesFromStart
 		jsr	FloorLog_Unk
 		bsr.w	ColIndexLoad
@@ -4078,10 +4072,10 @@ Level_Demo:
 Level_ChkWaterPal:
 		cmpi.b	#1,($FFFFFE10).w ; is level LZ/SBZ3?
 		bne.s	Level_Delay	; if not, branch
-		moveq	#$B,d0		; pallet $0B (LZ underwater)
+		moveq	#$B,d0		; Palette $0B (LZ underwater)
 		cmpi.b	#3,($FFFFFE11).w ; is level SBZ3?
 		bne.s	Level_WaterPal2	; if not, branch
-		moveq	#$D,d0		; pallet $0D (SBZ3 underwater)
+		moveq	#$D,d0		; Palette $0D (SBZ3 underwater)
 
 Level_WaterPal2:
 		bsr.w	PalLoad4_Water
@@ -5015,7 +5009,7 @@ SS_ClrNemRam:
 		clr.b	($FFFFF64E).w
 		clr.w	($FFFFFE02).w
 		moveq	#$A,d0
-		bsr.w	PalLoad1	; load special stage pallet
+		bsr.w	PalLoad1	; load special stage Palette
 		jsr	SS_Load
 		move.l	#0,($FFFFF700).w
 		move.l	#0,($FFFFF704).w
@@ -5115,7 +5109,7 @@ loc_47D4:
 		move.l	#$FFFFC800,($FFFFC8FC).w
 		move	#$2300,sr
 		moveq	#$11,d0
-		bsr.w	PalLoad2	; load results screen pallet
+		bsr.w	PalLoad2	; load results screen Palette
 		moveq	#0,d0
 		bsr.w	LoadPLC2
 		moveq	#$1B,d0
@@ -5233,7 +5227,7 @@ loc_491C:
 ; End of function SS_BGLoad
 
 ; ---------------------------------------------------------------------------
-; Pallet cycling routine - special stage
+; Palette cycling routine - special stage
 ; ---------------------------------------------------------------------------
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
@@ -5336,9 +5330,9 @@ byte_4ABC:	dc.b $10, 1, $18, 0, $18, 1, $20, 0, $20, 1, $28, 0, $28, 1
 					; XREF: PalCycle_SS
 		even
 
-Pal_SSCyc1:	incbin	pallet\c_ss_1.bin
+Pal_SSCyc1:	incbin	Palette\c_ss_1.bin
 		even
-Pal_SSCyc2:	incbin	pallet\c_ss_2.bin
+Pal_SSCyc2:	incbin	Palette\c_ss_2.bin
 		even
 
 ; ---------------------------------------------------------------------------
@@ -5480,7 +5474,7 @@ Cont_ClrObjRam:
 		moveq	#10,d1
 		jsr	ContScrCounter	; run countdown	(start from 10)
 		moveq	#$12,d0
-		bsr.w	PalLoad1	; load continue	screen pallet
+		bsr.w	PalLoad1	; load continue	screen Palette
 		move.b	#$90,d0
 		bsr.w	PlaySound	; play continue	music
 		move.w	#659,($FFFFF614).w ; set time delay to 11 seconds
@@ -5807,7 +5801,7 @@ End_LoadData:
 		lea	($FFFF9400).w,a1 ; RAM address to buffer the patterns
 		bsr.w	KosDec
 		moveq	#3,d0
-		bsr.w	PalLoad1	; load Sonic's pallet
+		bsr.w	PalLoad1	; load Sonic's Palette
 		move.w	#$8B,d0
 		bsr.w	PlaySound	; play ending sequence music
 		btst	#6,($FFFFF604).w ; is button A pressed?
@@ -5911,7 +5905,7 @@ loc_5334:
 		move.w	#$4000,d2
 		bsr.w	LoadTilesFromStart2
 		moveq	#$13,d0
-		bsr.w	PalLoad1	; load ending pallet
+		bsr.w	PalLoad1	; load ending Palette
 		bsr.w	Pal_MakeWhite
 		bra.w	End_MainLoop
 
@@ -6251,12 +6245,12 @@ Cred_ClrObjRam:
 		moveq	#0,d0
 		move.w	#$1F,d1
 
-Cred_ClrPallet:
+Cred_ClrPalette:
 		move.l	d0,(a1)+
-		dbf	d1,Cred_ClrPallet ; fill pallet	with black ($0000)
+		dbf	d1,Cred_ClrPalette ; fill Palette	with black ($0000)
 
 		moveq	#3,d0
-		bsr.w	PalLoad1	; load Sonic's pallet
+		bsr.w	PalLoad1	; load Sonic's Palette
 		move.b	#$8A,($FFFFD080).w ; load credits object
 		jsr	ObjectsLoad
 		jsr	BuildSprites
@@ -6375,12 +6369,12 @@ TryAg_ClrObjRam:
 		moveq	#0,d0
 		move.w	#$1F,d1
 
-TryAg_ClrPallet:
+TryAg_ClrPalette:
 		move.l	d0,(a1)+
-		dbf	d1,TryAg_ClrPallet ; fill pallet with black ($0000)
+		dbf	d1,TryAg_ClrPalette ; fill Palette with black ($0000)
 
 		moveq	#$13,d0
-		bsr.w	PalLoad1	; load ending pallet
+		bsr.w	PalLoad1	; load ending Palette
 		clr.w	($FFFFFBC0).w
 		move.b	#$8B,($FFFFD080).w ; load Eggman object
 		jsr	ObjectsLoad
@@ -8171,7 +8165,7 @@ MainLoadBlockLoad:			; XREF: Level; EndingSequence
 		andi.w	#$FF,d0
 		cmpi.w	#$103,($FFFFFE10).w ; is level SBZ3 (LZ4) ?
 		bne.s	MLB_ChkSBZPal	; if not, branch
-		moveq	#$C,d0		; use SB3 pallet
+		moveq	#$C,d0		; use SB3 Palette
 
 MLB_ChkSBZPal:
 		cmpi.w	#$501,($FFFFFE10).w ; is level SBZ2?
@@ -8180,10 +8174,10 @@ MLB_ChkSBZPal:
 		bne.s	MLB_NormalPal	; if not, branch
 
 MLB_UsePal0E:
-		moveq	#$E,d0		; use SBZ2/FZ pallet
+		moveq	#$E,d0		; use SBZ2/FZ Palette
 
 MLB_NormalPal:
-		bsr.w	PalLoad1	; load pallet (based on	d0)
+		bsr.w	PalLoad1	; load Palette (based on	d0)
 		movea.l	(sp)+,a2
 		addq.w	#4,a2
 		moveq	#0,d0
@@ -12303,9 +12297,18 @@ Obj37_MakeRings:			; XREF: Obj37_CountRings
 		tst.w	d4
 		bmi.s	loc_9D62
 		move.w	d4,d0
-		bsr.w	CalcSine
+		jsr	CalcSine
 		move.w	d4,d2
 		lsr.w	#8,d2
+		tst.b	($FFFFF64C).w		; Does the level have water?
+		beq.s	@skiphalvingvel		; If not, branch and skip underwater checks
+		move.w	($FFFFF646).w,d6	; Move water level to d6
+		cmp.w	$C(a0),d6		; Is the ring object underneath the water level?
+		bgt.s	@skiphalvingvel		; If not, branch and skip underwater commands
+		asr.w	d0			; Half d0. Makes the ring's x_vel bounce to the left/right slower
+		asr.w	d1			; Half d1. Makes the ring's y_vel bounce up/down slower
+
+@skiphalvingvel:
 		asl.w	d2,d0
 		asl.w	d2,d1
 		move.w	d0,d2
@@ -12337,6 +12340,14 @@ Obj37_Bounce:				; XREF: Obj37_Index
 		move.b	($FFFFFEC7).w,$1A(a0)
 		bsr.w	SpeedToPos
 		addi.w	#$18,$12(a0)
+		tst.b	($FFFFF64C).w		; Does the level have water?
+		beq.s	@skipbounceslow		; If not, branch and skip underwater checks
+		move.w	($FFFFF646).w,d6	; Move water level to d6
+		cmp.w	$C(a0),d6		; Is the ring object underneath the water level?
+		bgt.s	@skipbounceslow		; If not, branch and skip underwater commands
+		subi.w	#$E,$12(a0)		; Reduce gravity by $E ($18-$E=$A), giving the underwater effect
+
+@skipbounceslow:
 		bmi.s	Obj37_ChkDel
 		move.b	($FFFFFE0F).w,d0
 		add.b	d7,d0
@@ -23960,6 +23971,7 @@ Obj01_MdJump2:				; XREF: Obj01_Modes
 		bsr.w	Sonic_JumpHeight
 		bsr.w	Sonic_ChgJumpDir
 		bsr.w	Sonic_LevelBound
+		bsr.w 	Sonic_JumpAnimate
 		jsr	ObjectFall
 		btst	#6,$22(a0)
 		beq.s	loc_12EA6
@@ -24660,7 +24672,7 @@ loc_1341C:
 		bne.s	loc_13490
 		move.b	#$E,$16(a0)
 		move.b	#7,$17(a0)
-		move.b	#2,$1C(a0)	; use "jumping"	animation
+		move.b	#$1F,$1C(a0)	; use "jumping"	animation
 		bset	#2,$22(a0)
 		addq.w	#5,$C(a0)
 
@@ -24676,6 +24688,16 @@ loc_13490:
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
+
+Sonic_JumpAnimate:
+		move.b #$20,d0 ;animation down
+		tst.w $12(a0)
+		bpl.s @positive
+		move.b #$1F,d0 ;animation up
+
+@positive:
+		move.b d0,$1C(a0)
+		rts
 
 Sonic_JumpHeight:			; XREF: Obj01_MdJump; Obj01_MdJump2
 		tst.b	$3C(a0)
@@ -29959,8 +29981,8 @@ Obj8A_Main:				; XREF: Obj8A_Index
 		beq.s	Obj8A_Display	; if not, branch
 		cmpi.b	#$72,($FFFFF604).w ; is	Start+A+C+Down being pressed?
 		bne.s	Obj8A_Display	; if not, branch
-		move.w	#$EEE,($FFFFFBC0).w ; 3rd pallet, 1st entry = white
-		move.w	#$880,($FFFFFBC2).w ; 3rd pallet, 2nd entry = cyan
+		move.w	#$EEE,($FFFFFBC0).w ; 3rd Palette, 1st entry = white
+		move.w	#$880,($FFFFFBC2).w ; 3rd Palette, 2nd entry = cyan
 		jmp	DeleteObject
 ; ===========================================================================
 
@@ -30076,7 +30098,7 @@ loc_177E6:
 		jsr	(PlaySound_Special).l ;	play boss damage sound
 
 Obj3D_ShipFlash:
-		lea	($FFFFFB22).w,a1 ; load	2nd pallet, 2nd	entry
+		lea	($FFFFFB22).w,a1 ; load	2nd Palette, 2nd	entry
 		moveq	#0,d0		; move 0 (black) to d0
 		tst.w	(a1)
 		bne.s	loc_1783C
