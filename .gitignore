@@ -1,0 +1,4 @@
+!*.exe
+!*.dll
+Disassembly/sonic1.lst
+Disassembly/slhbuilt.bin
