@@ -1662,7 +1662,6 @@ RunPLC_RAM:				; XREF: Pal_FadeTo
 
 loc_160E:
 		andi.w	#$7FFF,d2
-		move.w	d2,($FFFFF6F8).w
 		bsr.w	NemDec4
 		move.b	(a0)+,d5
 		asl.w	#8,d5
@@ -1676,6 +1675,7 @@ loc_160E:
 		move.l	d0,($FFFFF6EC).w
 		move.l	d5,($FFFFF6F0).w
 		move.l	d6,($FFFFF6F4).w
+		move.w	d2,($FFFFF6F8).w
 
 locret_1640:
 		rts	
@@ -3480,6 +3480,10 @@ Title_ChkLevSel:
 		beq.w	PlayLevel	; if not, play level
 		btst	#6,($FFFFF604).w ; check if A is pressed
 		beq.w	PlayLevel	; if not, play level
+		moveq	#$00,d0				; clear d0
+		move.b	d0,($FFFFFF32).w		; clear background strip 1 draw flags
+		move.b	d0,($FFFFFF34).w		; clear background strip 2 draw flags
+		move.b	d0,($FFFFFF30).w		; clear foreground strip draw flag
 		moveq	#2,d0
 		bsr.w	PalLoad2	; load level select pallet
 		lea	($FFFFCC00).w,a1
@@ -4705,7 +4709,7 @@ loc_4056:
 		move.b	(a1),d0
 		lea	($FFFFF604).w,a0
 		move.b	d0,d1
-		move.b	(a0),d2
+		move.b	-2(a0),d2
 		eor.b	d2,d0
 		move.b	d1,(a0)+
 		and.b	d1,d0
@@ -6692,6 +6696,13 @@ LevSz_SonicPos:
 		move.w	d0,($FFFFD00C).w			; MJ: ''
 
 loc_60D0:				; XREF: LevSz_ChkLamp
+		clr.w	($FFFFF7A8).w		; reset Sonic's position tracking index
+		lea	($FFFFCB00).w,a2	; load the tracking array into a2
+		moveq	#63,d2				; begin a 64-step loop
+@looppoint:
+		move.w	d1,(a2)+			; fill in X
+		move.w	d0,(a2)+			; fill in Y
+		dbf	d2,@looppoint		; loop
 		subi.w	#$A0,d1
 		bcc.s	loc_60D8
 		moveq	#0,d1
@@ -7277,11 +7288,11 @@ ScrollHoriz2:				; XREF: ScrollHoriz
 		move.w	($FFFFD008).w,d0
 		sub.w	($FFFFF700).w,d0
 		subi.w	#$90,d0
-		bcs.s	loc_65F6
+		bmi.s	loc_65F6				; cs to mi (for negative)
 		subi.w	#$10,d0
-		bcc.s	loc_65CC
+		bpl.s	loc_65CC				; cc to pl (for negative)
 		clr.w	($FFFFF73A).w
-		rts	
+		rts
 ; ===========================================================================
 
 loc_65CC:
@@ -7304,7 +7315,12 @@ loc_65E4:
 		rts	
 ; ===========================================================================
 
-loc_65F6:				; XREF: ScrollHoriz2
+loc_65F6:
+		cmpi.w	#$FFF0,d0				; has the screen moved more than 10 pixels left?
+		bcc.s	Left_NoMax				; if not, branch
+		move.w	#$FFF0,d0				; set the maximum move distance to 10 pixels left
+
+Left_NoMax:
 		add.w	($FFFFF700).w,d0
 		cmp.w	($FFFFF728).w,d0
 		bgt.s	loc_65E4
@@ -12284,7 +12300,6 @@ Obj37_MakeRings:			; XREF: Obj37_CountRings
 		move.b	#3,$18(a1)
 		move.b	#$47,$20(a1)
 		move.b	#8,$19(a1)
-		move.b	#-1,($FFFFFEC6).w
 		tst.w	d4
 		bmi.s	loc_9D62
 		move.w	d4,d0
@@ -12312,6 +12327,9 @@ Obj37_ResetCounter:			; XREF: Obj37_Loop
 		move.w	#0,($FFFFFE20).w ; reset number	of rings to zero
 		move.b	#$80,($FFFFFE1D).w ; update ring counter
 		move.b	#0,($FFFFFE1B).w
+        moveq   #-1,d0                  ; Move #-1 to d0
+        move.b  d0,$1F(a0)       ; Move d0 to new timer
+        move.b  d0,($FFFFFEC6).w      ; Move d0 to old timer (for animated purposes)
 		move.w	#$C6,d0
 		jsr	(PlaySound_Special).l ;	play ring loss sound
 
@@ -12333,14 +12351,22 @@ Obj37_Bounce:				; XREF: Obj37_Index
 		sub.w	d0,$12(a0)
 		neg.w	$12(a0)
 
-Obj37_ChkDel:				; XREF: Obj37_Bounce
-		tst.b	($FFFFFEC6).w
-		beq.s	Obj37_Delete
+Obj37_ChkDel:
+		subq.b  #1,$1F(a0)  ; Subtract 1   ; RHS Ring Timer fix
+        beq.w   DeleteObject       ; If 0, delete ; RHS Ring Timer fix
+        cmpi.w	#$FF00,($FFFFF72C).w		; is vertical wrapping enabled?
+		beq.w	DisplaySprite			; if so, branch
 		move.w	($FFFFF72E).w,d0
 		addi.w	#$E0,d0
-		cmp.w	$C(a0),d0	; has object moved below level boundary?
-		bcs.s	Obj37_Delete	; if yes, branch
-		bra.w	DisplaySprite
+		cmp.w	$C(a0),d0	   ; has object moved below level boundary?
+		bcs.s	Obj37_Delete	   ; if yes, branch	
+;Mercury Lost Rings Flash
+		btst	#0, $1F(a0) ; Test the first bit of the timer, so rings flash every other frame.
+		beq.w	DisplaySprite      ; If the bit is 0, the ring will appear.
+		cmpi.b	#80,$1F(a0) ; Rings will flash during last 80 steps of their life.
+		bhi.w	DisplaySprite      ; If the timer is higher than 80, obviously the rings will STAY visible.
+		rts
+;end Lost Rings Flash
 ; ===========================================================================
 
 Obj37_Collect:				; XREF: Obj37_Index
@@ -12645,6 +12671,10 @@ loc_A246:
 loc_A25C:
 		btst	#5,$22(a0)
 		beq.s	Obj26_Animate
+		cmp.b	#2,$1C(a1)	; check if in jumping/rolling animation
+		beq.s	loc_A26A
+		cmp.b	#$17,$1C(a1)	; check if in drowning animation
+		beq.s	loc_A26A
 		move.w	#1,$1C(a1)
 
 loc_A26A:
@@ -16472,6 +16502,8 @@ loc_D358:
 ; ===========================================================================
 
 loc_D362:
+        cmpi.b  #$A,($FFFFD000+$24).w      ; Has Sonic drowned?
+        beq.s   loc_D348                        ; If so, run objects a little longer
 		moveq	#$1F,d7
 		bsr.s	loc_D348
 		moveq	#$5F,d7
@@ -17107,6 +17139,9 @@ loc_DA02:
 loc_DA10:
 		bsr.w	loc_DA3C
 		beq.s	loc_DA02
+		tst.b	$04(a0)			; MJ: was this object a remember state?
+		bpl.s	loc_DA16		; MJ: if not, branch
+		subq.b	#$01,(a2)		; MJ: move right counter back
 
 loc_DA16:
 		move.l	a0,($FFFFF770).w
@@ -17136,7 +17171,7 @@ locret_DA3A:
 loc_DA3C:
 		tst.b	4(a0)
 		bpl.s	OPL_MakeItem
-		bset	#7,2(a2,d2.w)
+		btst	#7,2(a2,d2.w)
 		beq.s	OPL_MakeItem
 		addq.w	#6,a0
 		moveq	#0,d0
@@ -17157,6 +17192,7 @@ OPL_MakeItem:
 		move.b	d1,$22(a1)
 		move.b	(a0)+,d0
 		bpl.s	loc_DA80
+		bset	#$07,$02(a2,d2.w)		; MJ: set as removed
 		andi.b	#$7F,d0
 		move.b	d2,$23(a1)
 
@@ -17354,6 +17390,7 @@ loc_DC56:
 		jsr	(PlaySound_Special).l ;	play spring sound
 
 Obj41_AniLR:				; XREF: Obj41_Index
+		move.w	#0,($FFFFC904).w	; clear screen delay counter
 		lea	(Ani_obj41).l,a1
 		bra.w	AnimateSprite
 ; ===========================================================================
@@ -19506,6 +19543,12 @@ loc_FB8C:
 loc_FB92:
 		btst	#5,$22(a0)
 		beq.s	loc_FBAC
+		cmp.b	#2,$1C(a1)	; check if in jumping/rolling animation
+		beq.s	loc_FBA0
+		cmp.b	#$17,$1C(a1)	; check if in drowning animation
+		beq.s	loc_FBA0
+		cmp.b	#$1A,$1C(a1)	; check if in hurt animation
+		beq.s	loc_FBA0
 		move.w	#1,$1C(a1)	; use walking animation
 
 loc_FBA0:
@@ -23644,6 +23687,9 @@ Ani_obj65:
 Map_obj65:
 	include "_maps\obj65.asm"
 
+SpinDash_dust:
+	include "_inc\spindash_dust.asm"
+
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Object 01 - Sonic
@@ -23666,6 +23712,7 @@ Obj01_Index:	dc.w Obj01_Main-Obj01_Index
 		dc.w Obj01_Hurt-Obj01_Index
 		dc.w Obj01_Death-Obj01_Index
 		dc.w Obj01_ResetLevel-Obj01_Index
+		dc.w Sonic_Drowned-Obj01_Index
 ; ===========================================================================
 
 Obj01_Main:				; XREF: Obj01_Index
@@ -23681,6 +23728,7 @@ Obj01_Main:				; XREF: Obj01_Index
 		move.w	#$600,($FFFFF760).w ; Sonic's top speed
 		move.w	#$C,($FFFFF762).w ; Sonic's acceleration
 		move.w	#$80,($FFFFF764).w ; Sonic's deceleration
+		move.b	#5,$FFFFD1C0.w
 
 Obj01_Control:				; XREF: Obj01_Index
 		tst.w	($FFFFFFFA).w	; is debug cheat enabled?
@@ -24005,6 +24053,10 @@ Sonic_LookUp:
 		btst	#0,($FFFFF602).w ; is up being pressed?
 		beq.s	Sonic_Duck	; if not, branch
 		move.b	#7,$1C(a0)	; use "looking up" animation
+		addq.b	#1,($FFFFC903).w
+		cmp.b	#$78,($FFFFC903).w
+		bcs.s	Obj01_ResetScr_Part2
+		move.b	#$78,($FFFFC903).w
 		cmpi.w	#$C8,($FFFFF73E).w
 		beq.s	loc_12FC2
 		addq.w	#2,($FFFFF73E).w
@@ -24015,6 +24067,10 @@ Sonic_Duck:
 		btst	#1,($FFFFF602).w ; is down being pressed?
 		beq.s	Obj01_ResetScr	; if not, branch
 		move.b	#8,$1C(a0)	; use "ducking"	animation
+		addq.b	#1,($FFFFC903).w
+		cmpi.b	#$78,($FFFFC903).w
+		bcs.s	Obj01_ResetScr_Part2
+		move.b	#$78,($FFFFC903).w
 		cmpi.w	#8,($FFFFF73E).w
 		beq.s	loc_12FC2
 		subq.w	#2,($FFFFF73E).w
@@ -24022,6 +24078,9 @@ Sonic_Duck:
 ; ===========================================================================
 
 Obj01_ResetScr:
+		move.b	#0,($FFFFC903).w
+		
+Obj01_ResetScr_Part2:
 		cmpi.w	#$60,($FFFFF73E).w ; is	screen in its default position?
 		beq.s	loc_12FC2	; if yes, branch
 		bcc.s	loc_12FBE
@@ -24276,6 +24335,15 @@ loc_131AA:
 		subq.w	#5,$C(a0)
 
 loc_131CC:
+		cmp.w	#$60,($FFFFF73E).w
+		beq.s	@cont2
+		bcc.s	@cont1
+		addq.w	#4,($FFFFF73E).w
+		
+@cont1:
+		subq.w	#2,($FFFFF73E).w
+		
+@cont2:
 		move.b	$26(a0),d0
 		jsr	(CalcSine).l
 		muls.w	$14(a0),d0
@@ -25082,10 +25150,10 @@ Obj01_Death:				; XREF: Obj01_Index
 
 
 GameOver:				; XREF: Obj01_Death
-		move.w	($FFFFF72E).w,d0
+		move.w	($FFFFF704).w,d0
 		addi.w	#$100,d0
 		cmp.w	$C(a0),d0
-		bcc.w	locret_13900
+		bpl.w	locret_13900
 		move.w	#-$38,$12(a0)
 		addq.b	#2,$24(a0)
 		clr.b	($FFFFFE1E).w	; stop time counter
@@ -25231,6 +25299,21 @@ loc_139B2:
 locret_139C2:
 		rts	
 ; End of function Sonic_Loops
+
+; ---------------------------------------------------------------------------
+; Sonic when he's drowning
+; ---------------------------------------------------------------------------
+ 
+; ||||||||||||||| S U B R O U T I N E |||||||||||||||||||||||||||||||||||||||
+ 
+ 
+Sonic_Drowned:
+        bsr.w   SpeedToPos              ; Make Sonic able to move
+        addi.w  #$10,$12(a0)          ; Apply gravity
+        bsr.w   Sonic_RecordPos    ; Record position
+        bsr.s   Sonic_Animate           ; Animate Sonic
+        bsr.w   LoadSonicDynPLC           ; Load Sonic's DPLCs
+        bra.w   DisplaySprite           ; And finally, display Sonic
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	animate	Sonic's sprites
@@ -25662,25 +25745,18 @@ Obj0A_ReduceAir:
 		move.w	#0,$12(a0)
 		move.w	#0,$10(a0)
 		move.w	#0,$14(a0)
+		move.b  #$A,$24(a0)       ; Force the character to drown
 		move.b	#1,($FFFFF744).w
+		move.b  #0,($FFFFFE1E).w      ; Stop the timer immediately
 		movea.l	(sp)+,a0
 		rts	
 ; ===========================================================================
 
 loc_13F86:
-		subq.w	#1,$2C(a0)
-		bne.s	loc_13F94
-		move.b	#6,($FFFFD024).w
-		rts	
-; ===========================================================================
-
-loc_13F94:
-		move.l	a0,-(sp)
-		lea	($FFFFD000).w,a0
-		jsr	SpeedToPos
-		addi.w	#$10,$12(a0)
-		movea.l	(sp)+,a0
-		bra.s	loc_13FAC
+                subq.w  #1,$2C(a0)
+                bne.s   loc_13FAC                       ; Make it jump straight to this location
+                move.b  #6,($FFFFD000+$24).w
+                rts
 ; ===========================================================================
 
 Obj0A_GoMakeItem:			; XREF: Obj0A_ReduceAir
@@ -29494,6 +29570,7 @@ loc_16C64:
 		bne.s	loc_16C82
 
 loc_16C7C:
+		clr.b	$20(a1)	; immediately remove all touch response values when destroying the head to avoid taking damage
 		move.b	#$A,$24(a0)
 
 loc_16C82:
@@ -29565,7 +29642,7 @@ Obj79_Index:	dc.w Obj79_Main-Obj79_Index
 Obj79_Main:				; XREF: Obj79_Index
 		addq.b	#2,$24(a0)
 		move.l	#Map_obj79,4(a0)
-		move.w	#$7A0,2(a0)
+		move.w	#($D800/$20),2(a0)
 		move.b	#4,1(a0)
 		move.b	#8,$19(a0)
 		move.b	#5,$18(a0)
@@ -29631,7 +29708,7 @@ Obj79_HitLamp:
 		move.w	$C(a0),$32(a1)
 		subi.w	#$18,$32(a1)
 		move.l	#Map_obj79,4(a1)
-		move.w	#$7A0,2(a1)
+		move.w	#($D800/$20),2(a1)
 		move.b	#4,1(a1)
 		move.b	#8,$19(a1)
 		move.b	#4,$18(a1)
@@ -39394,8 +39471,10 @@ Sound_ChkValue:				; XREF: sub_71B4C
 		bls.w	Sound_A0toCF	; sound	$A0-$CF
 		cmpi.b	#$D0,d7
 		bcs.w	locret_71F8C
-		cmpi.b	#$E0,d7
-		bcs.w	Sound_D0toDF	; sound	$D0-$DF
+		cmpi.b	#$D1,d7
+		bcs.w	Sound_D0toDF	; sound	$D0
+		cmpi.b	#$DF,d7
+		blo.w	Sound_D1toDF	; sound	$D1-$DF
 		cmpi.b	#$E4,d7
 		bls.s	Sound_E0toE4	; sound	$E0-$E4
 
@@ -39652,6 +39731,17 @@ byte_721C2:	dc.b $80, $A0, $C0, 0
 ; Play normal sound effect
 ; ---------------------------------------------------------------------------
 
+Sound_D1toDF:
+		tst.b	$27(a6)
+		bne.w	loc_722C6
+		tst.b	4(a6)
+		bne.w	loc_722C6
+		tst.b	$24(a6)
+		bne.w	loc_722C6
+		movea.l	(Go_SoundIndex).l,a0
+		sub.b	#$A1,d7
+		bra	SoundEffects_Common
+
 Sound_A0toCF:				; XREF: Sound_ChkValue
 		tst.b	$27(a6)
 		bne.w	loc_722C6
@@ -39678,6 +39768,8 @@ Sound_notB5:
 Sound_notA7:
 		movea.l	(Go_SoundIndex).l,a0
 		subi.b	#$A0,d7
+
+SoundEffects_Common:
 		lsl.w	#2,d7
 		movea.l	(a0,d7.w),a3
 		movea.l	a3,a1
@@ -41268,6 +41360,8 @@ SoundD0:	incbin	sound\soundD0.bin
 		even
 SegaPCM:	incbin	sound\segapcm.bin
 SegaPCM_End	even
+
+Art_Dust	incbin	artunc\spindust.bin
 
 EndOfRom:
 		END
