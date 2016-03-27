@@ -76,24 +76,24 @@ ErrorTrap:	bra.w	*
 
 ; ===========================================================================
 IntMain:	jmp	loc_B10
-		jmp	PalToCRAM
+			jmp	PalToCRAM
 ; ===========================================================================
-Console:	dc.b 'SEGA MEGA DRIVE ' ; Hardware system ID
-Date:		dc.b 'OWARI   2016.NOV' ; Release date
+Console:		dc.b 'SEGA MEGA DRIVE ' ; Hardware system ID
+Date:			dc.b 'OWARI   2016.NOV' ; Release date
 Title_Local:	dc.b 'SPORTS BIKE                                     ' ; Domestic name
-Title_Int:	dc.b 'SPORTS BIKE                                     ' ; International name
-Serial:		dc.b 'GM 13131313-13'   ; Serial/version number
-Checksum:	dc.w 0
-		dc.b 'J               ' ; I/O support
-RomStartLoc:	dc.l StartOfRom		; ROM start
-RomEndLoc:	dc.l EndOfRom-1		; ROM end
-RamStartLoc:	dc.l $FF0000		; RAM start
-RamEndLoc:	dc.l $FFFFFF		; RAM end
-SRAMSupport:	dc.l $20202020		; change to $5241E020 to create	SRAM
-		dc.l $20202020		; SRAM start
-		dc.l $20202020		; SRAM end
-Notes:		dc.b '                                                    '
-Region:		dc.b 'JUE             ' ; Region
+Title_Int:		dc.b 'SPORTS BIKE                                     ' ; International name
+Serial:			dc.b 'GM 13131313-13'   ; Serial/version number
+Checksum:		dc.w 0
+				dc.b 'J               ' ; I/O support
+RomStartLoc:	dc.l StartOfRom			; ROM start
+RomEndLoc:		dc.l EndOfRom-1			; ROM end
+RamStartLoc:	dc.l $FF0000			; RAM start
+RamEndLoc:		dc.l $FFFFFF			; RAM end
+SRAMSupport:	dc.l $20202020			; change to $5241E020 to create	SRAM
+				dc.l $20202020			; SRAM start
+				dc.l $20202020			; SRAM end
+Notes:			dc.b '                                                    '
+Region:			dc.b 'JUE             ' ; Region
 
 ; ===========================================================================
 
@@ -12811,9 +12811,6 @@ Obj2E_ChkShoes:
 		bne.s	Obj2E_ChkShield
 		move.b	#1,($FFFFFE2E).w ; speed up the	BG music
 		move.w	#$4B0,($FFFFD034).w ; time limit for the power-up
-		move.w	#$C00,($FFFFF760).w ; change Sonic's top speed
-		move.w	#$18,($FFFFF762).w
-		move.w	#$80,($FFFFF764).w
 		move.w	#$E2,d0
 		jmp	(PlaySound).l	; Speed	up the music
 ; ===========================================================================
@@ -23710,6 +23707,62 @@ SpinDash_dust:
 ; ---------------------------------------------------------------------------
 ; Object 01 - Sonic
 ; ---------------------------------------------------------------------------
+; ===========================================================================
+crawling								= $39			; CRAWLING IN MY SKIN!
+; ===========================================================================
+Obj01_PhysicsTable:
+		dc.w $600,   $C,  $80			; Normal
+		dc.w $300,    6,  $40			; Underwater
+		dc.w $C00,  $18,  $80			; Speed shoes
+		dc.w $600,   $C,  $80			; Speed shoes underwater
+		dc.w  $C0,  $18,  $24			; Crawling
+		dc.w  $60,   $C,  $12			; Crawling underwater
+		dc.w $180,  $30,  $48			; Crawling with speed shoes
+		dc.w  $C0,  $18,  $24			; Crawling with speed shoes underwater
+; ===========================================================================
+; Get physics for Sonic
+; ===========================================================================
+Obj01_GetPhysics:
+		moveq	#0,d0
+		move.b	crawling(a0),d0
+		asl.b	#1,d0
+		or.b	($FFFFFE2E).w,d0
+		asl.b	#1,d0
+		btst	#6,$22(a0)
+		beq.s	@not_underwater
+		or.b	#1,d0
+		
+@not_underwater:
+		mulu.w	#6,d0
+		lea	Obj01_PhysicsTable(pc,d0.w),a1
+		move.w	(a1)+,($FFFFF760).w
+		move.w	(a1)+,($FFFFF762).w
+		move.w	(a1),($FFFFF764).w
+		rts
+; ===========================================================================
+; Apply speed cap for Sonic
+; ===========================================================================
+Obj01_ApplySpeedCap:
+		move.w	$14(a0),d1
+		tst.w	d1
+		bpl.s	@not_negative
+		neg.w	d1
+		
+@not_negative:
+		move.w	($FFFFF760).w,d2
+		cmp.w	d2,d1
+		ble.s	@no_cap
+		sub.w	($FFFFF762).w,d1
+		tst.w	$14(a0)
+		bpl.s	@not_negative2
+		neg.w	d1
+		
+@not_negative2:
+		move.w	d1,$14(a0)
+		
+@no_cap:
+		rts
+; ===========================================================================
 
 Obj01:					; XREF: Obj_Index
 		tst.w	($FFFFFE08).w	; is debug mode	being used?
@@ -23757,6 +23810,7 @@ Obj01_Control:				; XREF: Obj01_Index
 ; ===========================================================================
 
 loc_12C58:
+		bsr.w	Obj01_GetPhysics
 		tst.b	($FFFFF7CC).w	; are controls locked?
 		bne.s	loc_12C64	; if yes, branch
 		move.w	($FFFFF604).w,($FFFFF602).w ; enable joypad control
@@ -23794,9 +23848,9 @@ loc_12CB6:
 		rts	
 ; ===========================================================================
 Obj01_Modes:	dc.w Obj01_MdNormal-Obj01_Modes
-		dc.w Obj01_MdJump-Obj01_Modes
+		dc.w Obj01_MdAir-Obj01_Modes
 		dc.w Obj01_MdRoll-Obj01_Modes
-		dc.w Obj01_MdJump2-Obj01_Modes
+		dc.w Obj01_MdJump-Obj01_Modes
 ; ---------------------------------------------------------------------------
 ; Music	to play	after invincibility wears off
 ; ---------------------------------------------------------------------------
@@ -23846,9 +23900,6 @@ Obj01_ChkShoes:
 		beq.s	Obj01_ExitChk
 		subq.w	#1,$34(a0)	; subtract 1 from time
 		bne.s	Obj01_ExitChk
-		move.w	#$600,($FFFFF760).w ; restore Sonic's speed
-		move.w	#$C,($FFFFF762).w ; restore Sonic's acceleration
-		move.w	#$80,($FFFFF764).w ; restore Sonic's deceleration
 		move.b	#0,($FFFFFE2E).w ; cancel speed	shoes
 		move.w	#$E3,d0
 		jmp	(PlaySound).l	; run music at normal speed
@@ -23898,9 +23949,6 @@ Obj01_InWater:
 		bsr.w	ResumeMusic
 		move.b	#$A,($FFFFD340).w ; load bubbles object	from Sonic's mouth
 		move.b	#$81,($FFFFD368).w
-		move.w	#$300,($FFFFF760).w ; change Sonic's top speed
-		move.w	#6,($FFFFF762).w ; change Sonic's acceleration
-		move.w	#$40,($FFFFF764).w ; change Sonic's deceleration
 		asr	$10(a0)
 		asr	$12(a0)
 		asr	$12(a0)
@@ -23914,9 +23962,6 @@ Obj01_OutWater:
 		bclr	#6,$22(a0)
 		beq.s	locret_12D80
 		bsr.w	ResumeMusic
-		move.w	#$600,($FFFFF760).w ; restore Sonic's speed
-		move.w	#$C,($FFFFF762).w ; restore Sonic's acceleration
-		move.w	#$80,($FFFFF764).w ; restore Sonic's deceleration
 		asl	$12(a0)
 		beq.w	locret_12D80
 		move.b	#8,($FFFFD300).w ; load	splash object
@@ -23943,10 +23988,19 @@ Obj01_MdNormal:				; XREF: Obj01_Modes
 		jsr	SpeedToPos
 		bsr.w	Sonic_AnglePos
 		bsr.w	Sonic_SlopeRepel
+		
+		move.b	#0,d0
+		btst	#1,($FFFFF602).w
+		beq.s	@not_crawling
+		bsr.w	Obj01_ApplySpeedCap
+		move.b	#1,d0
+		
+@not_crawling:
+		
 		rts	
 ; ===========================================================================
 
-Obj01_MdJump:				; XREF: Obj01_Modes
+Obj01_MdAir:				; XREF: Obj01_Modes
 		bsr.w	Sonic_JumpHeight
 		bsr.w	Sonic_ChgJumpDir
 		bsr.w	Sonic_LevelBound
@@ -23972,7 +24026,7 @@ Obj01_MdRoll:				; XREF: Obj01_Modes
 		rts	
 ; ===========================================================================
 
-Obj01_MdJump2:				; XREF: Obj01_Modes
+Obj01_MdJump:				; XREF: Obj01_Modes
 		bsr.w	Sonic_JumpHeight
 		bsr.w	Sonic_ChgJumpDir
 		bsr.w	Sonic_LevelBound
@@ -24436,7 +24490,7 @@ loc_13242:
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 
-Sonic_ChgJumpDir:		; XREF: Obj01_MdJump; Obj01_MdJump2
+Sonic_ChgJumpDir:		; XREF: Obj01_MdAir; Obj01_MdJump
 		move.w	($FFFFF760).w,d6
 		move.w	($FFFFF762).w,d5
 		asl.w	#1,d5
@@ -24704,7 +24758,7 @@ Sonic_JumpAnimate:
 		move.b d0,$1C(a0)
 		rts
 
-Sonic_JumpHeight:			; XREF: Obj01_MdJump; Obj01_MdJump2
+Sonic_JumpHeight:			; XREF: Obj01_MdAir; Obj01_MdJump
 		tst.b	$3C(a0)
 		beq.s	loc_134C4
 		move.w	#-$400,d1
@@ -24850,7 +24904,7 @@ loc_13582:
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 
-Sonic_JumpAngle:			; XREF: Obj01_MdJump; Obj01_MdJump2
+Sonic_JumpAngle:			; XREF: Obj01_MdAir; Obj01_MdJump
 		move.b	$26(a0),d0	; get Sonic's angle
 		beq.s	locret_135A2	; if already 0,	branch
 		bpl.s	loc_13598	; if higher than 0, branch
@@ -24882,7 +24936,7 @@ locret_135A2:
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 
-Sonic_Floor:				; XREF: Obj01_MdJump; Obj01_MdJump2
+Sonic_Floor:				; XREF: Obj01_MdAir; Obj01_MdJump
 		move.w	$10(a0),d1
 		move.w	$12(a0),d2
 		jsr	(CalcAngle).l
@@ -41398,3 +41452,4 @@ Art_Dust	incbin	artunc\spindust.bin
 
 EndOfRom:
 		END
+
