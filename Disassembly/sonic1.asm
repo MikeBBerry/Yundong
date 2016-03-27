@@ -204,7 +204,7 @@ GameClrRAM:
 		bsr.w	VDPSetupGame
 		bsr.w	SoundDriverLoad
 		bsr.w	JoypadInit
-		move.b	#0,($FFFFF600).w ; set Game Mode to Sega Screen
+		move.b	#0,($FFFFF600).w ; set Game Mode to Notice Screen
 
 MainGameLoop:
 		move.b	($FFFFF600).w,d0
@@ -3409,7 +3409,7 @@ loc_317C:
 		move.w	d0,($FFFFD008).w ; move	Sonic to the right
 		cmpi.w	#$1C00,d0	; has Sonic object passed x-position $1C00?
 		bcs.s	Title_ChkRegion	; if not, branch
-		move.b	#0,($FFFFF600).w ; go to Sega screen
+		move.b	#$20,($FFFFF600).w ; go to Sega screen
 		rts	
 ; ===========================================================================
 
@@ -4154,14 +4154,14 @@ Level_ChkDemo:				; XREF: Level_MainLoop
 		beq.s	Level_EndDemo	; if not, branch
 		cmpi.b	#8,($FFFFF600).w
 		beq.w	Level_MainLoop	; if screen mode is 08 (demo), branch
-		move.b	#0,($FFFFF600).w ; go to Sega screen
+		move.b	#$20,($FFFFF600).w ; go to Sega screen
 		rts	
 ; ===========================================================================
 
 Level_EndDemo:				; XREF: Level_ChkDemo
 		cmpi.b	#8,($FFFFF600).w ; is screen mode 08 (demo)?
 		bne.s	loc_3B88	; if not, branch
-		move.b	#0,($FFFFF600).w ; go to Sega screen
+		move.b	#$20,($FFFFF600).w ; go to Sega screen
 		tst.w	($FFFFFFF0).w	; is demo mode on?
 		bpl.s	loc_3B88	; if yes, branch
 		move.b	#$1C,($FFFFF600).w ; go	to credits
@@ -5149,7 +5149,7 @@ SS_NormalExit:
 ; ===========================================================================
 
 SS_ToSegaScreen:
-		move.b	#0,($FFFFF600).w ; set screen mode to 00 (Sega screen)
+		move.b	#$20,($FFFFF600).w ; set screen mode to 00 (Sega screen)
 		rts
 
 ; ---------------------------------------------------------------------------
@@ -5519,7 +5519,7 @@ loc_4DF2:
 		bcc.s	Cont_MainLoop
 		tst.w	($FFFFF614).w
 		bne.w	Cont_MainLoop
-		move.b	#0,($FFFFF600).w ; go to Sega screen
+		move.b	#$20,($FFFFF600).w ; go to Sega screen
 		rts	
 ; ===========================================================================
 
@@ -6399,7 +6399,7 @@ TryAg_MainLoop:
 		beq.s	TryAg_MainLoop
 
 TryAg_Exit:
-		move.b	#0,($FFFFF600).w ; go to Sega screen
+		move.b	#$20,($FFFFF600).w ; go to Sega screen
 		rts	
 
 ; ===========================================================================
@@ -15340,7 +15340,7 @@ Obj39_ChgMode:				; XREF: Obj39_Wait
 		move.b	#$14,($FFFFF600).w ; set mode to $14 (continue screen)
 		tst.b	($FFFFFE18).w	; do you have any continues?
 		bne.s	Obj39_Display	; if yes, branch
-		move.b	#0,($FFFFF600).w ; set mode to 0 (Sega screen)
+		move.b	#$20,($FFFFF600).w ; set mode to 0 (Sega screen)
 		bra.s	Obj39_Display
 ; ===========================================================================
 
