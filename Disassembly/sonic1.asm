@@ -23835,7 +23835,7 @@ loc_12C7E:
 @no_bite:
 		tst.b	biting(a0)
 		beq.s	@no_dec
-		;move.b	#biting,$1C(a0)
+		move.b	#9,$1C(a0) ; Use "biting" animation
 		subq.b	#1,biting(a0)
 		
 @no_dec:
@@ -25550,10 +25550,10 @@ SAnim_RollJump:				; XREF: SAnim_WalkRun
 		neg.w	d2
 
 loc_13ADE:
-		lea	(SonAni_Roll2).l,a1 ; use fast animation
-		cmpi.w	#$600,d2	; is Sonic moving fast?
-		bcc.s	loc_13AF0	; if yes, branch
-		lea	(SonAni_Roll).l,a1 ; use slower	animation
+	;	lea	(SonAni_Roll2).l,a1 ; use fast animation
+	;	cmpi.w	#$600,d2	; is Sonic moving fast?
+	;	bcc.s	loc_13AF0	; if yes, branch
+	;	lea	(SonAni_Roll).l,a1 ; use slower	animation
 
 loc_13AF0:
 		neg.w	d2
@@ -35830,7 +35830,7 @@ Obj09_Main:				; XREF: Obj09_Index
 		move.w	#$780,2(a0)
 		move.b	#4,1(a0)
 		move.b	#0,$18(a0)
-		move.b	#2,$1C(a0)
+		move.b	#$18,$1C(a0)
 		bset	#2,$22(a0)
 		bset	#1,$22(a0)
 
