@@ -42,7 +42,7 @@ SonAni_Wait:	dc.b $17, 1, 1,	1, 1, 1, 1, 1, 1, 1, 1,	1, 1, 3, 2, 2, 2, 3, 4, $FE
 SonAni_Balance:	dc.b $1F, $34, $35, $FF
 SonAni_LookUp:	dc.b $3F, 5, $FF, 0
 SonAni_Duck:	dc.b $3F, $33, $FF, 0
-SonAni_Bite:	dc.b $5, 1, $2E, $2F, $30, $FD, 0
+SonAni_Bite:	dc.b $2, 1, $2E, $2F, $30, $FD, 0
 SonAni_Stop:	dc.b 7,	$31, $32, $FF
 SonAni_Float1:	dc.b 7,	$36, $FF
 SonAni_Float2:	dc.b 7,	$36, $37, $42, $38, $43, $FF, 0
