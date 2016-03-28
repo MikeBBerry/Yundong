@@ -23835,7 +23835,7 @@ loc_12C7E:
 @no_bite:
 		tst.b	biting(a0)
 		beq.s	@no_dec
-		move.b	#$20,$1C(a0)
+		;move.b	#biting,$1C(a0)
 		subq.b	#1,biting(a0)
 		
 @no_dec:
@@ -34902,7 +34902,7 @@ Touch_Height:				; XREF: TouchResponse
 		move.b	(a2)+,d1
 		tst.b	biting(a0)
 		beq.s	@not_biting
-		addq.b	#4,d1
+		addq.b	#8,d1
 		
 @not_biting:
 		move.w	8(a1),d0
