@@ -12643,12 +12643,8 @@ loc_A1EC:				; XREF: Obj26_Solid
 		move.w	#$F,d2
 		bsr.w	Obj26_SolidSides
 		beq.w	loc_A25C
-		tst.w	$12(a1)
-		bmi.s	loc_A20A
-		cmpi.b	#2,$1C(a1)	; is Sonic rolling?
-		beq.s	loc_A25C	; if yes, branch
-
-loc_A20A:
+		tst.b	$3A(a1)
+		bne.s	loc_A25C
 		tst.w	d1
 		bpl.s	loc_A220
 		sub.w	d3,$C(a1)
@@ -23715,6 +23711,7 @@ SpinDash_dust:
 ; ---------------------------------------------------------------------------
 ; ===========================================================================
 crawling								= $39			; CRAWLING IN MY SKIN!
+biting									= $3A
 ; ===========================================================================
 Obj01_PhysicsTable:
 		dc.w $600,   $C,  $80			; Normal
@@ -23831,6 +23828,17 @@ loc_12C64:
 		jsr	Obj01_Modes(pc,d1.w)
 
 loc_12C7E:
+		btst	#6,($FFFFF602).w
+		beq.s	@no_bite
+		move.b	#15,biting(a0)
+
+@no_bite:
+		tst.b	biting(a0)
+		beq.s	@no_dec
+		move.b	#$20,$1C(a0)
+		subq.b	#1,biting(a0)
+		
+@no_dec:
 		bsr.s	Sonic_Display
 		bsr.w	Sonic_RecordPos
 		bsr.w	Sonic_Water
@@ -24706,7 +24714,7 @@ locret_133E8:
 
 Sonic_Jump:				; XREF: Obj01_MdNormal; Obj01_MdRoll
 		move.b	($FFFFF603).w,d0
-		andi.b	#$70,d0		; is A,	B or C pressed?
+		andi.b	#$30,d0		; is A,	B or C pressed?
 		beq.w	locret_1348E	; if not, branch
 		moveq	#0,d0
 		move.b	$26(a0),d0
@@ -34892,6 +34900,11 @@ Touch_Height:				; XREF: TouchResponse
 		lea	Touch_Sizes-2(pc,d0.w),a2
 		moveq	#0,d1
 		move.b	(a2)+,d1
+		tst.b	biting(a0)
+		beq.s	@not_biting
+		addq.b	#4,d1
+		
+@not_biting:
 		move.w	8(a1),d0
 		sub.w	d1,d0
 		sub.w	d2,d0
@@ -34947,24 +34960,22 @@ locret_1AEF2:
 ; ===========================================================================
 
 Touch_Monitor:
-		tst.w	$12(a0)		; is Sonic moving upwards?
-		bpl.s	loc_1AF1E	; if not, branch
-		move.w	$C(a0),d0
-		subi.w	#$10,d0
-		cmp.w	$C(a1),d0
-		bcs.s	locret_1AF2E
-		neg.w	$12(a0)		; reverse Sonic's y-motion
-		move.w	#-$180,$12(a1)
-		tst.b	$25(a1)
-		bne.s	locret_1AF2E
-		addq.b	#4,$25(a1)	; advance the monitor's routine counter
-		rts	
-; ===========================================================================
-
-loc_1AF1E:
-		cmpi.b	#2,$1C(a0)	; is Sonic rolling/jumping?
-		bne.s	locret_1AF2E
-		neg.w	$12(a0)		; reverse Sonic's y-motion
+		tst.b	biting(a0)
+		beq.w	locret_1AF2E
+		move.w	8(a1),d0
+		move.w	8(a0),d1
+		btst	#0,$22(a0)
+		bne.s	@left
+		cmp.w	d0,d1
+		ble.s	@do
+		rts
+		
+	@left:
+		cmp.w	d0,d1
+		bge.s	@do
+		rts
+		
+	@do:
 		addq.b	#2,$24(a1)	; advance the monitor's routine counter
 
 locret_1AF2E:
@@ -34974,16 +34985,24 @@ locret_1AF2E:
 Touch_Enemy:				; XREF: Touch_ChkValue
 		tst.b	($FFFFFE2D).w	; is Sonic invincible?
 		bne.s	loc_1AF40	; if yes, branch
-		cmpi.b	#2,$1C(a0)	; is Sonic rolling?
-		bne.w	Touch_ChkHurt	; if not, branch
+		tst.b	biting(a0)
+		beq.w	Touch_ChkHurt
+		move.w	8(a1),d0
+		move.w	8(a0),d1
+		btst	#0,$22(a0)
+		bne.s	@left
+		cmp.w	d0,d1
+		ble.s	loc_1AF40
+		bra.w	Touch_ChkHurt
+		
+	@left:
+		cmp.w	d0,d1
+		bge.s	loc_1AF40
+		bra.w	Touch_ChkHurt
 
 loc_1AF40:
 		tst.b	$21(a1)
 		beq.s	Touch_KillEnemy
-		neg.w	$10(a0)
-		neg.w	$12(a0)
-		asr	$10(a0)
-		asr	$12(a0)
 		move.b	#0,$20(a1)
 		subq.b	#1,$21(a1)
 		bne.s	locret_1AF68
@@ -35014,22 +35033,6 @@ loc_1AF9C:
 		bsr.w	AddPoints
 		move.b	#$27,0(a1)	; change object	to points
 		move.b	#0,$24(a1)
-		tst.w	$12(a0)
-		bmi.s	loc_1AFC2
-		move.w	$C(a0),d0
-		cmp.w	$C(a1),d0
-		bcc.s	loc_1AFCA
-		neg.w	$12(a0)
-		rts	
-; ===========================================================================
-
-loc_1AFC2:
-		addi.w	#$100,$12(a0)
-		rts	
-; ===========================================================================
-
-loc_1AFCA:
-		subi.w	#$100,$12(a0)
 		rts	
 ; ===========================================================================
 Enemy_Points:	dc.w 10, 20, 50, 100
