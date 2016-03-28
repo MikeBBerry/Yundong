@@ -17386,14 +17386,21 @@ Obj41_BounceLR:				; XREF: Obj41_LR
 		bne.s	loc_DC36	; if yes, branch
 		subi.w	#$10,8(a1)
 		neg.w	$10(a1)		; move Sonic to	the right
-
+		
 loc_DC36:
 		move.w	#$F,$3E(a1)
 		move.w	$10(a1),$14(a1)
 		bchg	#0,$22(a1)
 		btst	#2,$22(a1)
 		bne.s	loc_DC56
-		move.b	#0,$1C(a1)	; use running animation
+		move.b	#0,d0
+		tst.b	crawling(a1)
+		beq.s	@not_crawling
+		nop
+		;move.b	#crawl_anim,d0
+		
+@not_crawling:
+		move.b	d0,$1C(a1)
 
 loc_DC56:
 		bclr	#5,$22(a0)
@@ -23995,6 +24002,11 @@ Obj01_MdNormal:				; XREF: Obj01_Modes
 		bsr.w	Sonic_SlopeRepel
 		
 @is_crawling2:
+		tst.w	$3E(a0)
+		beq.s	@no_movelock
+		subq.w	#1,$3E(a0)
+		
+@no_movelock:
 		move.b	#0,d0
 		btst	#1,($FFFFF602).w
 		beq.s	@not_crawling
@@ -24881,7 +24893,7 @@ Sonic_SlopeRepel:			; XREF: Obj01_MdNormal; Obj01_MdRoll
 		tst.b	$38(a0)
 		bne.s	locret_13580
 		tst.w	$3E(a0)
-		bne.s	loc_13582
+		bne.s	locret_13580
 		move.b	$26(a0),d0
 		addi.b	#$20,d0
 		andi.b	#$C0,d0
@@ -24902,7 +24914,6 @@ locret_13580:
 ; ===========================================================================
 
 loc_13582:
-		subq.w	#1,$3E(a0)
 		rts	
 ; End of function Sonic_SlopeRepel
 
