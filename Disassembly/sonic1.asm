@@ -3839,7 +3839,21 @@ LevelMenuText:	incbin	misc\menutext.bin
 ; ---------------------------------------------------------------------------
 ; Music	playlist
 ; ---------------------------------------------------------------------------
-MusicList:	incbin	misc\muslist1.bin
+MusicList1:	incbin	sound\muslist1.bin
+		even
+MusicList2:	incbin	sound\muslist2.bin
+		even
+MusicList3:	incbin	sound\muslist3.bin
+		even
+MusicList4:	incbin	sound\muslist4.bin
+		even
+MusicList5:	incbin	sound\muslist5.bin
+		even
+MusicList6:	incbin	sound\muslist6.bin
+		even
+MusicList7:	incbin	sound\muslist7.bin
+		even
+MusicList8:	incbin	sound\muslist8.bin
 		even
 ; ===========================================================================
 
@@ -3960,21 +3974,33 @@ Level_WaterPal:
 
 Level_GetBgm:
 		tst.w	($FFFFFFF0).w
-		bmi.s	loc_3946
+		bmi.w	loc_3946		; change bmi.s to bmi.w or it won't work!
 		moveq	#0,d0
 		move.b	($FFFFFE10).w,d0
-		cmpi.w	#$103,($FFFFFE10).w ; is level SBZ3?
-		bne.s	Level_BgmNotLZ4	; if not, branch
-		moveq	#5,d0		; move 5 to d0
 
-Level_BgmNotLZ4:
-		cmpi.w	#$502,($FFFFFE10).w ; is level FZ?
-		bne.s	Level_PlayBgm	; if not, branch
-		moveq	#6,d0		; move 6 to d0
+		cmpi.b	#$0,($FFFFFE11).w	; is this act 1?
+		bne.s	Level_GetBgm2	; if not, branch
+		lea	(MusicList1).l,a1	; load Music Playlist for Acts 1
+		bra.s	Level_PlayBgm	; go to PlayBgm
+
+Level_GetBgm2:
+		cmpi.b	#$1,($FFFFFE11).w	; is this act 2?
+		bne.s	Level_GetBgm3	; if not, branch
+		lea	(MusicList2).l,a1	; load Music Playlist for Acts 2
+		bra.s	Level_PlayBgm	; go to PlayBgm
+
+Level_GetBgm3:
+		cmpi.b	#$2,($FFFFFE11).w	; is this act 3?
+		bne.s	Level_GetBgm4	; if not, branch
+		lea	(MusicList3).l,a1	; load Music Playlist for Acts 3
+		bra.s	Level_PlayBgm	; go to PlayBgm
+
+Level_GetBgm4:
+		lea	(MusicList4).l,a1	; load Music Playlist for Acts 4
 
 Level_PlayBgm:
-		lea	(MusicList).l,a1 ; load	music playlist
-		move.b	(a1,d0.w),d0	; add d0 to a1
+		move.b	(a1,d0.w),d0	; get d0-th entry from the playlist
+		move.b	d0,($FFFFFFFE).w	; put music number in RAM for later use
 		bsr.w	PlaySound	; play music
 		move.b	#$34,($FFFFD080).w ; load title	card object
 
@@ -5021,7 +5047,17 @@ SS_ClrNemRam:
 		bsr.w	PalCycle_SS
 		clr.w	($FFFFF780).w	; set stage angle to "upright"
 		move.w	#$40,($FFFFF782).w ; set stage rotation	speed
-		move.w	#$89,d0
+		moveq	#0,d0
+		move.b	($FFFFFE16).w,d0
+		cmpi.b	#$0,d0
+		bne.b SS_Num_Not_Zero
+		move.b	#$6,d0
+
+SS_Num_Not_Zero:
+		subi.w	#$1,d0
+
+		lea	(MusicList5).l,a1 ; load Music Playlist for Special Stages
+		move.b	(a1,d0.w),d0 ; get d0-th entry from the playlist
 		bsr.w	PlaySound	; play special stage BG	music
 		move.w	#0,($FFFFF790).w
 		lea	(Demo_Index).l,a1
@@ -5784,9 +5820,11 @@ End_ClrRam3:
 		move.w	($FFFFF624).w,(a6)
 		move.w	#$1E,($FFFFFE14).w
 		move.w	#$600,($FFFFFE10).w ; set level	number to 0600 (extra flowers)
+		move.b	#$0,($FFFFFFFD).w	; puts a 0 in this flag
 		cmpi.b	#6,($FFFFFE57).w ; do you have all 6 emeralds?
 		beq.s	End_LoadData	; if yes, branch
 		move.w	#$601,($FFFFFE10).w ; set level	number to 0601 (no flowers)
+		move.b	#$1,($FFFFFFFD).w	; puts a 1 in this flag
 
 End_LoadData:
 		moveq	#$1C,d0
@@ -5806,8 +5844,9 @@ End_LoadData:
 		bsr.w	KosDec
 		moveq	#3,d0
 		bsr.w	PalLoad1	; load Sonic's Palette
-		move.w	#$8B,d0
-		bsr.w	PlaySound	; play ending sequence music
+		move.b	($FFFFFFFD).w,d0
+		lea	(MusicList7).l,a1 ; load Music Playlist for Endings
+		move.b	(a1,d0.w),d0 ; get d0-th entry from the playlist
 		btst	#6,($FFFFF604).w ; is button A pressed?
 		beq.s	End_LoadSonic	; if not, branch
 		move.b	#1,($FFFFFFFA).w ; enable debug	mode
@@ -5866,10 +5905,14 @@ End_MainLoop:
 		cmpi.b	#$18,($FFFFF600).w ; is	scene number $18 (ending)?
 		beq.s	loc_52DA	; if yes, branch
 		move.b	#$1C,($FFFFF600).w ; set scene to $1C (credits)
-		move.b	#$91,d0
+		clr.w	d0
+		move.b	($FFFFFFFD).w,d0	; get kind of ending (0 = good, 1 = bad)
+		lea	(MusicList6).l,a1	; load Music Playlist for credits
+		move.b	(a1,d0.w),d0	; get d0-th entry from the playlist
+
 		bsr.w	PlaySound_Special ; play credits music
 		move.w	#0,($FFFFFFF4).w ; set credits index number to 0
-		rts	
+		rts
 ; ===========================================================================
 
 loc_52DA:
@@ -6183,7 +6226,7 @@ Obj89_Move:				; XREF: Obj89_Index
 		cmpi.w	#$C0,8(a0)	; has object reached $C0?
 		beq.s	Obj89_Delay	; if yes, branch
 		addi.w	#$10,8(a0)	; move object to the right
-		bra.w	DisplaySprite
+		jsr	DisplaySprite
 ; ===========================================================================
 
 Obj89_Delay:				; XREF: Obj89_Move
@@ -6196,7 +6239,7 @@ Obj89_GotoCredits:			; XREF: Obj89_Index
 		move.b	#$1C,($FFFFF600).w ; exit to credits
 
 Obj89_Display:
-		bra.w	DisplaySprite
+		jsr	DisplaySprite
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - Sonic on the ending	sequence
@@ -8371,8 +8414,11 @@ loc_6EB0:
 		move.w	#$280,$C(a1)
 
 loc_6ED0:
-		move.w	#$8C,d0
+		move.b	($FFFFFE10).w,d0	; set boss number
+		lea	(MusicList8).l,a1	; load Music Playlist for bosses
+		move.b	(a1,d0.w),d0	; get d0-th entry from the playlist
 		bsr.w	PlaySound	; play boss music
+		move.b	#1,($FFFFFFFF).w	; set boss flag
 		move.b	#1,($FFFFF7AA).w ; lock	screen
 		addq.b	#2,($FFFFF742).w
 		moveq	#$11,d0
@@ -8430,8 +8476,11 @@ loc_6F28:
 		move.b	#$77,0(a1)	; load LZ boss object
 
 loc_6F4A:
-		move.w	#$8C,d0
+		move.b	($FFFFFE10).w,d0	; set boss number
+		lea	(MusicList8).l,a1	; load Music Playlist for bosses
+		move.b	(a1,d0.w),d0	; get d0-th entry from the playlist
 		bsr.w	PlaySound	; play boss music
+		move.b	#1,($FFFFFFFF).w	; set boss flag
 		move.b	#1,($FFFFF7AA).w ; lock	screen
 		addq.b	#2,($FFFFF742).w
 		moveq	#$11,d0
@@ -8591,8 +8640,11 @@ Resize_MZ3boss:
 		move.w	#$22C,$C(a1)
 
 loc_70D0:
-		move.w	#$8C,d0
+		move.b	($FFFFFE10).w,d0	; set boss number
+		lea	(MusicList8).l,a1	; load Music Playlist for bosses
+		move.b	(a1,d0.w),d0	; get d0-th entry from the playlist
 		bsr.w	PlaySound	; play boss music
+		move.b	#1,($FFFFFFFF).w	; set boss flag
 		move.b	#1,($FFFFF7AA).w ; lock	screen
 		addq.b	#2,($FFFFF742).w
 		moveq	#$11,d0
@@ -8656,8 +8708,11 @@ Resize_SLZ3boss:
 		move.b	#$7A,(a1)	; load SLZ boss	object
 
 loc_7144:
-		move.w	#$8C,d0
+		move.b	($FFFFFE10).w,d0	; set boss number
+		lea	(MusicList8).l,a1	; load Music Playlist for bosses
+		move.b	(a1,d0.w),d0	; get d0-th entry from the playlist
 		bsr.w	PlaySound	; play boss music
+		move.b	#1,($FFFFFFFF).w	; set boss flag
 		move.b	#1,($FFFFF7AA).w ; lock	screen
 		addq.b	#2,($FFFFF742).w
 		moveq	#$11,d0
@@ -8739,8 +8794,11 @@ Resize_SYZ3boss:
 		addq.b	#2,($FFFFF742).w
 
 loc_71EC:
-		move.w	#$8C,d0
+		move.b	($FFFFFE10).w,d0	; set boss number
+		lea	(MusicList8).l,a1	; load Music Playlist for bosses
+		move.b	(a1,d0.w),d0	; get d0-th entry from the playlist
 		bsr.w	PlaySound	; play boss music
+		move.b	#1,($FFFFFFFF).w	; set boss flag
 		move.b	#1,($FFFFF7AA).w ; lock	screen
 		moveq	#$11,d0
 		bra.w	LoadPLC		; load boss patterns
@@ -12804,11 +12862,27 @@ ExtraLife:
 Obj2E_ChkShoes:
 		cmpi.b	#3,d0		; does monitor contain speed shoes?
 		bne.s	Obj2E_ChkShield
-		move.b	#1,($FFFFFE2E).w ; speed up the	BG music
 		move.w	#$4B0,($FFFFD034).w ; time limit for the power-up
-		move.w	#$E2,d0
+
+		cmpi.b	#$1,($FFFFFE2E).w	; am I already speed shoe'd?
+		beq.s	Obj2E_NoMusic2	; if so, branch
+
+		move.b	#1,($FFFFFE2E).w ; speed up the	BG music
+		move.w	#$C00,($FFFFF760).w ; change Sonic's top speed
+		move.w	#$18,($FFFFF762).w
+		move.w	#$80,($FFFFF764).w
+
+		cmpi.b	#$1,($FFFFFE2D).w	; do I also have invincibility?
+		bne.b	Obj2E_spd_only	; if I don't then play regular speed shoes music
+		move.w	#$95,d0		; if I do, then play awesome music
+		bra.b	Obj2E_spd_play
+Obj2E_spd_only:
+		move.w	#$94,d0
+Obj2E_spd_play:
 		jmp	(PlaySound).l	; Speed	up the music
 ; ===========================================================================
+Obj2E_NoMusic2:
+		rts
 
 Obj2E_ChkShield:
 		cmpi.b	#4,d0		; does monitor contain a shield?
@@ -12821,9 +12895,14 @@ Obj2E_ChkShield:
 
 Obj2E_ChkInvinc:
 		cmpi.b	#5,d0		; does monitor contain invincibility?
-		bne.s	Obj2E_ChkRings
-		move.b	#1,($FFFFFE2D).w ; make	Sonic invincible
+		bne.w	Obj2E_ChkRings
 		move.w	#$4B0,($FFFFD032).w ; time limit for the power-up
+
+		cmpi.b	#$1,($FFFFFE2D).w	; am I already invincible?
+		beq.s	Obj2E_NoMusic	; if so, branch
+
+		move.b	#1,($FFFFFE2D).w ; make	Sonic invincible
+
 		move.b	#$38,($FFFFD200).w ; load stars	object ($3801)
 		move.b	#1,($FFFFD21C).w
 		move.b	#$38,($FFFFD240).w ; load stars	object ($3802)
@@ -12834,7 +12913,22 @@ Obj2E_ChkInvinc:
 		move.b	#4,($FFFFD2DC).w
 		tst.b	($FFFFF7AA).w	; is boss mode on?
 		bne.s	Obj2E_NoMusic	; if yes, branch
+
+		cmpi.b	#$1,($FFFFFE10).w	; is this Labyrinth?
+		bne.s	NotLZinv	; if not, branch
+		move.w	($FFFFFE14).w,d0 ; check air remaining
+		cmpi.w	#$C,d0
+		bhi.s	NotLZinv	; if air is above $C, branch
+		bra.s	Obj2E_NoMusic
+
+NotLZinv:
+		cmpi.b	#$1,($FFFFFE2E).w	; do I also have speed shoes?
+		bne.b	Obj2E_inv_only	; if I don't then play regular invincibility music
+		move.w	#$95,d0		; if I do, then play awesome music
+		bra.b	Obj2E_inv_play
+Obj2E_inv_only:
 		move.w	#$87,d0
+Obj2E_inv_play:
 		jmp	(PlaySound).l	; play invincibility music
 ; ===========================================================================
 
@@ -23865,12 +23959,6 @@ Obj01_Modes:	dc.w Obj01_MdNormal-Obj01_Modes
 		dc.w Obj01_MdAir-Obj01_Modes
 		dc.w Obj01_MdRoll-Obj01_Modes
 		dc.w Obj01_MdJump-Obj01_Modes
-; ---------------------------------------------------------------------------
-; Music	to play	after invincibility wears off
-; ---------------------------------------------------------------------------
-MusicList2:	incbin	misc\muslist2.bin
-		even
-; ===========================================================================
 
 Sonic_Display:				; XREF: loc_12C7E
 		move.w	$30(a0),d0
@@ -23888,20 +23976,19 @@ Obj01_ChkInvin:
 		tst.w	$32(a0)		; check	time remaining for invinciblity
 		beq.s	Obj01_ChkShoes	; if no	time remains, branch
 		subq.w	#1,$32(a0)	; subtract 1 from time
-		bne.s	Obj01_ChkShoes
-		tst.b	($FFFFF7AA).w
-		bne.s	Obj01_RmvInvin
-		cmpi.w	#$C,($FFFFFE14).w
-		bcs.s	Obj01_RmvInvin
-		moveq	#0,d0
-		move.b	($FFFFFE10).w,d0
-		cmpi.w	#$103,($FFFFFE10).w ; check if level is	SBZ3
-		bne.s	Obj01_PlayMusic
-		moveq	#5,d0		; play SBZ music
+		bne.b	Obj01_ChkShoes
+		cmpi.b	#$1,($FFFFFFFF).w	; boss
+		beq.b	Obj01_RmvInvin
+		cmpi.w	#$C,($FFFFFE14).w	; underwater
+		bcs.b	Obj01_RmvInvin
 
-Obj01_PlayMusic:
-		lea	(MusicList2).l,a1
-		move.b	(a1,d0.w),d0
+		cmpi.b	#$1,($FFFFFE2E).w	; does Sonic have speed shoes?
+		bne.s	Obj01_Load_inv	; if no, branch, and load regular stage music
+		move.b	#$95,d0		; if yes, load regular speed shoes music
+		bra.b	Obj01_Play_inv
+Obj01_Load_inv
+		move.b	$FFFFFFFE,d0	; loads song number from RAM
+Obj01_Play_inv:
 		jsr	(PlaySound).l	; play normal music
 
 Obj01_RmvInvin:
@@ -23914,13 +24001,26 @@ Obj01_ChkShoes:
 		beq.s	Obj01_ExitChk
 		subq.w	#1,$34(a0)	; subtract 1 from time
 		bne.s	Obj01_ExitChk
+		move.w	#$600,($FFFFF760).w ; restore Sonic's speed
+		move.w	#$C,($FFFFF762).w ; restore Sonic's acceleration
+		move.w	#$80,($FFFFF764).w ; restore Sonic's deceleration
 		move.b	#0,($FFFFFE2E).w ; cancel speed	shoes
-		move.w	#$E3,d0
+
+		cmpi.b	#$1,($FFFFFFFF).w	; boss
+		beq.b	Obj01_ExitChk
+
+		cmpi.b	#$1,($FFFFFE2D).w	; does Sonic have invincibility?
+		bne.s	Obj01_Load_spd	; if no, branch, and load regular stage music
+		move.b	#$87,d0		; if yes, load regular invincibility music
+		bra.b	Obj01_Play_spd
+Obj01_Load_spd:
+		move.b	$FFFFFFFE,d0	; loads song number from RAM
+Obj01_Play_spd:
 		jmp	(PlaySound).l	; run music at normal speed
 ; ===========================================================================
 
 Obj01_ExitChk:
-		rts	
+		rts
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	record Sonic's previous positions for invincibility stars
@@ -24714,7 +24814,7 @@ locret_133E8:
 
 Sonic_Jump:				; XREF: Obj01_MdNormal; Obj01_MdRoll
 		move.b	($FFFFF603).w,d0
-		andi.b	#$30,d0		; is A,	B or C pressed?
+		andi.b	#$30,d0		; is B or C pressed?
 		beq.w	locret_1348E	; if not, branch
 		moveq	#0,d0
 		move.b	$26(a0),d0
@@ -24790,7 +24890,7 @@ loc_134AE:
 		cmp.w	$12(a0),d1
 		ble.s	locret_134C2
 		move.b	($FFFFF602).w,d0
-		andi.b	#$70,d0		; is A,	B or C pressed?
+		andi.b	#$30,d0		; is B or C pressed?
 		bne.s	locret_134C2	; if yes, branch
 		move.w	d1,$12(a0)
 
@@ -25943,12 +26043,23 @@ locret_1408C:
 
 ResumeMusic:				; XREF: Obj64_Wobble; Sonic_Water; Obj0A_ReduceAir
 		cmpi.w	#$C,($FFFFFE14).w
-		bhi.s	loc_140AC
-		move.w	#$82,d0		; play LZ music
-		cmpi.w	#$103,($FFFFFE10).w ; check if level is	0103 (SBZ3)
-		bne.s	loc_140A6
-		move.w	#$86,d0		; play SBZ music
+		bhi.b	loc_140AC
 
+		cmpi.b	#$1,($FFFFFFFF).w	; am I fighting the boss?
+		bne.s	NotBoss	; if not, branch
+		move.b	($FFFFFE10).w,d0	; set boss number
+		lea	(MusicList8).l,a1	; load Music Playlist for bosses
+		move.b	(a1,d0.w),d0	; get d0-th entry from the playlist
+		bra.s	loc_140A6
+
+NotBoss:
+		cmpi.b	#$1,($FFFFFE2D).w	; am I invincible?
+		bne.s	NotInv	; if not, branch
+		move.b	#$87,d0
+		bra.s	loc_140A6
+
+NotInv:
+		move.b	$FFFFFFFE,d0	; loads song number from RAM
 loc_140A6:
 		jsr	(PlaySound).l
 
@@ -30367,8 +30478,29 @@ loc_179DA:
 
 loc_179E0:
 		clr.w	$12(a0)
-		move.w	#$81,d0
-		jsr	(PlaySound).l	; play GHZ music
+		
+		clr.w	d0
+		move.b	d0,$FFFFFFFF	; clear Boss flag
+		cmpi.b	#$1,($FFFFFE2D).w	; does Sonic have invincibility?
+		beq.b	loc_179E0_inv 	; if yes, load invincibility music
+		cmpi.b	#$1,($FFFFFE2E).w	; does Sonic have speed shoes?
+		beq.b	loc_179E0_speed	; if yes, load speed shoes music
+
+		move.b	$FFFFFFFE,d0	; loads music from RAM
+		bra.s	loc_179E0_play
+
+loc_179E0_speed:
+		move.b	#$FB,d0
+		bra.s	loc_179E0_play
+loc_179E0_inv:
+		cmpi.b	#$1,($FFFFFE2E).w	; does Sonic have also speed shoes?
+		beq.s	loc_179E0_inv_and_speed
+		move.b	#$87,d0
+		bra.s	loc_179E0_play
+loc_179E0_inv_and_speed:
+		move.b	#$F2,d0
+loc_179E0_play:
+		jsr	(PlaySound).l	; play some music
 
 loc_179EE:
 		bsr.w	BossMove
@@ -30937,8 +31069,27 @@ loc_180F6:				; XREF: Obj77_ShipIndex
 		move.b	#$32,$3C(a0)
 
 loc_18112:
-		move.w	#$82,d0
-		jsr	(PlaySound).l	; play LZ music
+		clr.w	d0
+		move.b	d0,$FFFFFFFF	; clear Boss flag
+
+		cmpi.b	#$1,($FFFFFE2D).w	; does Sonic have invincibility?
+		beq.b	loc_18112_inv 	; if yes, load invincibility music
+		cmpi.b	#$1,($FFFFFE2E).w	; does Sonic have speed shoes?
+		beq.b	loc_18112_speed	; if yes, load speed shoes music
+		move.b	$FFFFFFFE,d0	; loads music from RAM
+		bra.s	loc_18112_play
+loc_18112_speed:
+		move.b	#$FB,d0
+		bra.s	loc_18112_play
+loc_18112_inv:
+		cmpi.b	#$1,($FFFFFE2E).w	; does Sonic have also speed shoes?
+		beq.s	loc_18112_inv_and_speed
+		move.b	#$87,d0
+		bra.s	loc_18112_play
+loc_18112_inv_and_speed:
+		move.b	#$F2,d0
+loc_18112_play:
+		jsr	(PlaySound).l	; play some music
 		bset	#0,$22(a0)
 		addq.b	#2,$25(a0)
 
@@ -31367,8 +31518,26 @@ loc_18566:
 
 loc_1856C:
 		clr.w	$12(a0)
-		move.w	#$83,d0
-		jsr	(PlaySound).l	; play MZ music
+		clr.w	d0
+		move.b	d0,$FFFFFFFF	; clear Boss flag
+		cmpi.b	#$1,($FFFFFE2D).w	; does Sonic have invincibility?
+		beq.b	loc_1856C_inv 	; if yes, load invincibility music
+		cmpi.b	#$1,($FFFFFE2E).w	; does Sonic have speed shoes?
+		beq.b	loc_1856C_speed	; if yes, load speed shoes music
+		move.b	$FFFFFFFE,d0	; loads music from RAM
+		bra.s	loc_1856C_play
+loc_1856C_speed:
+		move.b	#$FB,d0
+		bra.s	loc_1856C_play
+loc_1856C_inv:
+		cmpi.b	#$1,($FFFFFE2E).w	; does Sonic have also speed shoes?
+		beq.s	loc_1856C_inv_and_speed
+		move.b	#$87,d0
+		bra.s	loc_1856C_play
+loc_1856C_inv_and_speed:
+		move.b	#$F2,d0
+loc_1856C_play:
+		jsr	(PlaySound).l	; play some music
 
 loc_1857A:
 		bsr.w	BossMove
@@ -32015,8 +32184,26 @@ loc_18BAE:
 
 loc_18BB4:
 		clr.w	$12(a0)
-		move.w	#$84,d0
-		jsr	(PlaySound).l	; play SLZ music
+		clr.w	d0
+		move.b	d0,$FFFFFFFF	; clear Boss flag
+		cmpi.b	#$1,($FFFFFE2D).w	; does Sonic have invincibility?
+		beq.b	loc_18BB4_inv 	; if yes, load invincibility music
+		cmpi.b	#$1,($FFFFFE2E).w	; does Sonic have speed shoes?
+		beq.b	loc_18BB4_speed	; if yes, load speed shoes music
+		move.b	$FFFFFFFE,d0	; loads music from RAM
+		bra.s	loc_18BB4_play
+loc_18BB4_speed:
+		move.b	#$FB,d0
+		bra.s	loc_18BB4_play
+loc_18BB4_inv:
+		cmpi.b	#$1,($FFFFFE2E).w	; does Sonic have also speed shoes?
+		beq.s	loc_18BB4_inv_and_speed
+		move.b	#$87,d0
+		bra.s	loc_18BB4_play
+loc_18BB4_inv_and_speed:
+		move.b	#$F2,d0
+loc_18BB4_play:
+		jsr	(PlaySound).l	; play some music
 
 loc_18BC2:
 		bra.w	loc_189EE
@@ -32910,8 +33097,26 @@ loc_194DA:
 
 loc_194E0:
 		clr.w	$12(a0)
-		move.w	#$85,d0
-		jsr	(PlaySound).l	; play SYZ music
+		clr.w	d0
+		move.b	d0,$FFFFFFFF	; clear Boss flag
+		cmpi.b	#$1,($FFFFFE2D).w	; does Sonic have invincibility?
+		beq.b	loc_194E0_inv 	; if yes, load invincibility music
+		cmpi.b	#$1,($FFFFFE2E).w	; does Sonic have speed shoes?
+		beq.b	loc_194E0_speed	; if yes, load speed shoes music
+		move.b	$FFFFFFFE,d0	; loads music from RAM
+		bra.s	loc_194E0_play
+loc_194E0_speed:
+		move.b	#$FB,d0
+		bra.s	loc_194E0_play
+loc_194E0_inv:
+		cmpi.b	#$1,($FFFFFE2E).w	; does Sonic have also speed shoes?
+		beq.s	loc_194E0_inv_and_speed
+		move.b	#$87,d0
+		bra.s	loc_194E0_play
+loc_194E0_inv_and_speed:
+		move.b	#$F2,d0
+loc_194E0_play:
+		jsr	(PlaySound).l	; play some music
 
 loc_194EE:
 		bra.w	loc_191F2
