@@ -23993,7 +23993,6 @@ Obj01_MdNormal:				; XREF: Obj01_Modes
 		
 @is_crawling:
 		bsr.w	Sonic_Move
-	;	bsr.w	Sonic_Roll
 		bsr.w	Sonic_LevelBound
 		jsr	SpeedToPos
 		bsr.w	Sonic_AnglePos
@@ -24035,15 +24034,7 @@ loc_12E5C:
 ; ===========================================================================
 
 Obj01_MdRoll:				; XREF: Obj01_Modes
-		move.b	#0,crawling(a0)
-		bsr.w	Sonic_Jump
-		bsr.w	Sonic_RollRepel
-		bsr.w	Sonic_RollSpeed
-		bsr.w	Sonic_LevelBound
-		jsr	SpeedToPos
-		bsr.w	Sonic_AnglePos
-		bsr.w	Sonic_SlopeRepel
-		rts	
+		rts					; Nothing to see here
 ; ===========================================================================
 
 Obj01_MdJump:				; XREF: Obj01_Modes
