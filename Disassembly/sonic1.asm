@@ -75,8 +75,8 @@ ErrorTrap:	bra.w	*
 		dc.l ErrorTrap,	ErrorTrap, ErrorTrap, ErrorTrap, ErrorTrap
 
 ; ===========================================================================
-IntMain:	jmp	loc_B10
-			jmp	PalToCRAM
+IntMain:	jmp	V_Int
+			jmp	H_Int
 ; ===========================================================================
 Console:		dc.b 'SEGA MEGA DRIVE ' ; Hardware system ID
 Date:			dc.b 'OWARI   2016.NOV' ; Release date
@@ -218,7 +218,7 @@ GameClrRAM:
 		loadJumps IntMain
 		
 		bsr.w	VDPSetupGame
-		bsr.w	SoundDriverLoad
+		bsr.w	InitMegaPCM
 		bsr.w	JoypadInit
 		move.b	#0,($FFFFF600).w ; set Game Mode to Notice Screen
 
@@ -427,7 +427,7 @@ Art_Text:	incbin	artunc\menutext.bin	; text used in level select and debug mode
 
 ; ===========================================================================
 
-loc_B10:				; XREF: Vectors
+V_Int:				; XREF: Vectors
 		movem.l	d0-a6,-(sp)
 		tst.b	($FFFFF62A).w
 		beq.s	loc_B88
@@ -466,7 +466,7 @@ off_B6E:	dc.w loc_B88-off_B6E, loc_C32-off_B6E
 		dc.w loc_E72-off_B6E
 ; ===========================================================================
 
-loc_B88:				; XREF: loc_B10; off_B6E
+loc_B88:				; XREF: V_Int; off_B6E
 		cmpi.b	#$8C,($FFFFF600).w
 		beq.s	loc_B9A
 		cmpi.b	#$C,($FFFFF600).w
@@ -615,7 +615,7 @@ loc_D50:
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 
-Demo_Time:				; XREF: loc_D50; PalToCRAM
+Demo_Time:				; XREF: loc_D50; H_Int
 		bsr.w	LoadTilesAsYouMove
 		jsr	AniArt_Load
 		jsr	HudUpdate
@@ -843,7 +843,7 @@ loc_10D4:				; XREF: sub_106E
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 
-PalToCRAM:
+H_Int:
 		move	#$2700,sr
 		tst.w	($FFFFF644).w
 		beq.s	locret_119C
@@ -893,14 +893,14 @@ locret_119C:
 		rte	
 ; ===========================================================================
 
-loc_119E:				; XREF: PalToCRAM
+loc_119E:				; XREF: H_Int
 		clr.b	($FFFFF64F).w
 		movem.l	d0-a6,-(sp)
 		bsr.w	Demo_Time
 		jsr	sub_71B4C
 		movem.l	(sp)+,d0-a6
 		rte	
-; End of function PalToCRAM
+; End of function H_Int
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	initialise joypads
@@ -1071,7 +1071,7 @@ loc_134A:
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 
-SoundDriverLoad:			; XREF: GameClrRAM; TitleScreen
+InitMegaPCM:			; XREF: GameClrRAM; TitleScreen
 		nop
 		move.w	#$100,d0
 		move.w	d0,($A11100).l
@@ -1091,7 +1091,7 @@ SoundDriverLoad:			; XREF: GameClrRAM; TitleScreen
 		move.w	d0,($A11200).l
 		move.w	d1,($A11100).l
 		rts
-; End of function SoundDriverLoad
+; End of function InitMegaPCM
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	play a DAC sample
@@ -3262,7 +3262,7 @@ TitleScreen:				; XREF: GameModeArray
 		bsr.w	ClearPLC
 		bsr.w	Pal_FadeFrom
 		move	#$2700,sr
-		bsr.w	SoundDriverLoad
+		bsr.w	InitMegaPCM
 		lea	($C00004).l,a6
 		move.w	#$8004,(a6)
 		move.w	#$8230,(a6)
@@ -3562,7 +3562,7 @@ LevSel_Level_SS:			; XREF: LevelSelect
 		bne.s	LevSel_Level	; if not, branch
 		move.b	#$10,($FFFFF600).w ; set screen	mode to	$10 (Special Stage)
 		clr.w	($FFFFFE10).w	; clear	level
-		move.b	#3,($FFFFFE12).w ; set lives to	3
+		move.b	#4,($FFFFFE12).w ; set lives to	3
 		moveq	#0,d0
 		move.w	d0,($FFFFFE20).w ; clear rings
 		move.l	d0,($FFFFFE22).w ; clear time
@@ -3576,7 +3576,7 @@ LevSel_Level:				; XREF: LevSel_Level_SS
 
 PlayLevel:				; XREF: ROM:00003246j ...
 		move.b	#$C,($FFFFF600).w ; set	screen mode to $0C (level)
-		move.b	#3,($FFFFFE12).w ; set lives to	3
+		move.b	#4,($FFFFFE12).w ; set lives to	3
 		moveq	#0,d0
 		move.w	d0,($FFFFFE20).w ; clear rings
 		move.l	d0,($FFFFFE22).w ; clear time
@@ -3657,7 +3657,7 @@ loc_3422:
 		clr.b	($FFFFFE16).w	; clear	special	stage number
 
 Demo_Level:
-		move.b	#3,($FFFFFE12).w ; set lives to	3
+		move.b	#4,($FFFFFE12).w ; set lives to	3
 		moveq	#0,d0
 		move.w	d0,($FFFFFE20).w ; clear rings
 		move.l	d0,($FFFFFE22).w ; clear time
@@ -5529,7 +5529,7 @@ loc_4DF2:
 
 Cont_GotoLevel:				; XREF: Cont_MainLoop
 		move.b	#$C,($FFFFF600).w ; set	screen mode to $0C (level)
-		move.b	#3,($FFFFFE12).w ; set lives to	3
+		move.b	#4,($FFFFFE12).w ; set lives to	3
 		moveq	#0,d0
 		move.w	d0,($FFFFFE20).w ; clear rings
 		move.l	d0,($FFFFFE22).w ; clear time
@@ -6305,7 +6305,7 @@ EndingDemoLoad:				; XREF: Credits
 		bcc.s	EndDemo_Exit	; if yes, branch
 		move.w	#$8001,($FFFFFFF0).w ; force demo mode
 		move.b	#8,($FFFFF600).w ; set game mode to 08 (demo)
-		move.b	#3,($FFFFFE12).w ; set lives to	3
+		move.b	#4,($FFFFFE12).w ; set lives to	3
 		moveq	#0,d0
 		move.w	d0,($FFFFFE20).w ; clear rings
 		move.l	d0,($FFFFFE22).w ; clear time
@@ -23980,14 +23980,21 @@ loc_12E0E:
 
 Obj01_MdNormal:				; XREF: Obj01_Modes
 		bsr.w	Sonic_Jump
+		tst.b	crawling(a0)
+		bne.s	@is_crawling
 		bsr.w	Sonic_SlopeResist
+		
+@is_crawling:
 		bsr.w	Sonic_Move
 	;	bsr.w	Sonic_Roll
 		bsr.w	Sonic_LevelBound
 		jsr	SpeedToPos
 		bsr.w	Sonic_AnglePos
+		tst.b	crawling(a0)
+		bne.s	@is_crawling2
 		bsr.w	Sonic_SlopeRepel
 		
+@is_crawling2:
 		move.b	#0,d0
 		btst	#1,($FFFFF602).w
 		beq.s	@not_crawling
@@ -37342,7 +37349,7 @@ Obj21_Main:				; XREF: Obj21_Main
 		move.w	#$90,8(a0)
 		move.w	#$108,$A(a0)
 		move.l	#Map_obj21,4(a0)
-		move.w	#$6CA,2(a0)
+		move.w	#$86CA,2(a0)
 		move.b	#0,1(a0)
 		move.b	#0,$18(a0)
 
@@ -37920,16 +37927,16 @@ Hud_ClrBonusLoop:
 
 
 Hud_Lives:				; XREF: Hud_ChkLives
-		move.l	#$7BA00003,d0	; set VRAM address
+		move.l	#$7B200003,d0	; set VRAM address
 		moveq	#0,d1
 		move.b	($FFFFFE12).w,d1 ; load	number of lives
 		lea	(Hud_10).l,a2
 		moveq	#1,d6
 		moveq	#0,d4
 		lea	Art_LivesNums(pc),a1
+		move.l	d0,4(a6)
 
 Hud_LivesLoop:
-		move.l	d0,4(a6)
 		moveq	#0,d2
 		move.l	(a2)+,d3
 
@@ -37948,9 +37955,29 @@ loc_1CA98:
 
 loc_1CAA2:
 		tst.w	d4
-		beq.s	Hud_ClrLives
+		beq.s	@chk
+		tst.w	d6
+		beq.s	loc_1CAA6
+		cmpi.w	#1,d2
+		beq.s	Hud_Lives_Draw10
+		bra.s	loc_1CAA6
+
+@chk:
+		tst.w	d6
+		beq.s	Hud_Lives_DrawDigit
+		bra.s	Hud_Lives_End
 
 loc_1CAA6:
+		tst.w	d6
+		bne.s	Hud_Lives_DrawDigit
+		moveq	#0,d1
+		move.b	($FFFFFE12).w,d1
+		divu.w	#10,d1
+		swap	d1
+		tst.w	d1
+		beq.s	Hud_Lives_DrawBlank
+
+Hud_Lives_DrawDigit:
 		lsl.w	#5,d2
 		lea	(a1,d2.w),a3
 		move.l	(a3)+,(a6)
@@ -37961,23 +37988,39 @@ loc_1CAA6:
 		move.l	(a3)+,(a6)
 		move.l	(a3)+,(a6)
 		move.l	(a3)+,(a6)
-
-loc_1CABC:
 		addi.l	#$400000,d0
+		move.l	d0,4(a6)
+		
+Hud_Lives_Draw10:
+		tst.w	d6
+		beq.s	Hud_Lives_End
+		move.w	#10*$20,d2
+		lea	(a1,d2.w),a3
+		move.l	(a3)+,(a6)
+		move.l	(a3)+,(a6)
+		move.l	(a3)+,(a6)
+		move.l	(a3)+,(a6)
+		move.l	(a3)+,(a6)
+		move.l	(a3)+,(a6)
+		move.l	(a3)+,(a6)
+		move.l	(a3)+,(a6)
+		addi.l	#$400000,d0
+		move.l	d0,4(a6)
+		
+Hud_Lives_End:
 		dbf	d6,Hud_LivesLoop ; repeat 1 more time
-
 		rts	
 ; ===========================================================================
 
-Hud_ClrLives:
-		tst.w	d6
-		beq.s	loc_1CAA6
+Hud_Lives_DrawBlank:
 		moveq	#7,d5
 
-Hud_ClrLivesLoop:
+Hud_Lives_DrawBlankLoop:
 		move.l	#0,(a6)
-		dbf	d5,Hud_ClrLivesLoop
-		bra.s	loc_1CABC
+		dbf	d5,Hud_Lives_DrawBlankLoop
+		addi.l	#$400000,d0
+		move.l	d0,4(a6)
+		bra.s	Hud_Lives_End
 ; End of function Hud_Lives
 
 ; ===========================================================================
@@ -39025,7 +39068,7 @@ SoundTypes:	dc.b $90, $90, $90, $90, $90, $90, $90,	$90, $90, $90, $90, $90, $90
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 
-sub_71B4C:				; XREF: loc_B10; PalToCRAM
+sub_71B4C:				; XREF: V_Int; H_Int
 		move.w	#$100,($A11100).l ; stop the Z80
 		nop	
 		nop	
