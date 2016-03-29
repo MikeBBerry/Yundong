@@ -1109,7 +1109,15 @@ PlaySample:
 	move.b	d0,$A01FFF
 	move.w	#0,($A11100).l
 	rts
+; ===========================================================================
 
+PlayMusic:
+		cmpi.b	#$88,d0
+		beq.s	PlaySound
+		cmpi.b	#$A0,d0
+		bge.s	PlaySound
+		move.b	d0,($FFFFFFFC).w
+; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Subroutine to	play a sound or	music track
 ; ---------------------------------------------------------------------------
@@ -1118,14 +1126,8 @@ PlaySample:
 
 
 PlaySound:
+		bsr.s	Snd_ChkStop
 		move.b	d0,($FFFFF00A).w
-		cmpi.b	#$88,d0
-		beq.s	@not_music
-		cmpi.b	#$A0,d0
-		bge.s	@not_music
-		move.b	d0,($FFFFFFFC).w
-		
-@not_music:
 		rts	
 ; End of function PlaySound
 
@@ -1143,17 +1145,22 @@ PlaySound:
 
 
 PlaySound_Special:
+		bsr.s	Snd_ChkStop
 		move.b	d0,($FFFFF00B).w
-		cmpi.b	#$88,d0
-		beq.s	@not_music
-		cmpi.b	#$A0,d0
-		bge.s	@not_music
-		move.b	d0,($FFFFFFFC).w
-		
-@not_music:
 		rts	
 ; End of function PlaySound_Special
+; ===========================================================================
 
+Snd_ChkStop:
+		cmpi.b	#$E0,d0
+		beq.s	@clr
+		cmpi.b	#$E4,d0
+		beq.s	@clr
+		rts
+		
+@clr:
+		move.b	#0,($FFFFFFFC).w
+		rts
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Unused sound/music subroutine
@@ -3955,8 +3962,12 @@ Level_ClrVars3:
 		move.w	#$8720,(a6)
 		move.w	#$8ADF,($FFFFF624).w
 		move.w	($FFFFF624).w,(a6)
+		
 		clr.w	($FFFFC800).w
 		move.l	#$FFFFC800,($FFFFC8FC).w
+		
+		move.b	#0,($FFFFFFBC).w				; Clear sonic drowned flag
+		
 		cmpi.b	#1,($FFFFFE10).w ; is level LZ?
 		bne.s	Level_LoadPal	; if not, branch
 		move.w	#$8014,(a6)
@@ -3992,7 +4003,8 @@ Level_WaterPal:
 
 Level_GetBgm:
 		tst.w	($FFFFFFF0).w
-		bmi.w	loc_3946		; change bmi.s to bmi.w or it won't work!
+		bmi.w	loc_3946
+		
 		moveq	#0,d0
 		move.w	($FFFFFE10).w,d1
 		ror.b	#2,d1
@@ -4001,6 +4013,7 @@ Level_GetBgm:
 		move.b	(a1,d1.w),d0		; get d0-th entry from the playlist
 		move.b	d0,($FFFFFFFE).w	; put music number in RAM for later use
 		jsr	CtrlLevelMusic
+		
 		move.b	#$34,($FFFFD080).w 	; load title	card object
 
 Level_TtlCard:
@@ -5047,11 +5060,12 @@ SS_ClrNemRam:
 		bsr.w	PalCycle_SS
 		clr.w	($FFFFF780).w	; set stage angle to "upright"
 		move.w	#$40,($FFFFF782).w ; set stage rotation	speed
+		
 		moveq	#0,d0
 		move.b	($FFFFFE16).w,d0
-		cmpi.b	#$0,d0
-		bne.b SS_Num_Not_Zero
-		move.b	#$6,d0
+		tst.b	d0
+		beq.s	SS_Num_Not_Zero
+		move.b	#6,d0
 
 SS_Num_Not_Zero:
 		subq.w	#1,d0
@@ -5059,6 +5073,7 @@ SS_Num_Not_Zero:
 		lea	(MusicList_SpecialStages).l,a1 ; load Music Playlist for Special Stages
 		move.b	(a1,d0.w),d0 ; get d0-th entry from the playlist
 		bsr.w	PlaySound	; play special stage BG	music
+		
 		move.w	#0,($FFFFF790).w
 		lea	(Demo_Index).l,a1
 		moveq	#6,d0
@@ -5820,11 +5835,11 @@ End_ClrRam3:
 		move.w	($FFFFF624).w,(a6)
 		move.w	#$1E,($FFFFFE14).w
 		move.w	#$600,($FFFFFE10).w ; set level	number to 0600 (extra flowers)
-		move.b	#$0,($FFFFFFFD).w	; puts a 0 in this flag
+		move.b	#0,($FFFFFFFD).w	; puts a 0 in this flag
 		cmpi.b	#6,($FFFFFE57).w ; do you have all 6 emeralds?
 		beq.s	End_LoadData	; if yes, branch
 		move.w	#$601,($FFFFFE10).w ; set level	number to 0601 (no flowers)
-		move.b	#$1,($FFFFFFFD).w	; puts a 1 in this flag
+		move.b	#1,($FFFFFFFD).w	; puts a 1 in this flag
 
 End_LoadData:
 		moveq	#$1C,d0
@@ -16552,7 +16567,7 @@ loc_D358:
 ; ===========================================================================
 
 loc_D362:
-        cmpi.b  #$A,($FFFFD000+$24).w      ; Has Sonic drowned?
+        cmpi.b  #$A,($FFFFD024).w		      ; Has Sonic drowned?
         beq.s   loc_D348                        ; If so, run objects a little longer
 		moveq	#$1F,d7
 		bsr.s	loc_D348
@@ -25866,15 +25881,16 @@ Obj0A_ReduceAir:
 		move.b  #$A,$24(a0)       ; Force the character to drown
 		move.b	#1,($FFFFF744).w
 		move.b  #0,($FFFFFE1E).w      ; Stop the timer immediately
+		move.b	#1,($FFFFFFBC).w	; Sonic drowned flag
 		movea.l	(sp)+,a0
 		rts	
 ; ===========================================================================
 
 loc_13F86:
-                subq.w  #1,$2C(a0)
-                bne.s   loc_13FAC                       ; Make it jump straight to this location
-                move.b  #6,($FFFFD000+$24).w
-                rts
+		subq.w  #1,$2C(a0)
+		bne.s   loc_13FAC                       ; Make it jump straight to this location
+		move.b  #6,($FFFFD024).w
+		rts
 ; ===========================================================================
 
 Obj0A_GoMakeItem:			; XREF: Obj0A_ReduceAir
@@ -30495,8 +30511,8 @@ BossEnd:
 ; ===========================================================================
 
 CtrlLevelMusic:
-		tst.b	($FFFFFE1E).w		; Has Sonic drowned?
-		beq.s	@end				; If so, skip all this
+		tst.b	($FFFFFFBC).w		; Has Sonic drowned?
+		bne.s	@end				; If so, skip all this
 		move.b	($FFFFFFFE).w,d0	; Level music
 		tst.b	($FFFFFE2D).w		; Is Sonic invincible?
 		beq.s	@chk_spdshoes		; If not, check if he has speed shoes
@@ -30532,7 +30548,7 @@ CtrlLevelMusic:
 		rts							; Return
 		
 @play:
-		jmp	(PlaySound).l			; Play music and return
+		jmp	(PlayMusic).l			; Play music and return
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Object 48 - ball on a	chain that Eggman swings (GHZ)
