@@ -23857,7 +23857,7 @@ Obj01_Main:				; XREF: Obj01_Index
 		move.w	#$600,($FFFFF760).w ; Sonic's top speed
 		move.w	#$C,($FFFFF762).w ; Sonic's acceleration
 		move.w	#$80,($FFFFF764).w ; Sonic's deceleration
-		move.b	#5,$FFFFD1C0.w
+		move.b	#5,($FFFFD1C0).w
 
 Obj01_Control:				; XREF: Obj01_Index
 		tst.w	($FFFFFFFA).w	; is debug cheat enabled?
@@ -23878,22 +23878,29 @@ loc_12C58:
 loc_12C64:
 		btst	#0,($FFFFF7C8).w ; are controls	locked?
 		bne.s	loc_12C7E	; if yes, branch
-		moveq	#0,d0
-		move.b	$22(a0),d0
-		andi.w	#6,d0
-		move.w	Obj01_Modes(pc,d0.w),d1
-		jsr	Obj01_Modes(pc,d1.w)
+		bsr.w	Obj01_DoModes
 
 loc_12C7E:
+		tst.b	crawling(a0)
+		bne.s	@no_bite
 		btst	#6,($FFFFF602).w
 		beq.s	@no_bite
-		move.b	#15,biting(a0)
+		tst.b	($FFFFFFBD).w
+		bne.s	@chk_bite
+		bclr	#5,$22(a0)
+		move.b	#13,biting(a0)
+		move.b	#1,($FFFFFFBD).w
 
-@no_bite:
+@chk_bite:
 		tst.b	biting(a0)
 		beq.s	@no_dec
 		move.b	#9,$1C(a0) ; Use "biting" animation
 		subq.b	#1,biting(a0)
+		bra.s	@no_dec
+		
+@no_bite:
+		move.b	#0,($FFFFFFBD).w
+		move.b	#0,biting(a0)
 		
 @no_dec:
 		bsr.s	Sonic_Display
@@ -23918,10 +23925,20 @@ loc_12CB6:
 		bsr.w	LoadSonicDynPLC
 		rts	
 ; ===========================================================================
+
+Obj01_DoModes:
+		moveq	#0,d0
+		move.b	$22(a0),d0
+		andi.w	#6,d0
+		move.w	Obj01_Modes(pc,d0.w),d1
+		jmp	Obj01_Modes(pc,d1.w)
+; ===========================================================================
+
 Obj01_Modes:	dc.w Obj01_MdNormal-Obj01_Modes
 		dc.w Obj01_MdAir-Obj01_Modes
 		dc.w Obj01_MdRoll-Obj01_Modes
 		dc.w Obj01_MdJump-Obj01_Modes
+; ===========================================================================
 
 Sonic_Display:				; XREF: loc_12C7E
 		move.w	$30(a0),d0
@@ -34970,7 +34987,7 @@ Touch_Height:				; XREF: TouchResponse
 		move.b	(a2)+,d1
 		tst.b	biting(a0)
 		beq.s	@not_biting
-		addq.b	#8,d1
+		addq.b	#4,d1
 		
 @not_biting:
 		move.w	8(a1),d0
