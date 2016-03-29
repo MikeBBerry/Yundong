@@ -38394,9 +38394,8 @@ MainLoadBlocks:
 ; ---------------------------------------------------------------------------
 ArtLoadCues:
 	include "_inc\Pattern load cues.asm"
+	even
 
-		incbin	misc\padding.bin
-		even
 Nem_SegaLogo:	incbin	artnem\segalogo.bin	; large Sega logo
 		even
 Eni_SegaLogo:	incbin	mapeni\segalogo.bin	; large Sega logo (mappings)
@@ -38808,8 +38807,6 @@ Nem_CreditText:	incbin	artnem\credits.bin	; credits alphabet
 		even
 Nem_EndStH:	incbin	artnem\endtext.bin	; ending sequence "Sonic the Hedgehog" text
 		even
-		incbin	misc\padding2.bin
-		even
 ; ---------------------------------------------------------------------------
 ; Collision data
 ; ---------------------------------------------------------------------------
@@ -38996,10 +38993,6 @@ byte_6A320:	dc.b 0,	0, 0, 0
 ; ---------------------------------------------------------------------------
 Art_BigRing:	incbin	artunc\bigring.bin
 		even
-
-		incbin	misc\padding3.bin
-		even
-
 ; ---------------------------------------------------------------------------
 ; Sprite locations index
 ; ---------------------------------------------------------------------------
@@ -39106,9 +39099,6 @@ ObjPos_End:	incbin	objpos\ending.bin
 		even
 ObjPos_Null:	dc.b $FF, $FF, 0, 0, 0,	0
 ; ---------------------------------------------------------------------------
-		incbin	misc\padding4.bin
-		even
-
 Go_SoundTypes:	dc.l SoundTypes		; XREF: Sound_Play
 Go_SoundD0:	dc.l SoundD0Index	; XREF: Sound_D0toDF
 Go_MusicIndex:	dc.l MusicIndex		; XREF: Sound_81to9F
