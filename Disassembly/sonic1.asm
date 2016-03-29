@@ -35045,6 +35045,21 @@ locret_1AEF2:
 ; ===========================================================================
 
 Touch_Monitor:
+		tst.w	$12(a0)		; is Sonic moving upwards?
+		bpl.s	loc_1AF1E	; if not, branch
+		move.w	$C(a0),d0
+		subi.w	#$10,d0
+		cmp.w	$C(a1),d0
+		bcs.s	locret_1AF2E
+		neg.w	$12(a0)		; reverse Sonic's y-motion
+		move.w	#-$180,$12(a1)
+		tst.b	$25(a1)
+		bne.s	locret_1AF2E
+		addq.b	#4,$25(a1)	; advance the monitor's routine counter
+		rts
+; ===========================================================================
+
+loc_1AF1E:
 		tst.b	biting(a0)
 		beq.w	locret_1AF2E
 		move.w	8(a1),d0
