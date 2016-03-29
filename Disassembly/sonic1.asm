@@ -8414,10 +8414,6 @@ loc_6EB0:
 		move.w	#$280,$C(a1)
 
 loc_6ED0:
-		move.b	($FFFFFE10).w,d0	; set boss number
-		lea	(MusicList_Bosses).l,a1	; load Music Playlist for bosses
-		move.b	(a1,d0.w),d0	; get d0-th entry from the playlist
-		bsr.w	PlaySound	; play boss music
 		move.b	#1,($FFFFFFFF).w	; set boss flag
 		move.b	#1,($FFFFF7AA).w ; lock	screen
 		addq.b	#2,($FFFFF742).w
@@ -8476,10 +8472,6 @@ loc_6F28:
 		move.b	#$77,0(a1)	; load LZ boss object
 
 loc_6F4A:
-		move.b	($FFFFFE10).w,d0	; set boss number
-		lea	(MusicList_Bosses).l,a1	; load Music Playlist for bosses
-		move.b	(a1,d0.w),d0	; get d0-th entry from the playlist
-		bsr.w	PlaySound	; play boss music
 		move.b	#1,($FFFFFFFF).w	; set boss flag
 		move.b	#1,($FFFFF7AA).w ; lock	screen
 		addq.b	#2,($FFFFF742).w
@@ -8640,10 +8632,6 @@ Resize_MZ3boss:
 		move.w	#$22C,$C(a1)
 
 loc_70D0:
-		move.b	($FFFFFE10).w,d0	; set boss number
-		lea	(MusicList_Bosses).l,a1	; load Music Playlist for bosses
-		move.b	(a1,d0.w),d0	; get d0-th entry from the playlist
-		bsr.w	PlaySound	; play boss music
 		move.b	#1,($FFFFFFFF).w	; set boss flag
 		move.b	#1,($FFFFF7AA).w ; lock	screen
 		addq.b	#2,($FFFFF742).w
@@ -8708,10 +8696,6 @@ Resize_SLZ3boss:
 		move.b	#$7A,(a1)	; load SLZ boss	object
 
 loc_7144:
-		move.b	($FFFFFE10).w,d0	; set boss number
-		lea	(MusicList_Bosses).l,a1	; load Music Playlist for bosses
-		move.b	(a1,d0.w),d0	; get d0-th entry from the playlist
-		bsr.w	PlaySound	; play boss music
 		move.b	#1,($FFFFFFFF).w	; set boss flag
 		move.b	#1,($FFFFF7AA).w ; lock	screen
 		addq.b	#2,($FFFFF742).w
@@ -8794,10 +8778,6 @@ Resize_SYZ3boss:
 		addq.b	#2,($FFFFF742).w
 
 loc_71EC:
-		move.b	($FFFFFE10).w,d0	; set boss number
-		lea	(MusicList_Bosses).l,a1	; load Music Playlist for bosses
-		move.b	(a1,d0.w),d0	; get d0-th entry from the playlist
-		bsr.w	PlaySound	; play boss music
 		move.b	#1,($FFFFFFFF).w	; set boss flag
 		move.b	#1,($FFFFF7AA).w ; lock	screen
 		moveq	#$11,d0
