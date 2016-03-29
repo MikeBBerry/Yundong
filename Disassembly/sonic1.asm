@@ -4000,7 +4000,7 @@ Level_GetBgm:
 		lea	(MusicList_Levels).l,a1
 		move.b	(a1,d1.w),d0		; get d0-th entry from the playlist
 		move.b	d0,($FFFFFFFE).w	; put music number in RAM for later use
-		bsr.w	PlaySound			; play music
+		jsr	CtrlLevelMusic
 		move.b	#$34,($FFFFD080).w 	; load title	card object
 
 Level_TtlCard:
