@@ -23921,9 +23921,7 @@ loc_12CA6:
 		jsr	TouchResponse
 
 loc_12CB6:
-		bsr.w	Sonic_Loops
-		bsr.w	LoadSonicDynPLC
-		rts	
+		bra.w	LoadSonicDynPLC
 ; ===========================================================================
 
 Obj01_DoModes:
@@ -25356,102 +25354,6 @@ Obj01_ResetLevel:			; XREF: Obj01_Index
 
 locret_13914:
 		rts	
-
-; ---------------------------------------------------------------------------
-; Subroutine to	make Sonic run around loops (GHZ/SLZ)
-; ---------------------------------------------------------------------------
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
-Sonic_Loops:				; XREF: Obj01_Control
-	;	cmpi.b	#3,($FFFFFE10).w ; is level SLZ	?	; MJ: Commented out, we don't want SLZ having any rolling chunks =P
-	;	beq.s	loc_13926	; if yes, branch
-		tst.b	($FFFFFE10).w	; is level GHZ ?
-		bne.w	locret_139C2	; if not, branch
-
-loc_13926:
-		move.w	$0C(a0),d0				; MJ: Load Y position
-		move.w	$08(a0),d1				; MJ: Load X position
-		and.w	#$0780,d0				; MJ: keep Y position within 800 pixels (in multiples of 80)
-		lsl.w	#$01,d0					; MJ: multiply by 2 (Because every 80 bytes switch from FG to BG..)
-		lsr.w	#$07,d1					; MJ: divide X position by 80 (00 = 0, 80 = 1, etc)
-		and.b	#$7F,d1					; MJ: keep within 4000 pixels (4000 / 80 = 80)
-		add.w	d1,d0					; MJ: add together
-		movea.l	($FFFFA400).w,a1			; MJ: Load address of layout
-		move.b	(a1,d0.w),d1				; MJ: collect correct 128x128 chunk ID based on the position of Sonic
-
-		cmp.b	#$75,d1					; MJ: is the chunk 75 (Top top left S Bend)
-		beq.w	Obj01_ChkRoll				; MJ: if so, branch
-		cmp.b	#$76,d1					; MJ: is the chunk 76 (Top top right S Bend)
-		beq.w	Obj01_ChkRoll				; MJ: if so, branch
-		cmp.b	#$77,d1					; MJ: is the chunk 77 (Top bottom left S Bend)
-		beq.w	Obj01_ChkRoll				; MJ: if so, branch
-		cmp.b	#$78,d1					; MJ: is the chunk 78 (Top bottom right S Bend)
-		beq.w	Obj01_ChkRoll				; MJ: if so, branch
-		cmp.b	#$79,d1					; MJ: is the chunk 79 (Bottom top left S Bend)
-		beq.w	Obj01_ChkRoll				; MJ: if so, branch
-		cmp.b	#$7A,d1					; MJ: is the chunk 7A (Bottom top right S Bend)
-		beq.w	Obj01_ChkRoll				; MJ: if so, branch
-		cmp.b	#$7B,d1					; MJ: is the chunk 7B (Bottom bottom left S Bend)
-		beq.w	Obj01_ChkRoll				; MJ: if so, branch
-		cmp.b	#$7C,d1					; MJ: is the chunk 7C (Bottom bottom right S Bend)
-		beq.w	Obj01_ChkRoll				; MJ: if so, branch
-
-	;	cmp.b	($FFFFF7AE).w,d1			; MJ: this shit is commented out as it's used for loops (Which will be delt with by pathswappers)
-	;	beq.w	Obj01_ChkRoll
-	;	cmp.b	($FFFFF7AF).w,d1
-	;	beq.w	Obj01_ChkRoll
-	;	cmp.b	($FFFFF7AC).w,d1
-	;	beq.s	loc_13976
-	;	cmp.b	($FFFFF7AD).w,d1
-	;	beq.s	loc_13966
-		bclr	#6,1(a0)
-		rts	
-; ===========================================================================
-
-loc_13966:
-		btst	#1,$22(a0)
-		beq.s	loc_13976
-		bclr	#6,1(a0)	; send Sonic to	high plane
-		rts	
-; ===========================================================================
-
-loc_13976:
-		move.w	8(a0),d2
-		cmpi.b	#$2C,d2
-		bcc.s	loc_13988
-		bclr	#6,1(a0)	; send Sonic to	high plane
-		rts	
-; ===========================================================================
-
-loc_13988:
-		cmpi.b	#-$20,d2
-		bcs.s	loc_13996
-		bset	#6,1(a0)	; send Sonic to	low plane
-		rts	
-; ===========================================================================
-
-loc_13996:
-		btst	#6,1(a0)
-		bne.s	loc_139B2
-		move.b	$26(a0),d1
-		beq.s	locret_139C2
-		cmpi.b	#-$80,d1
-		bhi.s	locret_139C2
-		bset	#6,1(a0)	; send Sonic to	low plane
-		rts	
-; ===========================================================================
-
-loc_139B2:
-		move.b	$26(a0),d1
-		cmpi.b	#-$80,d1
-		bls.s	locret_139C2
-		bclr	#6,1(a0)	; send Sonic to	high plane
-
-locret_139C2:
-		rts	
-; End of function Sonic_Loops
 
 ; ---------------------------------------------------------------------------
 ; Sonic when he's drowning
