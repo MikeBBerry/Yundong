@@ -1,43 +1,46 @@
-; ---------------------------------------------------------------------------
-; Sprite mappings - shield and invincibility stars
-; ---------------------------------------------------------------------------
-		dc.w byte_143CD-Map_obj38, byte_143C2-Map_obj38
-		dc.w byte_143D7-Map_obj38, byte_143EC-Map_obj38
-		dc.w byte_14401-Map_obj38, byte_14416-Map_obj38
-		dc.w byte_1442B-Map_obj38, byte_14440-Map_obj38
-byte_143C2:	dc.b 4
-		dc.b $E8, $A, 0, 0, $E8
-		dc.b $E8, $A, 0, 9, 0
-byte_143CD:	dc.b 0,	$A, $10, 0, $E8
-		dc.b 0,	$A, $10, 9, 0
-byte_143D7:	dc.b 4
-		dc.b $E8, $A, 8, $12, $E9
-		dc.b $E8, $A, 0, $12, 0
-		dc.b 0,	$A, $18, $12, $E9
-		dc.b 0,	$A, $10, $12, 0
-byte_143EC:	dc.b 4
-		dc.b $E8, $A, 8, 9, $E8
-		dc.b $E8, $A, 8, 0, 0
-		dc.b 0,	$A, $18, 9, $E8
-		dc.b 0,	$A, $18, 0, 0
-byte_14401:	dc.b 4
-		dc.b $E8, $A, 0, 0, $E8
-		dc.b $E8, $A, 0, 9, 0
-		dc.b 0,	$A, $18, 9, $E8
-		dc.b 0,	$A, $18, 0, 0
-byte_14416:	dc.b 4
-		dc.b $E8, $A, 8, 9, $E8
-		dc.b $E8, $A, 8, 0, 0
-		dc.b 0,	$A, $10, 0, $E8
-		dc.b 0,	$A, $10, 9, 0
-byte_1442B:	dc.b 4
-		dc.b $E8, $A, 0, $12, $E8
-		dc.b $E8, $A, 0, $1B, 0
-		dc.b 0,	$A, $18, $1B, $E8
-		dc.b 0,	$A, $18, $12, 0
-byte_14440:	dc.b 4
-		dc.b $E8, $A, 8, $1B, $E8
-		dc.b $E8, $A, 8, $12, 0
-		dc.b 0,	$A, $10, $12, $E8
-		dc.b 0,	$A, $10, $1B, 0
+; --------------------------------------------------------------------------------
+; Sprite mappings - output from SonMapEd - Sonic 1 format
+; --------------------------------------------------------------------------------
+
+SME_yYnGN:	
+		dc.w SME_yYnGN_10-SME_yYnGN, SME_yYnGN_11-SME_yYnGN	
+		dc.w SME_yYnGN_26-SME_yYnGN, SME_yYnGN_3B-SME_yYnGN	
+		dc.w SME_yYnGN_50-SME_yYnGN, SME_yYnGN_65-SME_yYnGN	
+		dc.w SME_yYnGN_7A-SME_yYnGN, SME_yYnGN_8F-SME_yYnGN	
+SME_yYnGN_10:	dc.b 0	
+SME_yYnGN_11:	dc.b 4	
+		dc.b $E8, $A, 0, 0, $E8	
+		dc.b $E8, $A, 0, 9, 0	
+		dc.b 0, $A, $10, $12, $E8	
+		dc.b 0, $A, $10, $1B, 0	
+SME_yYnGN_26:	dc.b 4	
+		dc.b $E8, $A, 8, 0, $E8	
+		dc.b $E8, $A, 0, 9, 0	
+		dc.b 0, $A, $10, $12, 0	
+		dc.b 0, $A, $18, $1B, $E8	
+SME_yYnGN_3B:	dc.b 4	
+		dc.b $E8, $A, 8, 0, 0	
+		dc.b $E8, $A, 8, 9, $E8	
+		dc.b 0, $A, $18, $12, 0	
+		dc.b 0, $A, $18, $1B, $E8	
+SME_yYnGN_50:	dc.b 4	
+		dc.b $E8, $A, 0, 0, $E8	
+		dc.b $E8, $A, 0, 9, 0	
+		dc.b 0, $A, $18, $12, 0	
+		dc.b 0, $A, $18, $1B, $E8	
+SME_yYnGN_65:	dc.b 4	
+		dc.b $E8, $A, 8, 0, 0	
+		dc.b $E8, $A, 8, 9, $E8	
+		dc.b 0, $A, $10, $12, $E8	
+		dc.b 0, $A, $10, $1B, 0	
+SME_yYnGN_7A:	dc.b 4	
+		dc.b $E8, $A, 0, 0, $E8	
+		dc.b $E8, $A, 0, 9, 0	
+		dc.b 0, $A, $18, $12, 0	
+		dc.b 0, $A, $18, $1B, $E8	
+SME_yYnGN_8F:	dc.b 4	
+		dc.b $E8, $A, 8, 0, 0	
+		dc.b $E8, $A, 8, 9, $E8	
+		dc.b 0, $A, $10, $12, $E8	
+		dc.b 0, $A, $10, $1B, 0	
 		even

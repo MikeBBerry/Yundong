@@ -20,13 +20,15 @@
 ; ---------------------------------------------------------------------------
 ; Pattern load cues - standard block 1
 ; ---------------------------------------------------------------------------
-PLC_Main:	dc.w 4
+PLC_Main:	dc.w 5
 		dc.l Nem_Lamp		; lamppost
 		dc.w $D800
 		dc.l Nem_Hud		; HUD
 		dc.w $D940
 		dc.l Nem_Lives		; lives	counter
 		dc.w $FA80
+		dc.l Nem_LivesPic	; lives	counter pic
+		dc.w $ACA0
 		dc.l Nem_Ring		; rings
 		dc.w $F640
 		dc.l Nem_Points		; points from enemy
@@ -34,13 +36,9 @@ PLC_Main:	dc.w 4
 ; ---------------------------------------------------------------------------
 ; Pattern load cues - standard block 2
 ; ---------------------------------------------------------------------------
-PLC_Main2:	dc.w 2
+PLC_Main2:	dc.w 0
 		dc.l Nem_Monitors	; monitors
 		dc.w $D000
-		dc.l Nem_Shield		; shield
-		dc.w $A820
-		dc.l Nem_Stars		; invincibility	stars
-		dc.w $AB80
 ; ---------------------------------------------------------------------------
 ; Pattern load cues - explosion
 ; ---------------------------------------------------------------------------
@@ -330,7 +328,7 @@ PLC_Boss:	dc.w 5
 ; ---------------------------------------------------------------------------
 PLC_Signpost:	dc.w 2
 		dc.l Nem_SignPost	; signpost
-		dc.w $D000
+		dc.w $680*$20
 		dc.l Nem_Bonus		; hidden bonus points
 		dc.w $96C0
 		dc.l Nem_BigFlash	; giant	ring flash effect

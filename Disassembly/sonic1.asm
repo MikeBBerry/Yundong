@@ -23883,6 +23883,8 @@ loc_12C64:
 loc_12C7E:
 		tst.b	crawling(a0)
 		bne.s	@no_bite
+		tst.b	biting(a0)
+		bne.s	@chk_bite
 		btst	#6,($FFFFF602).w
 		beq.s	@no_bite
 		tst.b	($FFFFFFBD).w
@@ -25907,7 +25909,18 @@ Ani_obj0A:
 ; ---------------------------------------------------------------------------
 Map_obj0A:
 	include "_maps\obj0A.asm"
+; ===========================================================================
+LoadShieldDPLC:
+		move.l	#Art_Shield,d6
+		bra.s	LoadShieldStarsDPLC
+		
+LoadStarsDPLC:
+		move.l	#Art_Stars,d6
 
+LoadShieldStarsDPLC:
+		lea	(ShieldStarsDPLC).l,a2
+		move.w	#$541*$20,d4
+		jmp	LoadDPLC
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Object 38 - shield and invincibility stars
@@ -25930,15 +25943,14 @@ Obj38_Main:				; XREF: Obj38_Index
 		move.b	#4,1(a0)
 		move.b	#1,$18(a0)
 		move.b	#$10,$19(a0)
+		move.w	#$541,2(a0)	; shield specific code
 		tst.b	$1C(a0)		; is object a shield?
 		bne.s	Obj38_DoStars	; if not, branch
-		move.w	#$541,2(a0)	; shield specific code
 		rts	
 ; ===========================================================================
 
 Obj38_DoStars:
 		addq.b	#2,$24(a0)	; stars	specific code
-		move.w	#$55C,2(a0)
 		rts	
 ; ===========================================================================
 
@@ -25952,6 +25964,7 @@ Obj38_Shield:				; XREF: Obj38_Index
 		move.b	($FFFFD022).w,$22(a0)
 		lea	(Ani_obj38).l,a1
 		jsr	AnimateSprite
+		jsr	LoadShieldDPLC
 		jmp	DisplaySprite
 ; ===========================================================================
 
@@ -26007,11 +26020,16 @@ Obj38_StarTrail2a:
 		move.b	($FFFFD022).w,$22(a0)
 		lea	(Ani_obj38).l,a1
 		jsr	AnimateSprite
+		jsr	LoadStarsDPLC
 		jmp	DisplaySprite
 ; ===========================================================================
 
 Obj38_Delete2:				; XREF: Obj38_Stars
 		jmp	DeleteObject
+; ===========================================================================
+	
+ShieldStarsDPLC:
+		include "_inc/obj38_DPLC.asm"
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Object 4A - special stage entry from beta
@@ -38353,9 +38371,9 @@ Nem_Smoke:	incbin	artnem\xxxsmoke.bin	; unused smoke
 		even
 Nem_SyzSparkle:	incbin	artnem\xxxstars.bin	; unused stars
 		even
-Nem_Shield:	incbin	artnem\shield.bin	; shield
+Art_Shield:	incbin	artunc\shield.bin	; shield
 		even
-Nem_Stars:	incbin	artnem\invstars.bin	; invincibility stars
+Art_Stars:	incbin	artunc\invstars.bin	; invincibility stars
 		even
 Nem_LzSonic:	incbin	artnem\xxxlzson.bin	; unused LZ Sonic holding his breath
 		even
@@ -38600,6 +38618,8 @@ Nem_TitleCard:	incbin	artnem\ttlcards.bin	; title cards
 Nem_Hud:	incbin	artnem\hud.bin		; HUD (rings, time, score)
 		even
 Nem_Lives:	incbin	artnem\lifeicon.bin	; life counter icon
+		even
+Nem_LivesPic:	incbin	artnem\lifeiconpic.bin	; life counter icon picture
 		even
 Nem_Ring:	incbin	artnem\rings.bin	; rings
 		even
@@ -41494,8 +41514,43 @@ SoundD0:	incbin	sound\soundD0.bin
 		even
 SegaPCM:	incbin	sound\segapcm.bin
 SegaPCM_End	even
-
+; ===========================================================================
 Art_Dust	incbin	artunc\spindust.bin
+; ===========================================================================
+
+LoadDPLC:
+		moveq	#0,d0
+		move.b	$1A(a0),d0	; load frame number
+		add.w	d0,d0
+		adda.w	(a2,d0.w),a2
+		moveq	#0,d5
+		move.b	(a2)+,d5
+		subq.w	#1,d5
+		bmi.s	DPLC_End
+
+DPLC_ReadEntry:
+		moveq	#0,d1
+		move.b	(a2)+,d1
+		lsl.w	#8,d1
+		move.b	(a2)+,d1
+		move.w	d1,d3
+		lsr.w	#8,d3
+		andi.w	#$F0,d3
+		addi.w	#$10,d3
+		andi.w	#$FFF,d1
+		lsl.l	#5,d1
+		add.l	d6,d1
+		move.w	d4,d2
+		add.w	d3,d4
+		add.w	d3,d4
+		jsr	(QueueDMATransfer).l
+		dbf	d5,DPLC_ReadEntry	; repeat for number of entries
+
+DPLC_End:
+		rts	
+; End of function LoadSonicDynPLC
+
+; ===========================================================================
 
 	include "#Owarisoft/main.asm"
 	inform 0,""
