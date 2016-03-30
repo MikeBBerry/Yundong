@@ -3600,6 +3600,7 @@ PlayLevel:				; XREF: ROM:00003246j ...
 		move.b	#$C,($FFFFF600).w ; set	screen mode to $0C (level)
 		move.b	#4,($FFFFFE12).w ; set lives to	3
 		moveq	#0,d0
+		move.b	d0,$FFFFFFFF	; clear Boss flag
 		move.w	d0,($FFFFFE20).w ; clear rings
 		move.l	d0,($FFFFFE22).w ; clear time
 		move.l	d0,($FFFFFE26).w ; clear score
@@ -24722,55 +24723,6 @@ Boundary_Sides:
 ; End of function Sonic_LevelBound
 
 ; ---------------------------------------------------------------------------
-; Subroutine allowing Sonic to roll when he's moving
-; ---------------------------------------------------------------------------
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
-Sonic_Roll:				; XREF: Obj01_MdNormal
-		tst.b	($FFFFF7CA).w
-		bne.s	Obj01_NoRoll
-		move.w	$14(a0),d0
-		bpl.s	loc_13392
-		neg.w	d0
-
-loc_13392:
-		cmpi.w	#$80,d0		; is Sonic moving at $80 speed or faster?
-		bcs.s	Obj01_NoRoll	; if not, branch
-		move.b	($FFFFF602).w,d0
-		andi.b	#$C,d0		; is left/right	being pressed?
-		bne.s	Obj01_NoRoll	; if yes, branch
-		btst	#1,($FFFFF602).w ; is down being pressed?
-		bne.s	Obj01_ChkRoll	; if yes, branch
-
-Obj01_NoRoll:
-		rts	
-; ===========================================================================
-
-Obj01_ChkRoll:
-		btst	#2,$22(a0)	; is Sonic already rolling?
-		beq.s	Obj01_DoRoll	; if not, branch
-		rts	
-; ===========================================================================
-
-Obj01_DoRoll:
-		bset	#2,$22(a0)
-		move.b	#$E,$16(a0)
-		move.b	#7,$17(a0)
-		move.b	#2,$1C(a0)	; use "rolling"	animation
-		addq.w	#5,$C(a0)
-		move.w	#$BE,d0
-		jsr	(PlaySound_Special).l ;	play rolling sound
-		tst.w	$14(a0)
-		bne.s	locret_133E8
-		move.w	#$200,$14(a0)
-
-locret_133E8:
-		rts	
-; End of function Sonic_Roll
-
-; ---------------------------------------------------------------------------
 ; Subroutine allowing Sonic to jump
 ; ---------------------------------------------------------------------------
 
@@ -27582,7 +27534,7 @@ Obj66_GrabSonic:
 		move.b	d1,$32(a0)
 		addq.b	#4,$24(a0)
 		move.b	#1,($FFFFF7C8).w ; lock	controls
-		move.b	#2,$1C(a1)	; make Sonic use "rolling" animation
+		move.b	#$15,$1C(a1)	; make Sonic use "bubble" animation
 		move.w	#$800,$14(a1)
 		move.w	#0,$10(a1)
 		move.w	#0,$12(a1)
@@ -29170,7 +29122,7 @@ loc_166E0:
 loc_1670E:
 		addq.b	#2,$24(a0)
 		move.b	#$81,($FFFFF7C8).w ; lock controls
-		move.b	#2,$1C(a1)	; use Sonic's rolling animation
+		move.b	#$1A,$1C(a1)	; use Sonic's hurt animation
 		move.w	#$800,$14(a1)
 		move.w	#0,$10(a1)
 		move.w	#0,$12(a1)
@@ -32431,7 +32383,8 @@ loc_18FDC:
 		clr.b	$3C(a2)
 		move.l	a0,-(sp)
 		lea	(a2),a0
-		jsr	Obj01_ChkRoll
+	;	jsr	Obj01_ChkRoll
+		move.b	#$10,$1C(a2)	; change Sonic's animation to "spring" ($10)
 		movea.l	(sp)+,a0
 		move.b	#2,$24(a2)
 		move.w	#$CC,d0
@@ -41366,7 +41319,7 @@ Music81:	incbin	"sound\Mind In The Gutter I.bin"
 		even
 Music82:	incbin	sound\music82.bin
 		even
-Music83:	incbin	sound\music83.bin
+Music83:	incbin	"sound\Tutorial With Attitude.bin"
 		even
 Music84:	incbin	sound\music84.bin
 		even
