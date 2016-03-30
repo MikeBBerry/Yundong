@@ -80,8 +80,8 @@ IntMain:	jmp	V_Int
 ; ===========================================================================
 Console:		dc.b 'SEGA MEGA DRIVE ' ; Hardware system ID
 Date:			dc.b 'OWARI   2016.NOV' ; Release date
-Title_Local:	dc.b 'SPORTS BIKE                                     ' ; Domestic name
-Title_Int:		dc.b 'SPORTS BIKE                                     ' ; International name
+Title_Local:	dc.b 'Yundong Zixingche                               ' ; Domestic name
+Title_Int:		dc.b 'Yungdong Zixingche                              ' ; International name
 Serial:			dc.b 'GM 13131313-13'   ; Serial/version number
 Checksum:		dc.w 0
 				dc.b 'J               ' ; I/O support
