@@ -3470,7 +3470,8 @@ Title_EnterCheat:			; XREF: Title_ChkRegion
 
 Title_PlayRing:
 		move.b	#1,(a0,d1.w)	; activate cheat
-		move.b	#$B5,d0		; play ring sound when code is entered
+		move.l	#$01010101,($FFFFFFE0).w	; activate all cheats
+		move.b	#$BF,d0		; play continue sound when code is entered
 		bsr.w	PlaySound_Special
 		bra.s	Title_CountC
 ; ===========================================================================
@@ -3861,7 +3862,7 @@ LevelMenuText:	incbin	misc\menutext.bin
 ; Music	playlist
 ; ---------------------------------------------------------------------------
 MusicList_Levels:
-		dc.b $81, $81, $81, $81
+		dc.b $81, $97, $81, $81
 		dc.b $82, $82, $82, $86
 		dc.b $83, $83, $83, $83
 		dc.b $84, $84, $84, $84
@@ -15575,7 +15576,18 @@ Obj3A_Display2:				; XREF: Obj3A_NextLevel, Obj3A_ChkSS
 ; ---------------------------------------------------------------------------
 ; Level	order array
 ; ---------------------------------------------------------------------------
-LevelOrder:	incbin	misc\lvl_ord.bin
+LevelOrder:
+		dc.w $0200, $0000 	;GHZ1 -> MZ
+		dc.w $0000, $0000 	;Unused
+		dc.w $0101, $0102 	;LZ1 -> LZ2 -> LZ3
+		dc.w $0300, $0502 	;LZ3 -> SLZ1 or if act 4 -> FZ
+		dc.w $0201, $0400 	;MZ1 -> MZ2 -> SYZ 
+		dc.w $0000, $0000 	;Unused
+		dc.w $0301, $0302 	;SLZ1 -> SLZ2 -> SLZ3
+		dc.w $0500, $0000 	;SLZ3 -> SYZ1
+		dc.w $0401, $0402 	;SYZ1 -> SYZ2 -> SYZ3
+		dc.w $0100, $0000 	;SYZ3 -> LZ1?
+		dc.w $0501, $0103 	;SBZ1 -> SBZ2 -> LZ4
 		even
 ; ===========================================================================
 
@@ -39073,6 +39085,7 @@ MusicIndex:	dc.l Music81, Music82
 		dc.l Music91, Music92
 		dc.l Music93, Music94
 		dc.l Music95, Music96
+		dc.l Music97
 ; ---------------------------------------------------------------------------
 ; Type of sound	being played ($90 = music; $70 = normal	sound effect)
 ; ---------------------------------------------------------------------------
@@ -41349,7 +41362,7 @@ loc_72E64:				; XREF: loc_72A64
 ; ===========================================================================
 Kos_Z80:	include    'MegaPCM.asm'
 
-Music81:	incbin	sound\music81.bin
+Music81:	incbin	"sound\Mind In The Gutter I.bin"
 		even
 Music82:	incbin	sound\music82.bin
 		even
@@ -41392,6 +41405,8 @@ Music94:	incbin	"#Owarisoft\owarisoft logo Sound.bin"
 Music95:	incbin	sound\SpeedShoes.bin
 		even
 Music96:	incbin	sound\SpeedShoesInv.bin
+		even
+Music97:	incbin	"sound\Mind In The Gutter II.bin"
 		even
 		
 ; ---------------------------------------------------------------------------
