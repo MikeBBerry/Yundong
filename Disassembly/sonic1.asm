@@ -19784,8 +19784,8 @@ locret_FCFC:
 ; ===========================================================================
 
 Obj51_Smash:				; XREF: Obj51_Solid
-		cmpi.b	#2,$32(a0)	; is Sonic rolling/jumping?
-		bne.s	locret_FCFC	; if not, branch
+	;	cmpi.b	#2,$32(a0)	; is Sonic rolling/jumping?
+	;	bne.s	locret_FCFC	; if not, branch
 		move.w	$34(a0),($FFFFF7D0).w
 		bset	#2,$22(a1)
 		move.b	#$E,$16(a1)
