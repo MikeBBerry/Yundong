@@ -3359,10 +3359,10 @@ Title_LoadText:
 		bsr.w	LevelSizeLoad
 		bsr.w	DeformBgLayer
 		lea	($FFFFB000).w,a1
-		lea	(Blk16_GHZ).l,a0 ; load	GHZ 16x16 mappings
+		lea	(Blk16_TS).l,a0 ; load	TS 16x16 mappings
 		move.w	#0,d0
 		bsr.w	EniDec
-		lea	(Blk256_GHZ).l,a0 ; load GHZ 256x256 mappings
+		lea	(Blk256_TS).l,a0 ; load TS 256x256 mappings
 		lea	($FF0000).l,a1
 		bsr.w	KosDec
 		bsr.w	LevelLayoutLoad
@@ -3385,7 +3385,7 @@ Title_LoadText:
 		moveq	#$15,d2
 		bsr.w	ShowVDPGraphics
 		move.l	#$40000000,($C00004).l
-		lea	(Nem_TIT_1st).l,a0 ; load GHZ patterns
+		lea	(Nem_TIT_1st).l,a0 ; load TZ patterns
 		bsr.w	NemDec
 		moveq	#1,d0		; load title screen Palette
 		bsr.w	PalLoad1
@@ -38639,6 +38639,10 @@ Nem_Squirrel:	incbin	artnem\squirrel.bin	; squirrel
 Nem_TIT_1st:	incbin	artnem\8x8tit1.bin	; Title primary patterns
 		even
 Nem_TIT_2nd:	incbin	artnem\8x8tit2.bin	; Title secondary patterns
+		even
+Blk16_TS:	incbin	map16\ts.bin
+		even
+Blk256_TS:	incbin	map256\ts.bin
 		even
 Blk16_GHZ:	incbin	map16\ghz.bin
 		even
