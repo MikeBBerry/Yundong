@@ -1,2 +1,2 @@
-OwariSoft Splash: Padded $160064 bytes
+OwariSoft Splash: Padded $1617ea bytes
 
