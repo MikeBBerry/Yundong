@@ -15883,15 +15883,15 @@ Map_obj3A:
 ; Sprite mappings - special stage results screen
 ; ---------------------------------------------------------------------------
 Map_obj7E:	
-	;	dc.w byte_CCAC-Map_obj7E
-	;	dc.w byte_CCEE-Map_obj7E
-	;	dc.w byte_CD0D-Map_obj7E
-	;	dc.w byte_CB47-Map_obj7E
-	;	dc.w byte_CD31-Map_obj7E
-	;	dc.w byte_CD46-Map_obj7E
-	;	dc.w byte_CD5B-Map_obj7E
-	;	dc.w byte_CD6B-Map_obj7E
-	;	dc.w byte_CDA8-Map_obj7E
+		dc.w byte_CCAC-Map_obj7E
+		dc.w byte_CCEE-Map_obj7E
+		dc.w byte_CD0D-Map_obj7E
+		dc.w byte_CB47-Map_obj7E
+		dc.w byte_CD31-Map_obj7E
+		dc.w byte_CD46-Map_obj7E
+		dc.w byte_CD5B-Map_obj7E
+		dc.w byte_CD6B-Map_obj7E
+		dc.w byte_CDA8-Map_obj7E
 byte_CCAC:	dc.b $D			; "CHAOS EMERALDS"
 		dc.b $F8, 5, 0,	8, $90
 		dc.b $F8, 5, 0,	$1C, $A0
@@ -15965,6 +15965,21 @@ byte_CDA8:	dc.b $F			; "SONIC GOT THEM ALL"
 		dc.b $F8, 5, 0,	$26, $68
 		dc.b $F8, 5, 0,	$26, $78
 		even
+byte_CB47:	dc.b $D			; Oval
+		dc.b $E4, $C, 0, $70, $F4
+		dc.b $E4, 2, 0,	$74, $14
+		dc.b $EC, 4, 0,	$77, $EC
+		dc.b $F4, 5, 0,	$79, $E4
+		dc.b $14, $C, $18, $70,	$EC
+		dc.b 4,	2, $18,	$74, $E4
+		dc.b $C, 4, $18, $77, 4
+		dc.b $FC, 5, $18, $79, $C
+		dc.b $EC, 8, 0,	$7D, $FC
+		dc.b $F4, $C, 0, $7C, $F4
+		dc.b $FC, 8, 0,	$7C, $F4
+		dc.b 4,	$C, 0, $7C, $EC
+		dc.b $C, 8, 0, $7C, $EC
+		dc.b 0
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - chaos emeralds from	the special stage results screen
 ; ---------------------------------------------------------------------------
