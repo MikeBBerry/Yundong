@@ -2,14 +2,14 @@
 ; Sprite mappings - output from SonMapEd - Sonic 1 format
 ; --------------------------------------------------------------------------------
 
-SME_1mMNn:	
-		dc.w SME_1mMNn_18-SME_1mMNn, SME_1mMNn_41-SME_1mMNn	
-		dc.w SME_1mMNn_D8-SME_1mMNn, SME_1mMNn_110-SME_1mMNn	
-		dc.w SME_1mMNn_198-SME_1mMNn, SME_1mMNn_1F8-SME_1mMNn	
-		dc.w SME_1mMNn_253-SME_1mMNn, SME_1mMNn_272-SME_1mMNn	
-		dc.w SME_1mMNn_27D-SME_1mMNn, SME_1mMNn_288-SME_1mMNn	
-		dc.w SME_1mMNn_293-SME_1mMNn, SME_1mMNn_2D5-SME_1mMNn	
-SME_1mMNn_18:	dc.b 8	
+SME_gHoYM:	
+		dc.w SME_gHoYM_18-SME_gHoYM, SME_gHoYM_41-SME_gHoYM	
+		dc.w SME_gHoYM_D8-SME_gHoYM, SME_gHoYM_110-SME_gHoYM	
+		dc.w SME_gHoYM_198-SME_gHoYM, SME_gHoYM_1F8-SME_gHoYM	
+		dc.w SME_gHoYM_253-SME_gHoYM, SME_gHoYM_272-SME_gHoYM	
+		dc.w SME_gHoYM_27D-SME_gHoYM, SME_gHoYM_288-SME_gHoYM	
+		dc.w SME_gHoYM_293-SME_gHoYM, SME_gHoYM_2D5-SME_gHoYM	
+SME_gHoYM_18:	dc.b 8	
 		dc.b $F8, 5, 0, $42, $D4	
 		dc.b $F8, 5, 0, $46, $E4	
 		dc.b $F8, 5, 0, $42, $F4	
@@ -18,7 +18,7 @@ SME_1mMNn_18:	dc.b 8
 		dc.b $F8, 1, 0, $20, $24	
 		dc.b $F8, 5, 0, 0, $2C	
 		dc.b $F8, 5, 0, $26, $3C	
-SME_1mMNn_41:	dc.b $1E	
+SME_gHoYM_41:	dc.b $1E	
 		dc.b $F8, 5, 0, $32, $84	
 		dc.b $F8, 5, 0, $1C, $94	
 		dc.b $F8, 0, 0, $56, $A4	
@@ -49,7 +49,7 @@ SME_1mMNn_41:	dc.b $1E
 		dc.b $F8, 5, 0, $32, $3C	
 		dc.b $F8, 5, 0, $10, $4C	
 		dc.b $B, $F8, 5, 0, $C	
-SME_1mMNn_D8:	dc.b $B	
+SME_gHoYM_D8:	dc.b $B	
 		dc.b $F8, 5, 0, $C, $A4	
 		dc.b $F8, 5, 0, $4E, $B4	
 		dc.b $F8, 1, 0, $20, $C4	
@@ -61,7 +61,7 @@ SME_1mMNn_D8:	dc.b $B
 		dc.b $F8, 5, 0, 4, $1C	
 		dc.b $F8, 5, 0, $3A, $2C	
 		dc.b $F8, 5, 0, $4A, $3C	
-SME_1mMNn_110:	dc.b $1B	
+SME_gHoYM_110:	dc.b $1B	
 		dc.b $F8, 1, 0, $20, $CC	
 		dc.b $F8, 0, 0, $56, $D4	
 		dc.b $F8, 5, 0, $42, $E4	
@@ -89,7 +89,7 @@ SME_1mMNn_110:	dc.b $1B
 		dc.b $F8, 5, 0, $42, $24	
 		dc.b $F8, 1, 0, $20, $34	
 		dc.b $F8, 5, 0, $3E, $3C	
-SME_1mMNn_198:	dc.b $13	
+SME_gHoYM_198:	dc.b $13	
 		dc.b $F8, 5, 0, $2A, $8C	
 		dc.b $F8, 5, 0, $4A, $9C	
 		dc.b $F8, 0, 0, $56, $AC	
@@ -109,7 +109,7 @@ SME_1mMNn_198:	dc.b $13
 		dc.b $F8, 5, 0, $2E, $8C	
 		dc.b $F8, 5, 0, $2E, $9C	
 		dc.b $F8, 5, 0, $4A, $AC	
-SME_1mMNn_1F8:	dc.b $12	
+SME_gHoYM_1F8:	dc.b $12	
 		dc.b $F8, 5, 0, $4A, $84	
 		dc.b $F8, 5, 0, $32, $94	
 		dc.b $F8, 5, 0, $46, $A4	
@@ -128,23 +128,23 @@ SME_1mMNn_1F8:	dc.b $12
 		dc.b $F8, 5, 0, $32, $7C	
 		dc.b $F8, 5, 0, $10, $8C	
 		dc.b 6, $F8, 5, 0, $18	
-SME_1mMNn_253:	dc.b 6	
-		dc.b $F8, 5, 0, $18, $CC	
-		dc.b $F8, 5, 0, $32, $DC	
-		dc.b $F8, 5, 0, $1C, $EC	
+SME_gHoYM_253:	dc.b 6	
+		dc.b $F8, 5, 0, $32, $CC	
+		dc.b $F8, 5, 0, $1C, $DC	
+		dc.b $F8, 5, 0, $2E, $EC	
 		dc.b $F8, 5, 0, $2E, $FC	
-		dc.b $F8, 5, 0, $2E, $C	
-		dc.b $F8, 5, 0, $4A, $1C	
-SME_1mMNn_272:	dc.b 2	
+		dc.b $F8, 5, 0, $4A, $C	
+		dc.b $F8, 5, 0, $80, $BC	
+SME_gHoYM_272:	dc.b 2	
 		dc.b 4, $C, 0, $53, $EC	
 		dc.b $F4, 6, 0, $5A, 8	
-SME_1mMNn_27D:	dc.b 2	
+SME_gHoYM_27D:	dc.b 2	
 		dc.b 4, $C, 0, $53, $EC	
 		dc.b $F4, 6, 0, $60, 8	
-SME_1mMNn_288:	dc.b 2	
+SME_gHoYM_288:	dc.b 2	
 		dc.b 4, $C, 0, $53, $EC	
 		dc.b $F4, 2, 0, $57, $C	
-SME_1mMNn_293:	dc.b $D	
+SME_gHoYM_293:	dc.b $D	
 		dc.b $E4, $C, 0, $70, $F4	
 		dc.b $E4, 2, 0, $74, $14	
 		dc.b $EC, 4, 0, $77, $EC	
@@ -158,7 +158,7 @@ SME_1mMNn_293:	dc.b $D
 		dc.b $FC, 8, 0, $7C, $F4	
 		dc.b 4, $C, 0, $7C, $EC	
 		dc.b $C, 8, 0, $7C, $EC	
-SME_1mMNn_2D5:	dc.b 5	
+SME_gHoYM_2D5:	dc.b 5	
 		dc.b $F8, 5, 0, $14, $DC	
 		dc.b $F8, 1, 0, $20, $EC	
 		dc.b $F8, 5, 0, $2E, $F4	

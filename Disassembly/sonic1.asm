@@ -15416,7 +15416,8 @@ Obj3A:					; XREF: Obj_Index
 		move.w	Obj3A_Index(pc,d0.w),d1
 		jmp	Obj3A_Index(pc,d1.w)
 ; ===========================================================================
-Obj3A_Index:	dc.w Obj3A_ChkPLC-Obj3A_Index
+Obj3A_Index:	
+		dc.w Obj3A_ChkPLC-Obj3A_Index
 		dc.w Obj3A_ChkPos-Obj3A_Index
 		dc.w Obj3A_Wait-Obj3A_Index
 		dc.w Obj3A_TimeBonus-Obj3A_Index
