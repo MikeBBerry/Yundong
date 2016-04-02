@@ -58,8 +58,8 @@ MegaPCM:
 	DAC_Entry	$08, Kick, dpcm			; $81	- Kick
 	DAC_Entry	$08, Snare, dpcm		; $82	- Snare
 	DAC_Entry	$1B, Timpani, dpcm		; $83	- Timpani
-	dc.l	0,0					; $84	- <Free>
-	dc.l	0,0					; $85	- <Free>
+	DAC_Entry	$08, bah, dpcm			; $84	- Timpani
+	DAC_Entry	$08, grunt, dpcm		; $85	- <Free>
 	dc.l	0,0					; $86	- <Free>
 	dc.l	0,0					; $87	- <Free>
 	DAC_Entry	$12, Timpani, dpcm		; $88	- Hi-Timpani
@@ -76,5 +76,7 @@ MegaPCM_End:
 	IncludeDAC	Kick, bin
 	IncludeDAC	Snare, bin
 	IncludeDAC	Timpani, bin
+	IncludeDAC	bah, bin
+	IncludeDAC	grunt, bin
 	even
 
