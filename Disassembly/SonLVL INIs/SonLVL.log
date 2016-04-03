@@ -1,5 +1,5 @@
-Operating system: Microsoft Windows NT 6.2.9200.0
-Opening INI file "C:\Sonic_Hacking\yundong\Disassembly\SonLVL INIs\SonLVL.ini"...
+Operating system: Microsoft Windows NT 6.1.7601 Service Pack 1
+Opening INI file "C:\Users\Throckmorton\Documents\Yundong\Disassembly\SonLVL INIs\SonLVL.ini"...
 Game type is S1.
 Loading Green Hill Zone Act 1...
 Loading 8x8 tiles from file "../artnem/8x8ghz.bin", using compression Nemesis...
@@ -31,29 +31,18 @@ Load completed.
 Saving Green Hill Zone Act 1...
 Saving Green Hill Zone Act 1...
 Saving Green Hill Zone Act 1...
-Saving Green Hill Zone Act 1...
-Saving Green Hill Zone Act 1...
-Saving Green Hill Zone Act 1...
-Saving Green Hill Zone Act 1...
-Saving Green Hill Zone Act 1...
-Saving Green Hill Zone Act 1...
-Saving Green Hill Zone Act 1...
-Saving Green Hill Zone Act 1...
-Saving Green Hill Zone Act 1...
-Saving Green Hill Zone Act 1...
-Saving Green Hill Zone Act 1...
-Saving Green Hill Zone Act 1...
-Saving Green Hill Zone Act 1...
-Saving Green Hill Zone Act 1...
 System.ArgumentOutOfRangeException: Index was out of range. Must be non-negative and less than the size of the collection.
 Parameter name: index
    at System.ThrowHelper.ThrowArgumentOutOfRangeException()
-   at System.Collections.Generic.List`1.get_Item(Int32 index)
-   at SonicRetro.SonLVL.GUI.MainForm.BlockSelector_SelectedIndexChanged(Object sender, EventArgs e) in c:\Users\Mike\Documents\GitHub\SonLVL\SonLVL\MainForm.cs:line 3647
+   at System.Collections.Generic.List`1.set_Item(Int32 index, T value)
+   at SonicRetro.SonLVL.GUI.MainForm.BlockCollision2_ValueChanged(Object sender, EventArgs e) in c:\Users\Mike\Documents\GitHub\SonLVL\SonLVL\MainForm.cs:line 3901
+   at System.Windows.Forms.NumericUpDown.OnValueChanged(EventArgs e)
+   at System.Windows.Forms.NumericUpDown.set_Value(Decimal value)
+   at SonicRetro.SonLVL.GUI.MainForm.BlockSelector_SelectedIndexChanged(Object sender, EventArgs e) in c:\Users\Mike\Documents\GitHub\SonLVL\SonLVL\MainForm.cs:line 3667
    at System.EventHandler.Invoke(Object sender, EventArgs e)
    at SonicRetro.SonLVL.API.TileList.set_SelectedIndex(Int32 value) in c:\Users\Mike\Documents\GitHub\SonLVL\SonLVLAPI\TileList.cs:line 24
-   at SonicRetro.SonLVL.GUI.MainForm.InsertBlock() in c:\Users\Mike\Documents\GitHub\SonLVL\SonLVL\MainForm.cs:line 4278
-   at SonicRetro.SonLVL.GUI.MainForm.pasteAfterToolStripMenuItem_Click(Object sender, EventArgs e) in c:\Users\Mike\Documents\GitHub\SonLVL\SonLVL\MainForm.cs:line 4558
+   at SonicRetro.SonLVL.GUI.MainForm.InsertBlock() in c:\Users\Mike\Documents\GitHub\SonLVL\SonLVL\MainForm.cs:line 4300
+   at SonicRetro.SonLVL.GUI.MainForm.pasteAfterToolStripMenuItem_Click(Object sender, EventArgs e) in c:\Users\Mike\Documents\GitHub\SonLVL\SonLVL\MainForm.cs:line 4580
    at System.Windows.Forms.ToolStripItem.RaiseEvent(Object key, EventArgs e)
    at System.Windows.Forms.ToolStripMenuItem.OnClick(EventArgs e)
    at System.Windows.Forms.ToolStripItem.HandleClick(EventArgs e)
@@ -64,41 +53,5 @@ Parameter name: index
    at System.Windows.Forms.Control.WndProc(Message& m)
    at System.Windows.Forms.ToolStrip.WndProc(Message& m)
    at System.Windows.Forms.ToolStripDropDown.WndProc(Message& m)
-   at System.Windows.Forms.Control.ControlNativeWindow.WndProc(Message& m)
-   at System.Windows.Forms.NativeWindow.Callback(IntPtr hWnd, Int32 msg, IntPtr wparam, IntPtr lparam)
-System.ArgumentOutOfRangeException: Index was out of range. Must be non-negative and less than the size of the collection.
-Parameter name: index
-   at System.ThrowHelper.ThrowArgumentOutOfRangeException()
-   at System.Collections.Generic.List`1.get_Item(Int32 index)
-   at SonicRetro.SonLVL.API.LevelData.RedrawChunk(Int32 chunk) in c:\Users\Mike\Documents\GitHub\SonLVL\SonLVLAPI\LevelData.cs:line 2693
-   at SonicRetro.SonLVL.GUI.MainForm.chunkBlockEditor_PropertyValueChanged(Object sender, EventArgs e) in c:\Users\Mike\Documents\GitHub\SonLVL\SonLVL\MainForm.cs:line 3532
-   at System.EventHandler.Invoke(Object sender, EventArgs e)
-   at SonicRetro.SonLVL.ChunkBlockEditor.block_ValueChanged(Object sender, EventArgs e) in c:\Users\Mike\Documents\GitHub\SonLVL\SonLVL\ChunkBlockEditor.cs:line 100
-   at System.Windows.Forms.NumericUpDown.OnValueChanged(EventArgs e)
-   at System.Windows.Forms.NumericUpDown.set_Value(Decimal value)
-   at SonicRetro.SonLVL.ChunkBlockEditor.blockList_SelectedIndexChanged(Object sender, EventArgs e) in c:\Users\Mike\Documents\GitHub\SonLVL\SonLVL\ChunkBlockEditor.cs:line 109
-   at System.EventHandler.Invoke(Object sender, EventArgs e)
-   at SonicRetro.SonLVL.API.TileList.set_SelectedIndex(Int32 value) in c:\Users\Mike\Documents\GitHub\SonLVL\SonLVLAPI\TileList.cs:line 24
-   at SonicRetro.SonLVL.API.TileList.TileList_MouseDown(Object sender, MouseEventArgs e) in c:\Users\Mike\Documents\GitHub\SonLVL\SonLVLAPI\TileList.cs:line 211
-   at System.Windows.Forms.Control.WmMouseDown(Message& m, MouseButtons button, Int32 clicks)
-   at System.Windows.Forms.Control.WndProc(Message& m)
-   at System.Windows.Forms.Control.ControlNativeWindow.WndProc(Message& m)
-   at System.Windows.Forms.NativeWindow.Callback(IntPtr hWnd, Int32 msg, IntPtr wparam, IntPtr lparam)
-System.ArgumentOutOfRangeException: Index was out of range. Must be non-negative and less than the size of the collection.
-Parameter name: index
-   at System.ThrowHelper.ThrowArgumentOutOfRangeException()
-   at System.Collections.Generic.List`1.get_Item(Int32 index)
-   at SonicRetro.SonLVL.API.LevelData.RedrawChunk(Int32 chunk) in c:\Users\Mike\Documents\GitHub\SonLVL\SonLVLAPI\LevelData.cs:line 2693
-   at SonicRetro.SonLVL.GUI.MainForm.chunkBlockEditor_PropertyValueChanged(Object sender, EventArgs e) in c:\Users\Mike\Documents\GitHub\SonLVL\SonLVL\MainForm.cs:line 3532
-   at System.EventHandler.Invoke(Object sender, EventArgs e)
-   at SonicRetro.SonLVL.ChunkBlockEditor.block_ValueChanged(Object sender, EventArgs e) in c:\Users\Mike\Documents\GitHub\SonLVL\SonLVL\ChunkBlockEditor.cs:line 100
-   at System.Windows.Forms.NumericUpDown.OnValueChanged(EventArgs e)
-   at System.Windows.Forms.NumericUpDown.set_Value(Decimal value)
-   at SonicRetro.SonLVL.ChunkBlockEditor.blockList_SelectedIndexChanged(Object sender, EventArgs e) in c:\Users\Mike\Documents\GitHub\SonLVL\SonLVL\ChunkBlockEditor.cs:line 109
-   at System.EventHandler.Invoke(Object sender, EventArgs e)
-   at SonicRetro.SonLVL.API.TileList.set_SelectedIndex(Int32 value) in c:\Users\Mike\Documents\GitHub\SonLVL\SonLVLAPI\TileList.cs:line 24
-   at SonicRetro.SonLVL.API.TileList.TileList_MouseDown(Object sender, MouseEventArgs e) in c:\Users\Mike\Documents\GitHub\SonLVL\SonLVLAPI\TileList.cs:line 211
-   at System.Windows.Forms.Control.WmMouseDown(Message& m, MouseButtons button, Int32 clicks)
-   at System.Windows.Forms.Control.WndProc(Message& m)
    at System.Windows.Forms.Control.ControlNativeWindow.WndProc(Message& m)
    at System.Windows.Forms.NativeWindow.Callback(IntPtr hWnd, Int32 msg, IntPtr wparam, IntPtr lparam)
