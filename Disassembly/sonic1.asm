@@ -17324,7 +17324,7 @@ loc_DC36:
 		tst.b	$39(a1)
 		beq.s	@not_crawling
 		nop
-		;move.b	#crawl_anim,d0
+		move.b	#$0A,d0 	; use crawling animation
 		
 @not_crawling:
 		move.b	d0,$1C(a1)
@@ -25298,12 +25298,13 @@ loc_13A78:
 		neg.w	d2
 
 loc_13A9C:
-		lea	(SonAni_Run).l,a1 ; use	running	animation
+		lea		(SonAni_Crawl).l,a1 ; use crawling animation
 		tst.b	crawling(a0)
 		bne.s	loc_13AB4
+		lea		(SonAni_Run).l,a1 ; use	running	animation
 		cmpi.w	#$600,d2	; is Sonic at running speed?
 		bcc.s	loc_13AB4	; if yes, branch
-		lea	(SonAni_Walk).l,a1 ; use walking animation
+		lea		(SonAni_Walk).l,a1 ; use walking animation
 		move.b	d0,d1
 		lsr.b	#1,d1
 		add.b	d1,d0

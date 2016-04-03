@@ -11,7 +11,7 @@
 		dc.w SonAni_LookUp-SonicAniData ;7
 		dc.w SonAni_Duck-SonicAniData ;8
 		dc.w SonAni_Bite-SonicAniData ;9
-		dc.w SonAni_Blank-SonicAniData ;A
+		dc.w SonAni_Crawl-SonicAniData ;A
 		dc.w SonAni_Blank-SonicAniData ;B
 		dc.w SonAni_Blank-SonicAniData ;C
 		dc.w SonAni_Stop-SonicAniData ;D
@@ -43,6 +43,7 @@ SonAni_Balance:	dc.b $1F, $34, $35, $FF
 SonAni_LookUp:	dc.b $3F, 5, $FF, 0
 SonAni_Duck:	dc.b $3F, $33, $FF, 0
 SonAni_Bite:	dc.b 2, 1, $2E, $2F, $30, $FD, 0
+SonAni_Crawl:	dc.b $FF, $4A, $4B, $4C, $4D, $FF, $FF,	$FF
 SonAni_Stop:	dc.b 7,	$31, $32, $FF
 SonAni_Float1:	dc.b 7,	$36, $FF
 SonAni_Float2:	dc.b 7,	$36, $37, $42, $38, $43, $FF, 0
