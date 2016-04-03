@@ -41170,7 +41170,7 @@ Music8C:	incbin	sound\music8C.bin
 		even
 Music8D:	incbin	sound\music8D.bin
 		even
-Music8E:	incbin	sound\music8E.bin
+Music8E:	incbin	"sound\Lover Went Right.bin"
 		even
 Music8F:	incbin	sound\music8F.bin
 		even
