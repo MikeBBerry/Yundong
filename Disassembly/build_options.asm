@@ -2,4 +2,4 @@
 ; Build Options
 ;---------------------------------------------------------
 
-skipSplashes: = 0
+skipSplashes: = 1

@@ -3270,7 +3270,7 @@ Sega_WaitEnd:
 Sega_GotoTitle:
 		move.b	#4,($FFFFF600).w ; go to title screen
 	;	rts	
-		jmp	Owarisoft
+	;	jmp	Owarisoft
 ; ===========================================================================
 
 ; ---------------------------------------------------------------------------
@@ -41182,7 +41182,7 @@ Kos_Z80:	include    'MegaPCM.asm'
 
 Music81:	incbin	"sound\Mind In The Gutter I.bin"
 		even
-Music82:	incbin	sound\music82.bin
+Music82:	incbin	"sound\I Died On Jeopardy.bin"
 		even
 Music83:	incbin	"sound\Tutorial With Attitude.bin"
 		even
@@ -41218,8 +41218,6 @@ Music92:	incbin	sound\music92.bin
 		even
 Music93:	incbin	sound\music93.bin
 		even
-Music94:	incbin	"#Owarisoft\owarisoft logo Sound.bin"
-		even
 Music95:	incbin	sound\SpeedShoes.bin
 		even
 Music96:	incbin	sound\SpeedShoesInv.bin
@@ -41230,7 +41228,8 @@ Music97:	incbin	"sound\Mind In The Gutter II.bin"
 ; ---------------------------------------------------------------------------
 ; Sound	effect pointers
 ; ---------------------------------------------------------------------------
-SoundIndex:	dc.l SoundA0, SoundA1, SoundA2
+SoundIndex:	
+		dc.l SoundA0, SoundA1, SoundA2
 		dc.l SoundA3, SoundA4, SoundA5
 		dc.l SoundA6, SoundA7, SoundA8
 		dc.l SoundA9, SoundAA, SoundAB
@@ -41345,6 +41344,18 @@ SoundCF:	incbin	sound\soundCF.bin
 		even
 SoundD0:	incbin	sound\soundD0.bin
 		even
+SoundD1:	incbin	sound\soundD1.bin
+		even
+SoundD2:	incbin	sound\Gen_Jump.bin
+		even
+SoundD3:	incbin	sound\PeeloutCharge.bin
+		even
+SoundD4:	incbin	sound\PeeloutStop.bin
+		even
+SoundD5:	incbin	sound\S3K_Shoot.bin
+		even
+SoundD6:	incbin	sound\Peelout_Release.bin
+		even
 SegaPCM:	incbin	sound\segapcm.bin
 SegaPCM_End	even
 ; ===========================================================================
@@ -41384,9 +41395,10 @@ DPLC_End:
 ; End of function LoadSonicDynPLC
 
 ; ===========================================================================
-
-	include "#Owarisoft/main.asm"
-	inform 0,""
+Music94:		incbin	"sound\owarisoft logo.bin"
+		even
+;	include "#Owarisoft/main.asm"
+;	inform 0,""
 
 EndOfRom:
 		END
