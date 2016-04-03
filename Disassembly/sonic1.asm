@@ -485,11 +485,6 @@ loc_BB6:
 
 loc_BBA:
 		move.w	#1,($FFFFF644).w
-		move.w	#$100,($A11100).l
-
-loc_BC8:
-		btst	#0,($A11100).l
-		bne.s	loc_BC8
 		tst.b	($FFFFF64E).w
 		bne.s	loc_BFE
 		lea	($C00004).l,a5
@@ -513,7 +508,6 @@ loc_BFE:				; XREF: loc_BC8
 
 loc_C22:				; XREF: loc_BC8
 		move.w	($FFFFF624).w,(a5)
-		move.w	#0,($A11100).l
 		bra.w	loc_B5E
 ; ===========================================================================
 
@@ -551,11 +545,6 @@ loc_C64:				; XREF: off_B6E
 		beq.w	loc_DA6		; if yes, branch
 
 loc_C6E:				; XREF: off_B6E
-		move.w	#$100,($A11100).l ; stop the Z80
-
-loc_C76:
-		btst	#0,($A11100).l	; has Z80 stopped?
-		bne.s	loc_C76		; if not, branch
 		bsr.w	ReadJoypads
 		tst.b	($FFFFF64E).w
 		bne.s	loc_CB0
@@ -597,7 +586,6 @@ loc_CD4:				; XREF: loc_C76
 		jsr	(ProcessDMAQueue).l
 
 loc_D50:
-		move.w	#0,($A11100).l
 		movem.l	($FFFFF700).w,d0-d7
 		movem.l	d0-d7,($FFFFFF10).w
 		movem.l	($FFFFF754).w,d0-d1
@@ -631,11 +619,6 @@ Demo_TimeEnd:
 ; ===========================================================================
 
 loc_DA6:				; XREF: off_B6E
-		move.w	#$100,($A11100).l ; stop the Z80
-
-loc_DAE:
-		btst	#0,($A11100).l	; has Z80 stopped?
-		bne.s	loc_DAE		; if not, branch
 		bsr.w	ReadJoypads
 		lea	($C00004).l,a5
 		move.l	#$94009340,(a5)
@@ -658,7 +641,6 @@ loc_DAE:
 		move.w	#$7C00,(a5)
 		move.w	#$83,($FFFFF640).w
 		move.w	($FFFFF640).w,(a5)
-		move.w	#0,($A11100).l
 		bsr.w	PalCycle_SS
 		jsr	(ProcessDMAQueue).l
 
@@ -672,11 +654,6 @@ locret_E70:
 ; ===========================================================================
 
 loc_E72:				; XREF: off_B6E
-		move.w	#$100,($A11100).l ; stop the Z80
-
-loc_E7A:
-		btst	#0,($A11100).l	; has Z80 stopped?
-		bne.s	loc_E7A		; if not, branch
 		bsr.w	ReadJoypads
 		tst.b	($FFFFF64E).w
 		bne.s	loc_EB4
@@ -722,7 +699,6 @@ loc_EEE:
 		jsr	(ProcessDMAQueue).l
 
 loc_F54:
-		move.w	#0,($A11100).l	; start	the Z80
 		movem.l	($FFFFF700).w,d0-d7
 		movem.l	d0-d7,($FFFFFF10).w
 		movem.l	($FFFFF754).w,d0-d1
@@ -748,11 +724,6 @@ loc_F9A:				; XREF: off_B6E
 ; ===========================================================================
 
 loc_FA6:				; XREF: off_B6E
-		move.w	#$100,($A11100).l ; stop the Z80
-
-loc_FAE:
-		btst	#0,($A11100).l	; has Z80 stopped?
-		bne.s	loc_FAE		; if not, branch
 		bsr.w	ReadJoypads
 		lea	($C00004).l,a5
 		move.l	#$94009340,(a5)
@@ -775,7 +746,6 @@ loc_FAE:
 		move.w	#$7C00,(a5)
 		move.w	#$83,($FFFFF640).w
 		move.w	($FFFFF640).w,(a5)
-		move.w	#0,($A11100).l	; start	the Z80
 		jsr	(ProcessDMAQueue).l
 
 loc_1060:
@@ -790,11 +760,6 @@ locret_106C:
 
 
 sub_106E:				; XREF: loc_C32; et al
-		move.w	#$100,($A11100).l ; stop the Z80
-
-loc_1076:
-		btst	#0,($A11100).l	; has Z80 stopped?
-		bne.s	loc_1076	; if not, branch
 		bsr.w	ReadJoypads
 		tst.b	($FFFFF64E).w
 		bne.s	loc_10B0
@@ -832,7 +797,6 @@ loc_10D4:				; XREF: sub_106E
 		move.w	#$7C00,(a5)
 		move.w	#$83,($FFFFF640).w
 		move.w	($FFFFF640).w,(a5)
-		move.w	#0,($A11100).l	; start	the Z80
 		rts	
 ; End of function sub_106E
 
@@ -38920,13 +38884,13 @@ SoundTypes:	dc.b $90, $90, $90, $90, $90, $90, $90,	$90, $90, $90, $90, $90, $90
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 
-sub_71B4C:				; XREF: V_Int; H_Int
-		move.w	#$100,($A11100).l ; stop the Z80
-		nop	
-		nop	
-		nop	
+sub_71B4C:				; XREF: loc_B10; PalToCRAM
+	;	move.w	#$100,($A11100).l ; stop the Z80
+	;	nop
+	;	nop
+	;	nop
 
-loc_71B5A:
+;loc_71b5a:
 		lea	($FFF000).l,a6
 		clr.b	$E(a6)
 		tst.b	3(a6)		; is music paused?
@@ -39020,12 +38984,15 @@ loc_71C38:
 		jsr	sub_72850(pc)
 
 loc_71C44:
-		move.b	($A04000).l,d2
-		btst	#7,d2
-		bne.s	loc_71C44
-		move.b	#$2A,($A04000).l
-		move.w	#0,($A11100).l	; start	the Z80
-		rts	
+		btst	#6,($FFFFFFF8).w	   ; is Megadrive PAL?
+		beq.s	@end		 			 ; if not, branch
+		cmpi.b  #$5,($FFFFFFBF).w	   ; 5th frame?
+		bne.s   @end			   ; if not, branch
+		move.b  #$0,($FFFFFFBF).w	   ; reset counter
+		bra.w	sub_71B4C		   ; run sound driver again
+@end:
+		addq.b  #$1,($FFFFFFBF).w	   ; add 1 to frame count
+		rts
 ; End of function sub_71B4C
 
 
@@ -39069,7 +39036,9 @@ loc_71C88:
 		move.b	$10(a5),d0
 		cmpi.b	#$80,d0
 		beq.s	locret_71CAA
-		move.b	d0,($A01FFF).l
+		stopZ80
+		move.b    d0,($A01FFF).l
+		startZ80
 
 locret_71CAA:
 		rts	
@@ -39334,7 +39303,9 @@ loc_71E7C:
 		dbf	d3,loc_71E7C
 
 		jsr	sub_729B6(pc)
-		move.b	#$7F,($A01FFF).l; pause DAC
+		stopZ80
+		move.b    #$7F,($A01FFF).l; pause DAC
+		startZ80
 		bra.w	loc_71C44
 ; ===========================================================================
 
@@ -39370,20 +39341,21 @@ loc_71EC4:
 		jsr	sub_72722(pc)
 
 loc_71EDC:
-		adda.w	d3,a5
-		dbf	d4,loc_71EC4
+		adda.w  d3,a5
+		dbf     d4,loc_71EC4
 
-		lea	$340(a6),a5
-		btst	#7,(a5)
-		beq.s	@UnpauseDAC
-		btst	#2,(a5)
-		bne.s	@UnpauseDAC
-		move.b	#-$4C,d0
-		move.b	$A(a5),d1
-		jsr	sub_72722(pc)
-
+		lea     $340(a6),a5
+		btst    #7,(a5)
+		beq.s   @UnpauseDAC
+		btst    #2,(a5)
+		bne.s   @UnpauseDAC
+		move.b  #-$4C,d0
+		move.b  $A(a5),d1
+		jsr     sub_72722(pc)
 @UnpauseDAC:
-		move.b	#0,($A01FFF).l	; unpause DAC
+		stopZ80
+		move.b  #0,($A01FFF).l  ; unpause DAC
+		startZ80
 
 loc_71EFE:
 		bra.w	loc_71C44
@@ -40166,7 +40138,10 @@ loc_725B6:
 
 		move.b	#$80,9(a6)	; set music to $80 (silence)
 		jsr	sub_7256A(pc)
+
+		stopZ80
 		move.b	#$80,($A01FFF).l ; stop DAC playback
+		startZ80
 		bra.w	sub_729B6
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
@@ -40372,22 +40347,16 @@ sub_72722:				; XREF: sub_71E18; sub_72C4E; sub_72CB4
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 
-sub_7272E:				; XREF: loc_71E6A
-		move.b	($A04000).l,d2
-		btst	#7,d2
-		bne.s	sub_7272E
-		move.b	d0,($A04000).l
-		nop	
-		nop	
-		nop	
-
-loc_72746:
-		move.b	($A04000).l,d2
-		btst	#7,d2
-		bne.s	loc_72746
-
-		move.b	d1,($A04001).l
-		rts	
+sub_7272E:		 ; XREF: loc_71E6A
+		stopZ80
+		waitYM
+		move.b    d0,($A04000).l
+		waitYM
+		move.b    d1,($A04001).l
+		waitYM
+		move.b    #$2A,($A04000).l
+		startZ80
+		rts
 ; End of function sub_7272E
 
 ; ===========================================================================
@@ -40400,22 +40369,16 @@ loc_7275A:				; XREF: sub_72722
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 
-sub_72764:				; XREF: loc_71E6A; Sound_ChkValue; sub_7256A; sub_72764
-		move.b	($A04000).l,d2
-		btst	#7,d2
-		bne.s	sub_72764
-		move.b	d0,($A04002).l
-		nop	
-		nop	
-		nop	
-
-loc_7277C:
-		move.b	($A04000).l,d2
-		btst	#7,d2
-		bne.s	loc_7277C
-
-		move.b	d1,($A04003).l
-		rts	
+sub_72764:		 ; XREF: loc_71E6A; Sound_ChkValue; sub_7256A; sub_72764
+		stopZ80
+		waitYM
+		move.b    d0,($A04002).l
+		waitYM
+		move.b    d1,($A04003).l
+		waitYM
+		move.b    #$2A,($A04000).l
+		startZ80
+		rts
 ; End of function sub_72764
 
 ; ===========================================================================
