@@ -44946,59 +44946,59 @@
 0002351A                            ; Sprite mappings - output from SonMapEd - Sonic 1 format
 0002351A                            ; --------------------------------------------------------------------------------
 0002351A                            
-0002351A                            SME_1h0_3:	
-0002351A 0000 0000                  		dc.w SME_1h0_3_B4-SME_1h0_3, SME_1h0_3_B5-SME_1h0_3	
-0002351E 0000 0000                  		dc.w SME_1h0_3_CA-SME_1h0_3, SME_1h0_3_EE-SME_1h0_3	
-00023522 0000 0000                  		dc.w SME_1h0_3_FE-SME_1h0_3, SME_1h0_3_10E-SME_1h0_3	
-00023526 0000 0000                  		dc.w SME_1h0_3_11E-SME_1h0_3, SME_1h0_3_133-SME_1h0_3	
-0002352A 0000 0000                  		dc.w SME_1h0_3_13E-SME_1h0_3, SME_1h0_3_149-SME_1h0_3	
-0002352E 0000 0000                  		dc.w SME_1h0_3_15E-SME_1h0_3, SME_1h0_3_169-SME_1h0_3	
-00023532 0000 0000                  		dc.w SME_1h0_3_179-SME_1h0_3, SME_1h0_3_193-SME_1h0_3	
-00023536 0000 0000                  		dc.w SME_1h0_3_1B2-SME_1h0_3, SME_1h0_3_1C7-SME_1h0_3	
-0002353A 0000 0000                  		dc.w SME_1h0_3_1E1-SME_1h0_3, SME_1h0_3_1F6-SME_1h0_3	
-0002353E 0000 0000                  		dc.w SME_1h0_3_210-SME_1h0_3, SME_1h0_3_225-SME_1h0_3	
-00023542 0000 0000                  		dc.w SME_1h0_3_230-SME_1h0_3, SME_1h0_3_23B-SME_1h0_3	
-00023546 0000 0000                  		dc.w SME_1h0_3_250-SME_1h0_3, SME_1h0_3_25B-SME_1h0_3	
-0002354A 0000 0000                  		dc.w SME_1h0_3_26B-SME_1h0_3, SME_1h0_3_28A-SME_1h0_3	
-0002354E 0000 0000                  		dc.w SME_1h0_3_2A9-SME_1h0_3, SME_1h0_3_2BE-SME_1h0_3	
-00023552 0000 0000                  		dc.w SME_1h0_3_2D8-SME_1h0_3, SME_1h0_3_2ED-SME_1h0_3	
-00023556 0000 0000                  		dc.w SME_1h0_3_307-SME_1h0_3, SME_1h0_3_312-SME_1h0_3	
-0002355A 0000 0000                  		dc.w SME_1h0_3_31D-SME_1h0_3, SME_1h0_3_328-SME_1h0_3	
-0002355E 0000 0000                  		dc.w SME_1h0_3_333-SME_1h0_3, SME_1h0_3_348-SME_1h0_3	
-00023562 0000 0000                  		dc.w SME_1h0_3_35D-SME_1h0_3, SME_1h0_3_37C-SME_1h0_3	
-00023566 0000 0000                  		dc.w SME_1h0_3_39B-SME_1h0_3, SME_1h0_3_3A6-SME_1h0_3	
-0002356A 0000 0000                  		dc.w SME_1h0_3_3B1-SME_1h0_3, SME_1h0_3_3BC-SME_1h0_3	
-0002356E 0000 0000                  		dc.w SME_1h0_3_3C7-SME_1h0_3, SME_1h0_3_3DC-SME_1h0_3	
-00023572 0000 0000                  		dc.w SME_1h0_3_3EC-SME_1h0_3, SME_1h0_3_401-SME_1h0_3	
-00023576 0000 0000                  		dc.w SME_1h0_3_411-SME_1h0_3, SME_1h0_3_41C-SME_1h0_3	
-0002357A 0000 0000                  		dc.w SME_1h0_3_431-SME_1h0_3, SME_1h0_3_441-SME_1h0_3	
-0002357E 0000 0000                  		dc.w SME_1h0_3_44C-SME_1h0_3, SME_1h0_3_461-SME_1h0_3	
-00023582 0000 0000                  		dc.w SME_1h0_3_476-SME_1h0_3, SME_1h0_3_486-SME_1h0_3	
-00023586 0000 0000                  		dc.w SME_1h0_3_496-SME_1h0_3, SME_1h0_3_4A6-SME_1h0_3	
-0002358A 0000 0000                  		dc.w SME_1h0_3_4B1-SME_1h0_3, SME_1h0_3_4C1-SME_1h0_3	
-0002358E 0000 0000                  		dc.w SME_1h0_3_4D1-SME_1h0_3, SME_1h0_3_4E6-SME_1h0_3	
-00023592 0000 0000                  		dc.w SME_1h0_3_4FB-SME_1h0_3, SME_1h0_3_506-SME_1h0_3	
-00023596 0000 0000                  		dc.w SME_1h0_3_516-SME_1h0_3, SME_1h0_3_521-SME_1h0_3	
-0002359A 0000 0000                  		dc.w SME_1h0_3_531-SME_1h0_3, SME_1h0_3_54B-SME_1h0_3	
-0002359E 0000 0000                  		dc.w SME_1h0_3_565-SME_1h0_3, SME_1h0_3_575-SME_1h0_3	
-000235A2 0000 0000                  		dc.w SME_1h0_3_585-SME_1h0_3, SME_1h0_3_595-SME_1h0_3	
-000235A6 0000 0000                  		dc.w SME_1h0_3_5A0-SME_1h0_3, SME_1h0_3_5B0-SME_1h0_3	
-000235AA 0000 0000                  		dc.w SME_1h0_3_5C5-SME_1h0_3, SME_1h0_3_5EE-SME_1h0_3	
-000235AE 0000 0000                  		dc.w SME_1h0_3_5F4-SME_1h0_3, SME_1h0_3_609-SME_1h0_3	
-000235B2 0000 0000                  		dc.w SME_1h0_3_61E-SME_1h0_3, SME_1h0_3_633-SME_1h0_3	
-000235B6 0000 0000                  		dc.w SME_1h0_3_648-SME_1h0_3, SME_1h0_3_658-SME_1h0_3	
-000235BA 0000 0000                  		dc.w SME_1h0_3_668-SME_1h0_3, SME_1h0_3_678-SME_1h0_3	
-000235BE 0000 0000                  		dc.w SME_1h0_3_688-SME_1h0_3, SME_1h0_3_69D-SME_1h0_3	
-000235C2 0000 0000                  		dc.w SME_1h0_3_6B2-SME_1h0_3, SME_1h0_3_6C7-SME_1h0_3	
-000235C6 0000 0000                  		dc.w SME_1h0_3_6DC-SME_1h0_3, SME_1h0_3_6EC-SME_1h0_3	
-000235CA 0000 0000                  		dc.w SME_1h0_3_6FC-SME_1h0_3, SME_1h0_3_70C-SME_1h0_3	
-000235CE 00                         SME_1h0_3_B4:	dc.b 0	
-000235CF 04                         SME_1h0_3_B5:	dc.b 4	
+0002351A                            SME_rOfxM:	
+0002351A 0000 0000                  		dc.w SME_rOfxM_B4-SME_rOfxM, SME_rOfxM_B5-SME_rOfxM	
+0002351E 0000 0000                  		dc.w SME_rOfxM_CA-SME_rOfxM, SME_rOfxM_EE-SME_rOfxM	
+00023522 0000 0000                  		dc.w SME_rOfxM_FE-SME_rOfxM, SME_rOfxM_10E-SME_rOfxM	
+00023526 0000 0000                  		dc.w SME_rOfxM_11E-SME_rOfxM, SME_rOfxM_133-SME_rOfxM	
+0002352A 0000 0000                  		dc.w SME_rOfxM_13E-SME_rOfxM, SME_rOfxM_149-SME_rOfxM	
+0002352E 0000 0000                  		dc.w SME_rOfxM_15E-SME_rOfxM, SME_rOfxM_169-SME_rOfxM	
+00023532 0000 0000                  		dc.w SME_rOfxM_179-SME_rOfxM, SME_rOfxM_193-SME_rOfxM	
+00023536 0000 0000                  		dc.w SME_rOfxM_1B2-SME_rOfxM, SME_rOfxM_1C7-SME_rOfxM	
+0002353A 0000 0000                  		dc.w SME_rOfxM_1E1-SME_rOfxM, SME_rOfxM_1F6-SME_rOfxM	
+0002353E 0000 0000                  		dc.w SME_rOfxM_210-SME_rOfxM, SME_rOfxM_225-SME_rOfxM	
+00023542 0000 0000                  		dc.w SME_rOfxM_230-SME_rOfxM, SME_rOfxM_23B-SME_rOfxM	
+00023546 0000 0000                  		dc.w SME_rOfxM_250-SME_rOfxM, SME_rOfxM_25B-SME_rOfxM	
+0002354A 0000 0000                  		dc.w SME_rOfxM_26B-SME_rOfxM, SME_rOfxM_28A-SME_rOfxM	
+0002354E 0000 0000                  		dc.w SME_rOfxM_2A9-SME_rOfxM, SME_rOfxM_2BE-SME_rOfxM	
+00023552 0000 0000                  		dc.w SME_rOfxM_2D8-SME_rOfxM, SME_rOfxM_2ED-SME_rOfxM	
+00023556 0000 0000                  		dc.w SME_rOfxM_307-SME_rOfxM, SME_rOfxM_312-SME_rOfxM	
+0002355A 0000 0000                  		dc.w SME_rOfxM_31D-SME_rOfxM, SME_rOfxM_328-SME_rOfxM	
+0002355E 0000 0000                  		dc.w SME_rOfxM_333-SME_rOfxM, SME_rOfxM_348-SME_rOfxM	
+00023562 0000 0000                  		dc.w SME_rOfxM_35D-SME_rOfxM, SME_rOfxM_37C-SME_rOfxM	
+00023566 0000 0000                  		dc.w SME_rOfxM_39B-SME_rOfxM, SME_rOfxM_3A6-SME_rOfxM	
+0002356A 0000 0000                  		dc.w SME_rOfxM_3B1-SME_rOfxM, SME_rOfxM_3BC-SME_rOfxM	
+0002356E 0000 0000                  		dc.w SME_rOfxM_3C7-SME_rOfxM, SME_rOfxM_3DC-SME_rOfxM	
+00023572 0000 0000                  		dc.w SME_rOfxM_3EC-SME_rOfxM, SME_rOfxM_401-SME_rOfxM	
+00023576 0000 0000                  		dc.w SME_rOfxM_411-SME_rOfxM, SME_rOfxM_41C-SME_rOfxM	
+0002357A 0000 0000                  		dc.w SME_rOfxM_431-SME_rOfxM, SME_rOfxM_441-SME_rOfxM	
+0002357E 0000 0000                  		dc.w SME_rOfxM_44C-SME_rOfxM, SME_rOfxM_461-SME_rOfxM	
+00023582 0000 0000                  		dc.w SME_rOfxM_476-SME_rOfxM, SME_rOfxM_486-SME_rOfxM	
+00023586 0000 0000                  		dc.w SME_rOfxM_496-SME_rOfxM, SME_rOfxM_4A6-SME_rOfxM	
+0002358A 0000 0000                  		dc.w SME_rOfxM_4B1-SME_rOfxM, SME_rOfxM_4C1-SME_rOfxM	
+0002358E 0000 0000                  		dc.w SME_rOfxM_4D1-SME_rOfxM, SME_rOfxM_4E6-SME_rOfxM	
+00023592 0000 0000                  		dc.w SME_rOfxM_4FB-SME_rOfxM, SME_rOfxM_506-SME_rOfxM	
+00023596 0000 0000                  		dc.w SME_rOfxM_516-SME_rOfxM, SME_rOfxM_521-SME_rOfxM	
+0002359A 0000 0000                  		dc.w SME_rOfxM_531-SME_rOfxM, SME_rOfxM_54B-SME_rOfxM	
+0002359E 0000 0000                  		dc.w SME_rOfxM_565-SME_rOfxM, SME_rOfxM_575-SME_rOfxM	
+000235A2 0000 0000                  		dc.w SME_rOfxM_585-SME_rOfxM, SME_rOfxM_595-SME_rOfxM	
+000235A6 0000 0000                  		dc.w SME_rOfxM_5A0-SME_rOfxM, SME_rOfxM_5B0-SME_rOfxM	
+000235AA 0000 0000                  		dc.w SME_rOfxM_5C5-SME_rOfxM, SME_rOfxM_5EE-SME_rOfxM	
+000235AE 0000 0000                  		dc.w SME_rOfxM_5F4-SME_rOfxM, SME_rOfxM_609-SME_rOfxM	
+000235B2 0000 0000                  		dc.w SME_rOfxM_61E-SME_rOfxM, SME_rOfxM_633-SME_rOfxM	
+000235B6 0000 0000                  		dc.w SME_rOfxM_648-SME_rOfxM, SME_rOfxM_658-SME_rOfxM	
+000235BA 0000 0000                  		dc.w SME_rOfxM_668-SME_rOfxM, SME_rOfxM_678-SME_rOfxM	
+000235BE 0000 0000                  		dc.w SME_rOfxM_688-SME_rOfxM, SME_rOfxM_69D-SME_rOfxM	
+000235C2 0000 0000                  		dc.w SME_rOfxM_6B2-SME_rOfxM, SME_rOfxM_6C7-SME_rOfxM	
+000235C6 0000 0000                  		dc.w SME_rOfxM_6DC-SME_rOfxM, SME_rOfxM_6EC-SME_rOfxM	
+000235CA 0000 0000                  		dc.w SME_rOfxM_6FC-SME_rOfxM, SME_rOfxM_70C-SME_rOfxM	
+000235CE 00                         SME_rOfxM_B4:	dc.b 0	
+000235CF 04                         SME_rOfxM_B5:	dc.b 4	
 000235D0 EC08 0000 F0               		dc.b $EC, 8, 0, 0, $F0	
 000235D5 0408 0003 F0               		dc.b 4, 8, 0, 3, $F0	
 000235DA 0C08 0006 F8               		dc.b $C, 8, 0, 6, $F8	
 000235DF F409 0009 F0               		dc.b $F4, 9, 0, 9, $F0	
-000235E4 07                         SME_1h0_3_CA:	dc.b 7	
+000235E4 07                         SME_rOfxM_CA:	dc.b 7	
 000235E5 0C08 0000 F8               		dc.b $C, 8, 0, 0, $F8	
 000235EA EC09 0003 F0               		dc.b $EC, 9, 0, 3, $F0	
 000235EF 0400 0009 00               		dc.b 4, 0, 0, 9, 0	
@@ -45006,310 +45006,310 @@
 000235F9 FC01 000B F0               		dc.b $FC, 1, 0, $B, $F0	
 000235FE 0400 000D F8               		dc.b 4, 0, 0, $D, $F8	
 00023603 FC00 000E F8               		dc.b $FC, 0, 0, $E, $F8	
-00023608 03                         SME_1h0_3_EE:	dc.b 3	
+00023608 03                         SME_rOfxM_EE:	dc.b 3	
 00023609 EC09 0000 F0               		dc.b $EC, 9, 0, 0, $F0	
 0002360E FC09 0006 F0               		dc.b $FC, 9, 0, 6, $F0	
 00023613 0C08 000C F8               		dc.b $C, 8, 0, $C, $F8	
-00023618 03                         SME_1h0_3_FE:	dc.b 3	
+00023618 03                         SME_rOfxM_FE:	dc.b 3	
 00023619 EC09 0000 F0               		dc.b $EC, 9, 0, 0, $F0	
 0002361E FC09 0006 F0               		dc.b $FC, 9, 0, 6, $F0	
 00023623 0C08 000C F8               		dc.b $C, 8, 0, $C, $F8	
-00023628 03                         SME_1h0_3_10E:	dc.b 3	
+00023628 03                         SME_rOfxM_10E:	dc.b 3	
 00023629 EC0A 0000 F0               		dc.b $EC, $A, 0, 0, $F0	
 0002362E 0408 0009 F0               		dc.b 4, 8, 0, 9, $F0	
 00023633 0C08 000C F8               		dc.b $C, 8, 0, $C, $F8	
-00023638 04                         SME_1h0_3_11E:	dc.b 4	
+00023638 04                         SME_rOfxM_11E:	dc.b 4	
 00023639 EB0D 0000 EC               		dc.b $EB, $D, 0, 0, $EC	
 0002363E FB09 0008 EC               		dc.b $FB, 9, 0, 8, $EC	
 00023643 FB06 000E 04               		dc.b $FB, 6, 0, $E, 4	
 00023648 0B04 0014 EC               		dc.b $B, 4, 0, $14, $EC	
-0002364D 02                         SME_1h0_3_133:	dc.b 2	
+0002364D 02                         SME_rOfxM_133:	dc.b 2	
 0002364E EC0D 0000 ED               		dc.b $EC, $D, 0, 0, $ED	
 00023653 FC0E 0008 F5               		dc.b $FC, $E, 0, 8, $F5	
-00023658 02                         SME_1h0_3_13E:	dc.b 2	
+00023658 02                         SME_rOfxM_13E:	dc.b 2	
 00023659 ED09 0000 F3               		dc.b $ED, 9, 0, 0, $F3	
 0002365E FD0A 0006 F3               		dc.b $FD, $A, 0, 6, $F3	
-00023663 04                         SME_1h0_3_149:	dc.b 4	
+00023663 04                         SME_rOfxM_149:	dc.b 4	
 00023664 EB09 0000 F3               		dc.b $EB, 9, 0, 0, $F3	
 00023669 FB09 0006 EC               		dc.b $FB, 9, 0, 6, $EC	
 0002366E FB06 000C 04               		dc.b $FB, 6, 0, $C, 4	
 00023673 0B04 0012 EC               		dc.b $B, 4, 0, $12, $EC	
-00023678 02                         SME_1h0_3_15E:	dc.b 2	
+00023678 02                         SME_rOfxM_15E:	dc.b 2	
 00023679 EC09 0000 F2               		dc.b $EC, 9, 0, 0, $F2	
 0002367E FC0E 0006 EB               		dc.b $FC, $E, 0, 6, $EB	
-00023683 03                         SME_1h0_3_169:	dc.b 3	
+00023683 03                         SME_rOfxM_169:	dc.b 3	
 00023684 ED0D 0000 EC               		dc.b $ED, $D, 0, 0, $EC	
 00023689 FD0C 0008 F4               		dc.b $FD, $C, 0, 8, $F4	
 0002368E 0509 000C F4               		dc.b 5, 9, 0, $C, $F4	
-00023693 05                         SME_1h0_3_179:	dc.b 5	
+00023693 05                         SME_rOfxM_179:	dc.b 5	
 00023694 EB06 0000 03               		dc.b $EB, 6, 0, 0, 3	
 00023699 FB08 0006 EB               		dc.b $FB, 8, 0, 6, $EB	
 0002369E 0309 0009 F3               		dc.b 3, 9, 0, 9, $F3	
 000236A3 1300 000F FB               		dc.b $13, 0, 0, $F, $FB	
 000236A8 EB09 0010 EB               		dc.b $EB, 9, 0, $10, $EB	
-000236AD 06                         SME_1h0_3_193:	dc.b 6	
+000236AD 06                         SME_rOfxM_193:	dc.b 6	
 000236AE EC09 0000 EC               		dc.b $EC, 9, 0, 0, $EC	
 000236B3 EC01 0006 04               		dc.b $EC, 1, 0, 6, 4	
 000236B8 FC0C 0008 EC               		dc.b $FC, $C, 0, 8, $EC	
 000236BD 0409 000C F4               		dc.b 4, 9, 0, $C, $F4	
 000236C2 FC05 0012 0C               		dc.b $FC, 5, 0, $12, $C	
 000236C7 F400 0016 14               		dc.b $F4, 0, 0, $16, $14	
-000236CC 04                         SME_1h0_3_1B2:	dc.b 4	
+000236CC 04                         SME_rOfxM_1B2:	dc.b 4	
 000236CD ED09 0000 ED               		dc.b $ED, 9, 0, 0, $ED	
 000236D2 ED01 0006 05               		dc.b $ED, 1, 0, 6, 5	
 000236D7 FD0D 0008 F5               		dc.b $FD, $D, 0, 8, $F5	
 000236DC 0D08 0010 FD               		dc.b $D, 8, 0, $10, $FD	
-000236E1 05                         SME_1h0_3_1C7:	dc.b 5	
+000236E1 05                         SME_rOfxM_1C7:	dc.b 5	
 000236E2 EB05 0000 03               		dc.b $EB, 5, 0, 0, 3	
 000236E7 FB0D 0004 F3               		dc.b $FB, $D, 0, 4, $F3	
 000236EC 0B08 000C F3               		dc.b $B, 8, 0, $C, $F3	
 000236F1 1304 000F FB               		dc.b $13, 4, 0, $F, $FB	
 000236F6 EB09 0011 EB               		dc.b $EB, 9, 0, $11, $EB	
-000236FB 04                         SME_1h0_3_1E1:	dc.b 4	
+000236FB 04                         SME_rOfxM_1E1:	dc.b 4	
 000236FC EC09 0000 EC               		dc.b $EC, 9, 0, 0, $EC	
 00023701 EC01 0006 04               		dc.b $EC, 1, 0, 6, 4	
 00023706 FC0D 0008 F4               		dc.b $FC, $D, 0, 8, $F4	
 0002370B 0C08 0010 FC               		dc.b $C, 8, 0, $10, $FC	
-00023710 05                         SME_1h0_3_1F6:	dc.b 5	
+00023710 05                         SME_rOfxM_1F6:	dc.b 5	
 00023711 ED09 0000 ED               		dc.b $ED, 9, 0, 0, $ED	
 00023716 ED01 0006 05               		dc.b $ED, 1, 0, 6, 5	
 0002371B FD00 0008 ED               		dc.b $FD, 0, 0, 8, $ED	
 00023720 FD0D 0009 F5               		dc.b $FD, $D, 0, 9, $F5	
 00023725 0D08 0011 FD               		dc.b $D, 8, 0, $11, $FD	
-0002372A 04                         SME_1h0_3_210:	dc.b 4	
+0002372A 04                         SME_rOfxM_210:	dc.b 4	
 0002372B F407 0000 EB               		dc.b $F4, 7, 0, 0, $EB	
 00023730 EC09 0008 FB               		dc.b $EC, 9, 0, 8, $FB	
 00023735 FC04 000E FB               		dc.b $FC, 4, 0, $E, $FB	
 0002373A 0409 0010 FB               		dc.b 4, 9, 0, $10, $FB	
-0002373F 02                         SME_1h0_3_225:	dc.b 2	
+0002373F 02                         SME_rOfxM_225:	dc.b 2	
 00023740 F407 0000 EC               		dc.b $F4, 7, 0, 0, $EC	
 00023745 EC0B 0008 FC               		dc.b $EC, $B, 0, 8, $FC	
-0002374A 02                         SME_1h0_3_230:	dc.b 2	
+0002374A 02                         SME_rOfxM_230:	dc.b 2	
 0002374B F406 0000 ED               		dc.b $F4, 6, 0, 0, $ED	
 00023750 F40A 0006 FD               		dc.b $F4, $A, 0, 6, $FD	
-00023755 04                         SME_1h0_3_23B:	dc.b 4	
+00023755 04                         SME_rOfxM_23B:	dc.b 4	
 00023756 F506 0000 EB               		dc.b $F5, 6, 0, 0, $EB	
 0002375B EC09 0006 FB               		dc.b $EC, 9, 0, 6, $FB	
 00023760 FC04 000C FB               		dc.b $FC, 4, 0, $C, $FB	
 00023765 0409 000E FB               		dc.b 4, 9, 0, $E, $FB	
-0002376A 02                         SME_1h0_3_250:	dc.b 2	
+0002376A 02                         SME_rOfxM_250:	dc.b 2	
 0002376B F506 0000 EC               		dc.b $F5, 6, 0, 0, $EC	
 00023770 F40B 0006 FC               		dc.b $F4, $B, 0, 6, $FC	
-00023775 03                         SME_1h0_3_25B:	dc.b 3	
+00023775 03                         SME_rOfxM_25B:	dc.b 3	
 00023776 F407 0000 ED               		dc.b $F4, 7, 0, 0, $ED	
 0002377B EC00 0008 FD               		dc.b $EC, 0, 0, 8, $FD	
 00023780 F40A 0009 FD               		dc.b $F4, $A, 0, 9, $FD	
-00023785 06                         SME_1h0_3_26B:	dc.b 6	
+00023785 06                         SME_rOfxM_26B:	dc.b 6	
 00023786 ED04 0000 F3               		dc.b $ED, 4, 0, 0, $F3	
 0002378B F504 0002 EB               		dc.b $F5, 4, 0, 2, $EB	
 00023790 F50A 0004 FB               		dc.b $F5, $A, 0, 4, $FB	
 00023795 0D00 000D FB               		dc.b $D, 0, 0, $D, $FB	
 0002379A FD00 000E 13               		dc.b $FD, 0, 0, $E, $13	
 0002379F FD06 000F EB               		dc.b $FD, 6, 0, $F, $EB	
-000237A4 06                         SME_1h0_3_28A:	dc.b 6	
+000237A4 06                         SME_rOfxM_28A:	dc.b 6	
 000237A5 FC06 0000 EC               		dc.b $FC, 6, 0, 0, $EC	
 000237AA E408 0006 F4               		dc.b $E4, 8, 0, 6, $F4	
 000237AF EC04 0009 FC               		dc.b $EC, 4, 0, 9, $FC	
 000237B4 F404 000B EC               		dc.b $F4, 4, 0, $B, $EC	
 000237B9 F40A 000D FC               		dc.b $F4, $A, 0, $D, $FC	
 000237BE 0C00 0016 FC               		dc.b $C, 0, 0, $16, $FC	
-000237C3 04                         SME_1h0_3_2A9:	dc.b 4	
+000237C3 04                         SME_rOfxM_2A9:	dc.b 4	
 000237C4 FB06 0000 ED               		dc.b $FB, 6, 0, 0, $ED	
 000237C9 F304 0006 ED               		dc.b $F3, 4, 0, 6, $ED	
 000237CE EB0A 0008 FD               		dc.b $EB, $A, 0, 8, $FD	
 000237D3 0304 0011 FD               		dc.b 3, 4, 0, $11, $FD	
-000237D8 05                         SME_1h0_3_2BE:	dc.b 5	
+000237D8 05                         SME_rOfxM_2BE:	dc.b 5	
 000237D9 ED08 0000 F3               		dc.b $ED, 8, 0, 0, $F3	
 000237DE F504 0003 EB               		dc.b $F5, 4, 0, 3, $EB	
 000237E3 F50D 0005 FB               		dc.b $F5, $D, 0, 5, $FB	
 000237E8 0508 000D FB               		dc.b 5, 8, 0, $D, $FB	
 000237ED FD06 0010 EB               		dc.b $FD, 6, 0, $10, $EB	
-000237F2 04                         SME_1h0_3_2D8:	dc.b 4	
+000237F2 04                         SME_rOfxM_2D8:	dc.b 4	
 000237F3 FC06 0000 EC               		dc.b $FC, 6, 0, 0, $EC	
 000237F8 F404 0006 EC               		dc.b $F4, 4, 0, 6, $EC	
 000237FD EC0A 0008 FC               		dc.b $EC, $A, 0, 8, $FC	
 00023802 0404 0011 FC               		dc.b 4, 4, 0, $11, $FC	
-00023807 05                         SME_1h0_3_2ED:	dc.b 5	
+00023807 05                         SME_rOfxM_2ED:	dc.b 5	
 00023808 FB06 0000 ED               		dc.b $FB, 6, 0, 0, $ED	
 0002380D EB0A 0006 FD               		dc.b $EB, $A, 0, 6, $FD	
 00023812 F304 000F ED               		dc.b $F3, 4, 0, $F, $ED	
 00023817 0304 0011 FD               		dc.b 3, 4, 0, $11, $FD	
 0002381C 0B00 0013 FD               		dc.b $B, 0, 0, $13, $FD	
-00023821 02                         SME_1h0_3_307:	dc.b 2	
+00023821 02                         SME_rOfxM_307:	dc.b 2	
 00023822 EE09 0000 F4               		dc.b $EE, 9, 0, 0, $F4	
 00023827 FE0E 0006 EC               		dc.b $FE, $E, 0, 6, $EC	
-0002382C 02                         SME_1h0_3_312:	dc.b 2	
+0002382C 02                         SME_rOfxM_312:	dc.b 2	
 0002382D EE09 0000 F4               		dc.b $EE, 9, 0, 0, $F4	
 00023832 FE0E 0006 EC               		dc.b $FE, $E, 0, 6, $EC	
-00023837 02                         SME_1h0_3_31D:	dc.b 2	
+00023837 02                         SME_rOfxM_31D:	dc.b 2	
 00023838 EE09 0000 F4               		dc.b $EE, 9, 0, 0, $F4	
 0002383D FE0E 0006 ED               		dc.b $FE, $E, 0, 6, $ED	
-00023842 02                         SME_1h0_3_328:	dc.b 2	
+00023842 02                         SME_rOfxM_328:	dc.b 2	
 00023843 EE09 0000 F4               		dc.b $EE, 9, 0, 0, $F4	
 00023848 FE0E 0006 EC               		dc.b $FE, $E, 0, 6, $EC	
-0002384D 04                         SME_1h0_3_333:	dc.b 4	
+0002384D 04                         SME_rOfxM_333:	dc.b 4	
 0002384E EE09 0000 EE               		dc.b $EE, 9, 0, 0, $EE	
 00023853 EE01 0006 06               		dc.b $EE, 1, 0, 6, 6	
 00023858 FE0E 0008 F6               		dc.b $FE, $E, 0, 8, $F6	
 0002385D FE00 0014 EE               		dc.b $FE, 0, 0, $14, $EE	
-00023862 04                         SME_1h0_3_348:	dc.b 4	
+00023862 04                         SME_rOfxM_348:	dc.b 4	
 00023863 EE09 0000 EE               		dc.b $EE, 9, 0, 0, $EE	
 00023868 EE01 0006 06               		dc.b $EE, 1, 0, 6, 6	
 0002386D FE0E 0008 F6               		dc.b $FE, $E, 0, 8, $F6	
 00023872 FE00 0014 EE               		dc.b $FE, 0, 0, $14, $EE	
-00023877 06                         SME_1h0_3_35D:	dc.b 6	
+00023877 06                         SME_rOfxM_35D:	dc.b 6	
 00023878 EE01 0000 06               		dc.b $EE, 1, 0, 0, 6	
 0002387D FE0E 0002 F6               		dc.b $FE, $E, 0, 2, $F6	
 00023882 EE01 000E FE               		dc.b $EE, 1, 0, $E, $FE	
 00023887 FE00 0010 EE               		dc.b $FE, 0, 0, $10, $EE	
 0002388C EE01 0011 F6               		dc.b $EE, 1, 0, $11, $F6	
 00023891 EE01 0013 EE               		dc.b $EE, 1, 0, $13, $EE	
-00023896 06                         SME_1h0_3_37C:	dc.b 6	
+00023896 06                         SME_rOfxM_37C:	dc.b 6	
 00023897 FE0E 0000 F6               		dc.b $FE, $E, 0, 0, $F6	
 0002389C F604 000C F6               		dc.b $F6, 4, 0, $C, $F6	
 000238A1 EE04 000E F6               		dc.b $EE, 4, 0, $E, $F6	
 000238A6 EE01 0010 EE               		dc.b $EE, 1, 0, $10, $EE	
 000238AB EE01 0012 06               		dc.b $EE, 1, 0, $12, 6	
 000238B0 FE00 0014 EE               		dc.b $FE, 0, 0, $14, $EE	
-000238B5 02                         SME_1h0_3_39B:	dc.b 2	
+000238B5 02                         SME_rOfxM_39B:	dc.b 2	
 000238B6 F406 0000 EE               		dc.b $F4, 6, 0, 0, $EE	
 000238BB F40B 0006 FE               		dc.b $F4, $B, 0, 6, $FE	
-000238C0 02                         SME_1h0_3_3A6:	dc.b 2	
+000238C0 02                         SME_rOfxM_3A6:	dc.b 2	
 000238C1 F406 0000 EE               		dc.b $F4, 6, 0, 0, $EE	
 000238C6 F40B 0006 FE               		dc.b $F4, $B, 0, 6, $FE	
-000238CB 02                         SME_1h0_3_3B1:	dc.b 2	
+000238CB 02                         SME_rOfxM_3B1:	dc.b 2	
 000238CC F406 0000 EE               		dc.b $F4, 6, 0, 0, $EE	
 000238D1 F40B 0006 FE               		dc.b $F4, $B, 0, 6, $FE	
-000238D6 02                         SME_1h0_3_3BC:	dc.b 2	
+000238D6 02                         SME_rOfxM_3BC:	dc.b 2	
 000238D7 F406 0000 EE               		dc.b $F4, 6, 0, 0, $EE	
 000238DC F40B 0006 FE               		dc.b $F4, $B, 0, 6, $FE	
-000238E1 04                         SME_1h0_3_3C7:	dc.b 4	
+000238E1 04                         SME_rOfxM_3C7:	dc.b 4	
 000238E2 FA06 0000 EE               		dc.b $FA, 6, 0, 0, $EE	
 000238E7 F204 0006 EE               		dc.b $F2, 4, 0, 6, $EE	
 000238EC EA0B 0008 FE               		dc.b $EA, $B, 0, 8, $FE	
 000238F1 0A00 0014 FE               		dc.b $A, 0, 0, $14, $FE	
-000238F6 03                         SME_1h0_3_3DC:	dc.b 3	
+000238F6 03                         SME_rOfxM_3DC:	dc.b 3	
 000238F7 F207 0000 EE               		dc.b $F2, 7, 0, 0, $EE	
 000238FC EA0B 0008 FE               		dc.b $EA, $B, 0, 8, $FE	
 00023901 0A00 0014 FE               		dc.b $A, 0, 0, $14, $FE	
-00023906 04                         SME_1h0_3_3EC:	dc.b 4	
+00023906 04                         SME_rOfxM_3EC:	dc.b 4	
 00023907 F204 0000 EE               		dc.b $F2, 4, 0, 0, $EE	
 0002390C EA0B 0002 FE               		dc.b $EA, $B, 0, 2, $FE	
 00023911 0A00 000E FE               		dc.b $A, 0, 0, $E, $FE	
 00023916 FA06 000F EE               		dc.b $FA, 6, 0, $F, $EE	
-0002391B 03                         SME_1h0_3_401:	dc.b 3	
+0002391B 03                         SME_rOfxM_401:	dc.b 3	
 0002391C EA0B 0000 FE               		dc.b $EA, $B, 0, 0, $FE	
 00023921 0A00 000C FE               		dc.b $A, 0, 0, $C, $FE	
 00023926 F207 000D EE               		dc.b $F2, 7, 0, $D, $EE	
-0002392B 02                         SME_1h0_3_411:	dc.b 2	
+0002392B 02                         SME_rOfxM_411:	dc.b 2	
 0002392C 100C 0000 F4               		dc.b $10, $C, 0, 0, $F4	
 00023931 F00B 0004 F4               		dc.b $F0, $B, 0, 4, $F4	
-00023936 04                         SME_1h0_3_41C:	dc.b 4	
+00023936 04                         SME_rOfxM_41C:	dc.b 4	
 00023937 0F0C 0000 F3               		dc.b $F, $C, 0, 0, $F3	
 0002393C EF07 0004 F3               		dc.b $EF, 7, 0, 4, $F3	
 00023941 EF03 000C 03               		dc.b $EF, 3, 0, $C, 3	
 00023946 EF02 0010 0B               		dc.b $EF, 2, 0, $10, $B	
-0002394B 03                         SME_1h0_3_431:	dc.b 3	
+0002394B 03                         SME_rOfxM_431:	dc.b 3	
 0002394C 0D0C 0000 F3               		dc.b $D, $C, 0, 0, $F3	
 00023951 ED0B 0004 F3               		dc.b $ED, $B, 0, 4, $F3	
 00023956 ED02 0010 0B               		dc.b $ED, 2, 0, $10, $B	
-0002395B 02                         SME_1h0_3_441:	dc.b 2	
+0002395B 02                         SME_rOfxM_441:	dc.b 2	
 0002395C ED09 0000 F0               		dc.b $ED, 9, 0, 0, $F0	
 00023961 FD0E 0006 F0               		dc.b $FD, $E, 0, 6, $F0	
-00023966 04                         SME_1h0_3_44C:	dc.b 4	
+00023966 04                         SME_rOfxM_44C:	dc.b 4	
 00023967 ED09 0000 F0               		dc.b $ED, 9, 0, 0, $F0	
 0002396C FD0D 0006 F0               		dc.b $FD, $D, 0, 6, $F0	
 00023971 0D04 000E 00               		dc.b $D, 4, 0, $E, 0	
 00023976 0500 0010 E8               		dc.b 5, 0, 0, $10, $E8	
-0002397B 04                         SME_1h0_3_461:	dc.b 4	
+0002397B 04                         SME_rOfxM_461:	dc.b 4	
 0002397C F404 0000 FC               		dc.b $F4, 4, 0, 0, $FC	
 00023981 FC0D 0002 F4               		dc.b $FC, $D, 0, 2, $F4	
 00023986 0C08 000A F4               		dc.b $C, 8, 0, $A, $F4	
 0002398B 0400 000D EC               		dc.b 4, 0, 0, $D, $EC	
-00023990 03                         SME_1h0_3_476:	dc.b 3	
+00023990 03                         SME_rOfxM_476:	dc.b 3	
 00023991 EC08 0800 E8               		dc.b $EC, 8, 8, 0, $E8	
 00023996 F402 0803 00               		dc.b $F4, 2, 8, 3, 0	
 0002399B F40F 0806 E0               		dc.b $F4, $F, 8, 6, $E0	
-000239A0 03                         SME_1h0_3_486:	dc.b 3	
+000239A0 03                         SME_rOfxM_486:	dc.b 3	
 000239A1 EC0E 0800 E8               		dc.b $EC, $E, 8, 0, $E8	
 000239A6 040D 080C E0               		dc.b 4, $D, 8, $C, $E0	
 000239AB 0C00 1814 00               		dc.b $C, 0, $18, $14, 0	
-000239B0 03                         SME_1h0_3_496:	dc.b 3	
+000239B0 03                         SME_rOfxM_496:	dc.b 3	
 000239B1 F40D 0000 FC               		dc.b $F4, $D, 0, 0, $FC	
 000239B6 FC05 0008 EC               		dc.b $FC, 5, 0, 8, $EC	
 000239BB 0408 000C FC               		dc.b 4, 8, 0, $C, $FC	
-000239C0 02                         SME_1h0_3_4A6:	dc.b 2	
+000239C0 02                         SME_rOfxM_4A6:	dc.b 2	
 000239C1 F40A 0000 E8               		dc.b $F4, $A, 0, 0, $E8	
 000239C6 F40A 0800 00               		dc.b $F4, $A, 8, 0, 0	
-000239CB 03                         SME_1h0_3_4B1:	dc.b 3	
+000239CB 03                         SME_rOfxM_4B1:	dc.b 3	
 000239CC F40D 0000 E4               		dc.b $F4, $D, 0, 0, $E4	
 000239D1 FC00 0008 04               		dc.b $FC, 0, 0, 8, 4	
 000239D6 040C 0009 EC               		dc.b 4, $C, 0, 9, $EC	
-000239DB 03                         SME_1h0_3_4C1:	dc.b 3	
+000239DB 03                         SME_rOfxM_4C1:	dc.b 3	
 000239DC E80B 0000 F0               		dc.b $E8, $B, 0, 0, $F0	
 000239E1 0804 000C F8               		dc.b 8, 4, 0, $C, $F8	
 000239E6 1000 000E F8               		dc.b $10, 0, 0, $E, $F8	
-000239EB 04                         SME_1h0_3_4D1:	dc.b 4	
+000239EB 04                         SME_rOfxM_4D1:	dc.b 4	
 000239EC F80E 0000 E8               		dc.b $F8, $E, 0, 0, $E8	
 000239F1 0005 000C 08               		dc.b 0, 5, 0, $C, 8	
 000239F6 F800 0010 08               		dc.b $F8, 0, 0, $10, 8	
 000239FB F000 0011 F8               		dc.b $F0, 0, 0, $11, $F8	
-00023A00 04                         SME_1h0_3_4E6:	dc.b 4	
+00023A00 04                         SME_rOfxM_4E6:	dc.b 4	
 00023A01 F80E 0000 E8               		dc.b $F8, $E, 0, 0, $E8	
 00023A06 0005 000C 08               		dc.b 0, 5, 0, $C, 8	
 00023A0B F800 0010 08               		dc.b $F8, 0, 0, $10, 8	
 00023A10 F000 0011 F8               		dc.b $F0, 0, 0, $11, $F8	
-00023A15 02                         SME_1h0_3_4FB:	dc.b 2	
+00023A15 02                         SME_rOfxM_4FB:	dc.b 2	
 00023A16 ED0A 0000 F3               		dc.b $ED, $A, 0, 0, $F3	
 00023A1B 050D 0009 EB               		dc.b 5, $D, 0, 9, $EB	
-00023A20 03                         SME_1h0_3_506:	dc.b 3	
+00023A20 03                         SME_rOfxM_506:	dc.b 3	
 00023A21 EC0A 0000 F3               		dc.b $EC, $A, 0, 0, $F3	
 00023A26 0408 0009 F3               		dc.b 4, 8, 0, 9, $F3	
 00023A2B 0C04 000C F3               		dc.b $C, 4, 0, $C, $F3	
-00023A30 02                         SME_1h0_3_516:	dc.b 2	
+00023A30 02                         SME_rOfxM_516:	dc.b 2	
 00023A31 ED0A 0000 F3               		dc.b $ED, $A, 0, 0, $F3	
 00023A36 050D 0009 EB               		dc.b 5, $D, 0, 9, $EB	
-00023A3B 03                         SME_1h0_3_521:	dc.b 3	
+00023A3B 03                         SME_rOfxM_521:	dc.b 3	
 00023A3C EC0A 0000 F3               		dc.b $EC, $A, 0, 0, $F3	
 00023A41 0408 0009 F3               		dc.b 4, 8, 0, 9, $F3	
 00023A46 0C04 000C F3               		dc.b $C, 4, 0, $C, $F3	
-00023A4B 05                         SME_1h0_3_531:	dc.b 5	
+00023A4B 05                         SME_rOfxM_531:	dc.b 5	
 00023A4C E80D 0000 EC               		dc.b $E8, $D, 0, 0, $EC	
 00023A51 E801 0008 0C               		dc.b $E8, 1, 0, 8, $C	
 00023A56 F809 000A F4               		dc.b $F8, 9, 0, $A, $F4	
 00023A5B 080C 0010 F4               		dc.b 8, $C, 0, $10, $F4	
 00023A60 1000 0014 F4               		dc.b $10, 0, 0, $14, $F4	
-00023A65 05                         SME_1h0_3_54B:	dc.b 5	
+00023A65 05                         SME_rOfxM_54B:	dc.b 5	
 00023A66 E80D 0000 EC               		dc.b $E8, $D, 0, 0, $EC	
 00023A6B E801 0008 0C               		dc.b $E8, 1, 0, 8, $C	
 00023A70 F809 000A F4               		dc.b $F8, 9, 0, $A, $F4	
 00023A75 080C 0010 F4               		dc.b 8, $C, 0, $10, $F4	
 00023A7A 1000 0014 F4               		dc.b $10, 0, 0, $14, $F4	
-00023A7F 03                         SME_1h0_3_565:	dc.b 3	
+00023A7F 03                         SME_rOfxM_565:	dc.b 3	
 00023A80 F40D 0800 E4               		dc.b $F4, $D, 8, 0, $E4	
 00023A85 FC05 0808 04               		dc.b $FC, 5, 8, 8, 4	
 00023A8A 0408 080C EC               		dc.b 4, 8, 8, $C, $EC	
-00023A8F 03                         SME_1h0_3_575:	dc.b 3	
+00023A8F 03                         SME_rOfxM_575:	dc.b 3	
 00023A90 F40D 0800 FC               		dc.b $F4, $D, 8, 0, $FC	
 00023A95 FC00 0808 F4               		dc.b $FC, 0, 8, 8, $F4	
 00023A9A 040C 0809 F4               		dc.b 4, $C, 8, 9, $F4	
-00023A9F 03                         SME_1h0_3_585:	dc.b 3	
+00023A9F 03                         SME_rOfxM_585:	dc.b 3	
 00023AA0 F00E 0000 EC               		dc.b $F0, $E, 0, 0, $EC	
 00023AA5 F801 000C 0C               		dc.b $F8, 1, 0, $C, $C	
 00023AAA 080C 000E F4               		dc.b 8, $C, 0, $E, $F4	
-00023AAF 02                         SME_1h0_3_595:	dc.b 2	
+00023AAF 02                         SME_rOfxM_595:	dc.b 2	
 00023AB0 F00F 0000 EC               		dc.b $F0, $F, 0, 0, $EC	
 00023AB5 F802 0010 0C               		dc.b $F8, 2, 0, $10, $C	
-00023ABA 03                         SME_1h0_3_5A0:	dc.b 3	
+00023ABA 03                         SME_rOfxM_5A0:	dc.b 3	
 00023ABB EB09 0000 F4               		dc.b $EB, 9, 0, 0, $F4	
 00023AC0 FB0E 0006 EC               		dc.b $FB, $E, 0, 6, $EC	
 00023AC5 0301 0012 0C               		dc.b 3, 1, 0, $12, $C	
-00023ACA 04                         SME_1h0_3_5B0:	dc.b 4	
+00023ACA 04                         SME_rOfxM_5B0:	dc.b 4	
 00023ACB F00F 0000 EC               		dc.b $F0, $F, 0, 0, $EC	
 00023AD0 1004 0010 F4               		dc.b $10, 4, 0, $10, $F4	
 00023AD5 F800 0012 0C               		dc.b $F8, 0, 0, $12, $C	
 00023ADA 0801 0013 0C               		dc.b 8, 1, 0, $13, $C	
-00023ADF 08                         SME_1h0_3_5C5:	dc.b 8	
+00023ADF 08                         SME_rOfxM_5C5:	dc.b 8	
 00023AE0 1100 0000 F4               		dc.b $11, 0, 0, 0, $F4	
 00023AE5 0908 0001 F4               		dc.b 9, 8, 0, 1, $F4	
 00023AEA F901 0004 0C               		dc.b $F9, 1, 0, 4, $C	
@@ -45318,80 +45318,80 @@
 00023AF9 E903 000B FC               		dc.b $E9, 3, 0, $B, $FC	
 00023AFE F102 000F 04               		dc.b $F1, 2, 0, $F, 4	
 00023B03 E900 0012 04               		dc.b $E9, 0, 0, $12, 4	
-00023B08 01                         SME_1h0_3_5EE:	dc.b 1	
+00023B08 01                         SME_rOfxM_5EE:	dc.b 1	
 00023B09 EA0B 0000 F3               		dc.b $EA, $B, 0, 0, $F3	
-00023B0E 04                         SME_1h0_3_5F4:	dc.b 4	
+00023B0E 04                         SME_rOfxM_5F4:	dc.b 4	
 00023B0F F404 0000 FC               		dc.b $F4, 4, 0, 0, $FC	
 00023B14 FC0D 0002 F4               		dc.b $FC, $D, 0, 2, $F4	
 00023B19 0C08 000A F4               		dc.b $C, 8, 0, $A, $F4	
 00023B1E 0400 000D EC               		dc.b 4, 0, 0, $D, $EC	
-00023B23 04                         SME_1h0_3_609:	dc.b 4	
+00023B23 04                         SME_rOfxM_609:	dc.b 4	
 00023B24 F404 0000 FC               		dc.b $F4, 4, 0, 0, $FC	
 00023B29 FC0D 0002 F4               		dc.b $FC, $D, 0, 2, $F4	
 00023B2E 0C08 000A F4               		dc.b $C, 8, 0, $A, $F4	
 00023B33 0400 000D EC               		dc.b 4, 0, 0, $D, $EC	
-00023B38 04                         SME_1h0_3_61E:	dc.b 4	
+00023B38 04                         SME_rOfxM_61E:	dc.b 4	
 00023B39 F404 0000 FC               		dc.b $F4, 4, 0, 0, $FC	
 00023B3E FC0D 0002 F4               		dc.b $FC, $D, 0, 2, $F4	
 00023B43 0C08 000A F4               		dc.b $C, 8, 0, $A, $F4	
 00023B48 0400 000D EC               		dc.b 4, 0, 0, $D, $EC	
-00023B4D 04                         SME_1h0_3_633:	dc.b 4	
+00023B4D 04                         SME_rOfxM_633:	dc.b 4	
 00023B4E F404 0000 FC               		dc.b $F4, 4, 0, 0, $FC	
 00023B53 FC0D 0002 F4               		dc.b $FC, $D, 0, 2, $F4	
 00023B58 0C08 000A F4               		dc.b $C, 8, 0, $A, $F4	
 00023B5D 0400 000D EC               		dc.b 4, 0, 0, $D, $EC	
-00023B62 03                         SME_1h0_3_648:	dc.b 3	
-00023B63 F40B 0000 EC               		dc.b $F4, $B, 0, 0, $EC	
-00023B68 FC00 000C 04               		dc.b $FC, 0, 0, $C, 4	
-00023B6D 0400 000D 04               		dc.b 4, 0, 0, $D, 4	
-00023B72 03                         SME_1h0_3_658:	dc.b 3	
-00023B73 F40B 0000 EC               		dc.b $F4, $B, 0, 0, $EC	
-00023B78 FC00 000C 04               		dc.b $FC, 0, 0, $C, 4	
-00023B7D 0400 000D 04               		dc.b 4, 0, 0, $D, 4	
-00023B82 03                         SME_1h0_3_668:	dc.b 3	
-00023B83 F40B 0000 EC               		dc.b $F4, $B, 0, 0, $EC	
-00023B88 FC00 000C 04               		dc.b $FC, 0, 0, $C, 4	
-00023B8D 0400 000D 04               		dc.b 4, 0, 0, $D, 4	
-00023B92 03                         SME_1h0_3_678:	dc.b 3	
-00023B93 F40B 0000 EC               		dc.b $F4, $B, 0, 0, $EC	
-00023B98 FC00 000C 04               		dc.b $FC, 0, 0, $C, 4	
-00023B9D 0400 000D 04               		dc.b 4, 0, 0, $D, 4	
-00023BA2 04                         SME_1h0_3_688:	dc.b 4	
-00023BA3 FC01 1800 EC               		dc.b $FC, 1, $18, 0, $EC	
-00023BA8 F407 1802 F4               		dc.b $F4, 7, $18, 2, $F4	
-00023BAD FC02 180A 04               		dc.b $FC, 2, $18, $A, 4	
-00023BB2 1400 180D FC               		dc.b $14, 0, $18, $D, $FC	
-00023BB7 04                         SME_1h0_3_69D:	dc.b 4	
-00023BB8 FC01 1800 EC               		dc.b $FC, 1, $18, 0, $EC	
-00023BBD F407 1802 F4               		dc.b $F4, 7, $18, 2, $F4	
-00023BC2 FC02 180A 04               		dc.b $FC, 2, $18, $A, 4	
-00023BC7 1400 180D FC               		dc.b $14, 0, $18, $D, $FC	
-00023BCC 04                         SME_1h0_3_6B2:	dc.b 4	
-00023BCD FC01 1800 EC               		dc.b $FC, 1, $18, 0, $EC	
-00023BD2 F407 1802 F4               		dc.b $F4, 7, $18, 2, $F4	
-00023BD7 FC02 180A 04               		dc.b $FC, 2, $18, $A, 4	
-00023BDC 1400 180D FC               		dc.b $14, 0, $18, $D, $FC	
-00023BE1 04                         SME_1h0_3_6C7:	dc.b 4	
-00023BE2 FC01 1800 EC               		dc.b $FC, 1, $18, 0, $EC	
-00023BE7 F407 1802 F4               		dc.b $F4, 7, $18, 2, $F4	
-00023BEC FC02 180A 04               		dc.b $FC, 2, $18, $A, 4	
-00023BF1 1400 180D FC               		dc.b $14, 0, $18, $D, $FC	
-00023BF6 03                         SME_1h0_3_6DC:	dc.b 3	
-00023BF7 FC0E 0000 F4               		dc.b $FC, $E, 0, 0, $F4	
-00023BFC F400 000C FC               		dc.b $F4, 0, 0, $C, $FC	
-00023C01 F400 000D 04               		dc.b $F4, 0, 0, $D, 4	
-00023C06 03                         SME_1h0_3_6EC:	dc.b 3	
-00023C07 FC0E 0000 F4               		dc.b $FC, $E, 0, 0, $F4	
-00023C0C F400 000C FC               		dc.b $F4, 0, 0, $C, $FC	
-00023C11 F400 000D 04               		dc.b $F4, 0, 0, $D, 4	
-00023C16 03                         SME_1h0_3_6FC:	dc.b 3	
-00023C17 FC0E 0000 F4               		dc.b $FC, $E, 0, 0, $F4	
-00023C1C F400 000C FC               		dc.b $F4, 0, 0, $C, $FC	
-00023C21 F400 000D 04               		dc.b $F4, 0, 0, $D, 4	
-00023C26 03                         SME_1h0_3_70C:	dc.b 3	
-00023C27 FC0E 0000 F4               		dc.b $FC, $E, 0, 0, $F4	
-00023C2C F400 000C FC               		dc.b $F4, 0, 0, $C, $FC	
-00023C31 F400 000D 04               		dc.b $F4, 0, 0, $D, 4	
+00023B62 03                         SME_rOfxM_648:	dc.b 3	
+00023B63 F70B 0000 F8               		dc.b $F7, $B, 0, 0, $F8	
+00023B68 FF00 000C 10               		dc.b $FF, 0, 0, $C, $10	
+00023B6D 0700 000D 10               		dc.b 7, 0, 0, $D, $10	
+00023B72 03                         SME_rOfxM_658:	dc.b 3	
+00023B73 F70B 0000 F8               		dc.b $F7, $B, 0, 0, $F8	
+00023B78 FF00 000C 10               		dc.b $FF, 0, 0, $C, $10	
+00023B7D 0700 000D 10               		dc.b 7, 0, 0, $D, $10	
+00023B82 03                         SME_rOfxM_668:	dc.b 3	
+00023B83 F70B 0000 F8               		dc.b $F7, $B, 0, 0, $F8	
+00023B88 FF00 000C 10               		dc.b $FF, 0, 0, $C, $10	
+00023B8D 0700 000D 10               		dc.b 7, 0, 0, $D, $10	
+00023B92 03                         SME_rOfxM_678:	dc.b 3	
+00023B93 F70B 0000 F8               		dc.b $F7, $B, 0, 0, $F8	
+00023B98 FF00 000C 10               		dc.b $FF, 0, 0, $C, $10	
+00023B9D 0700 000D 10               		dc.b 7, 0, 0, $D, $10	
+00023BA2 04                         SME_rOfxM_688:	dc.b 4	
+00023BA3 FC01 1800 F4               		dc.b $FC, 1, $18, 0, $F4	
+00023BA8 F407 1802 FC               		dc.b $F4, 7, $18, 2, $FC	
+00023BAD FC02 180A 0C               		dc.b $FC, 2, $18, $A, $C	
+00023BB2 1400 180D 04               		dc.b $14, 0, $18, $D, 4	
+00023BB7 04                         SME_rOfxM_69D:	dc.b 4	
+00023BB8 FC01 1800 F4               		dc.b $FC, 1, $18, 0, $F4	
+00023BBD F407 1802 FC               		dc.b $F4, 7, $18, 2, $FC	
+00023BC2 FC02 180A 0C               		dc.b $FC, 2, $18, $A, $C	
+00023BC7 1400 180D 04               		dc.b $14, 0, $18, $D, 4	
+00023BCC 04                         SME_rOfxM_6B2:	dc.b 4	
+00023BCD FC01 1800 F4               		dc.b $FC, 1, $18, 0, $F4	
+00023BD2 F407 1802 FC               		dc.b $F4, 7, $18, 2, $FC	
+00023BD7 FC02 180A 0C               		dc.b $FC, 2, $18, $A, $C	
+00023BDC 1400 180D 04               		dc.b $14, 0, $18, $D, 4	
+00023BE1 04                         SME_rOfxM_6C7:	dc.b 4	
+00023BE2 FC01 1800 F4               		dc.b $FC, 1, $18, 0, $F4	
+00023BE7 F407 1802 FC               		dc.b $F4, 7, $18, 2, $FC	
+00023BEC FC02 180A 0C               		dc.b $FC, 2, $18, $A, $C	
+00023BF1 1400 180D 04               		dc.b $14, 0, $18, $D, 4	
+00023BF6 03                         SME_rOfxM_6DC:	dc.b 3	
+00023BF7 FC0E 0000 FC               		dc.b $FC, $E, 0, 0, $FC	
+00023BFC F400 000C 04               		dc.b $F4, 0, 0, $C, 4	
+00023C01 F400 000D 0C               		dc.b $F4, 0, 0, $D, $C	
+00023C06 03                         SME_rOfxM_6EC:	dc.b 3	
+00023C07 FC0E 0000 FC               		dc.b $FC, $E, 0, 0, $FC	
+00023C0C F400 000C 04               		dc.b $F4, 0, 0, $C, 4	
+00023C11 F400 000D 0C               		dc.b $F4, 0, 0, $D, $C	
+00023C16 03                         SME_rOfxM_6FC:	dc.b 3	
+00023C17 FC0E 0000 FC               		dc.b $FC, $E, 0, 0, $FC	
+00023C1C F400 000C 04               		dc.b $F4, 0, 0, $C, 4	
+00023C21 F400 000D 0C               		dc.b $F4, 0, 0, $D, $C	
+00023C26 03                         SME_rOfxM_70C:	dc.b 3	
+00023C27 FC0E 0000 FC               		dc.b $FC, $E, 0, 0, $FC	
+00023C2C F400 000C 04               		dc.b $F4, 0, 0, $C, 4	
+00023C31 F400 000D 0C               		dc.b $F4, 0, 0, $D, $C	
 00023C36                            		even
 00023C36                            		even
 00023C36                            
@@ -45403,142 +45403,142 @@
 00023C36                            ; --------------------------------------------------------------------------------
 00023C36                            ; Dynamic Pattern Loading Cues - output from SonMapEd - Sonic 1 format; --------------------------------------------------------------------------------
 00023C36                            
-00023C36                            SME_jAiWr:	
-00023C36 0000 0000                  		dc.w SME_jAiWr_B4-SME_jAiWr, SME_jAiWr_B5-SME_jAiWr	
-00023C3A 0000 0000                  		dc.w SME_jAiWr_BE-SME_jAiWr, SME_jAiWr_CD-SME_jAiWr	
-00023C3E 0000 0000                  		dc.w SME_jAiWr_D4-SME_jAiWr, SME_jAiWr_DB-SME_jAiWr	
-00023C42 0000 0000                  		dc.w SME_jAiWr_E2-SME_jAiWr, SME_jAiWr_EB-SME_jAiWr	
-00023C46 0000 0000                  		dc.w SME_jAiWr_F0-SME_jAiWr, SME_jAiWr_F5-SME_jAiWr	
-00023C4A 0000 0000                  		dc.w SME_jAiWr_FE-SME_jAiWr, SME_jAiWr_103-SME_jAiWr	
-00023C4E 0000 0000                  		dc.w SME_jAiWr_10A-SME_jAiWr, SME_jAiWr_115-SME_jAiWr	
-00023C52 0000 0000                  		dc.w SME_jAiWr_122-SME_jAiWr, SME_jAiWr_12B-SME_jAiWr	
-00023C56 0000 0000                  		dc.w SME_jAiWr_136-SME_jAiWr, SME_jAiWr_13F-SME_jAiWr	
-00023C5A 0000 0000                  		dc.w SME_jAiWr_14A-SME_jAiWr, SME_jAiWr_153-SME_jAiWr	
-00023C5E 0000 0000                  		dc.w SME_jAiWr_158-SME_jAiWr, SME_jAiWr_15D-SME_jAiWr	
-00023C62 0000 0000                  		dc.w SME_jAiWr_166-SME_jAiWr, SME_jAiWr_16B-SME_jAiWr	
-00023C66 0000 0000                  		dc.w SME_jAiWr_172-SME_jAiWr, SME_jAiWr_17F-SME_jAiWr	
-00023C6A 0000 0000                  		dc.w SME_jAiWr_18C-SME_jAiWr, SME_jAiWr_195-SME_jAiWr	
-00023C6E 0000 0000                  		dc.w SME_jAiWr_1A0-SME_jAiWr, SME_jAiWr_1A9-SME_jAiWr	
-00023C72 0000 0000                  		dc.w SME_jAiWr_1B4-SME_jAiWr, SME_jAiWr_1B9-SME_jAiWr	
-00023C76 0000 0000                  		dc.w SME_jAiWr_1BE-SME_jAiWr, SME_jAiWr_1C3-SME_jAiWr	
-00023C7A 0000 0000                  		dc.w SME_jAiWr_1C8-SME_jAiWr, SME_jAiWr_1D1-SME_jAiWr	
-00023C7E 0000 0000                  		dc.w SME_jAiWr_1DA-SME_jAiWr, SME_jAiWr_1E7-SME_jAiWr	
-00023C82 0000 0000                  		dc.w SME_jAiWr_1F4-SME_jAiWr, SME_jAiWr_1F9-SME_jAiWr	
-00023C86 0000 0000                  		dc.w SME_jAiWr_1FE-SME_jAiWr, SME_jAiWr_203-SME_jAiWr	
-00023C8A 0000 0000                  		dc.w SME_jAiWr_208-SME_jAiWr, SME_jAiWr_211-SME_jAiWr	
-00023C8E 0000 0000                  		dc.w SME_jAiWr_218-SME_jAiWr, SME_jAiWr_221-SME_jAiWr	
-00023C92 0000 0000                  		dc.w SME_jAiWr_228-SME_jAiWr, SME_jAiWr_22D-SME_jAiWr	
-00023C96 0000 0000                  		dc.w SME_jAiWr_236-SME_jAiWr, SME_jAiWr_23D-SME_jAiWr	
-00023C9A 0000 0000                  		dc.w SME_jAiWr_242-SME_jAiWr, SME_jAiWr_24B-SME_jAiWr	
-00023C9E 0000 0000                  		dc.w SME_jAiWr_254-SME_jAiWr, SME_jAiWr_25B-SME_jAiWr	
-00023CA2 0000 0000                  		dc.w SME_jAiWr_262-SME_jAiWr, SME_jAiWr_269-SME_jAiWr	
-00023CA6 0000 0000                  		dc.w SME_jAiWr_26C-SME_jAiWr, SME_jAiWr_273-SME_jAiWr	
-00023CAA 0000 0000                  		dc.w SME_jAiWr_27A-SME_jAiWr, SME_jAiWr_283-SME_jAiWr	
-00023CAE 0000 0000                  		dc.w SME_jAiWr_28C-SME_jAiWr, SME_jAiWr_291-SME_jAiWr	
-00023CB2 0000 0000                  		dc.w SME_jAiWr_298-SME_jAiWr, SME_jAiWr_29D-SME_jAiWr	
-00023CB6 0000 0000                  		dc.w SME_jAiWr_2A4-SME_jAiWr, SME_jAiWr_2AF-SME_jAiWr	
-00023CBA 0000 0000                  		dc.w SME_jAiWr_2BA-SME_jAiWr, SME_jAiWr_2C1-SME_jAiWr	
-00023CBE 0000 0000                  		dc.w SME_jAiWr_2C8-SME_jAiWr, SME_jAiWr_2CF-SME_jAiWr	
-00023CC2 0000 0000                  		dc.w SME_jAiWr_2D4-SME_jAiWr, SME_jAiWr_2DB-SME_jAiWr	
-00023CC6 0000 0000                  		dc.w SME_jAiWr_2E4-SME_jAiWr, SME_jAiWr_2F5-SME_jAiWr	
-00023CCA 0000 0000                  		dc.w SME_jAiWr_2F8-SME_jAiWr, SME_jAiWr_301-SME_jAiWr	
-00023CCE 0000 0000                  		dc.w SME_jAiWr_30A-SME_jAiWr, SME_jAiWr_313-SME_jAiWr	
-00023CD2 0000 0000                  		dc.w SME_jAiWr_31C-SME_jAiWr, SME_jAiWr_323-SME_jAiWr	
-00023CD6 0000 0000                  		dc.w SME_jAiWr_32A-SME_jAiWr, SME_jAiWr_331-SME_jAiWr	
-00023CDA 0000 0000                  		dc.w SME_jAiWr_338-SME_jAiWr, SME_jAiWr_341-SME_jAiWr	
-00023CDE 0000 0000                  		dc.w SME_jAiWr_34A-SME_jAiWr, SME_jAiWr_353-SME_jAiWr	
-00023CE2 0000 0000                  		dc.w SME_jAiWr_35C-SME_jAiWr, SME_jAiWr_363-SME_jAiWr	
-00023CE6 0000 0000                  		dc.w SME_jAiWr_36A-SME_jAiWr, SME_jAiWr_371-SME_jAiWr	
-00023CEA 00                         SME_jAiWr_B4:	dc.b 0	
-00023CEB 0420 0020 0920 0C50 03     SME_jAiWr_B5:	dc.b 4, $20, 0, $20, 9, $20, $C, $50, 3	
-00023CF4 0720 1B50 0F00 1A03 9110+  SME_jAiWr_BE:	dc.b 7, $20, $1B, $50, $F, 0, $1A, 3, $91, $10, $15, 0, $18, 4, $81	
-00023D03 0350 1E50 1520 1B          SME_jAiWr_CD:	dc.b 3, $50, $1E, $50, $15, $20, $1B	
-00023D0A 0350 1E50 1520 24          SME_jAiWr_D4:	dc.b 3, $50, $1E, $50, $15, $20, $24	
-00023D11 0380 2720 0920 0C          SME_jAiWr_DB:	dc.b 3, $80, $27, $20, 9, $20, $C	
-00023D18 0470 3050 3850 3E10 44     SME_jAiWr_E2:	dc.b 4, $70, $30, $50, $38, $50, $3E, $10, $44	
-00023D21 0270 30B0 46               SME_jAiWr_EB:	dc.b 2, $70, $30, $B0, $46	
-00023D26 0250 5280 58               SME_jAiWr_F0:	dc.b 2, $50, $52, $80, $58	
-00023D2B 0450 5250 6150 6710 6D     SME_jAiWr_F5:	dc.b 4, $50, $52, $50, $61, $50, $67, $10, $6D	
-00023D34 0250 52B0 6F               SME_jAiWr_FE:	dc.b 2, $50, $52, $B0, $6F	
-00023D39 0370 3030 7B50 7F          SME_jAiWr_103:	dc.b 3, $70, $30, $30, $7B, $50, $7F	
-00023D40 0550 8B20 9150 9400 9A53+  SME_jAiWr_10A:	dc.b 5, $50, $8B, $20, $91, $50, $94, 0, $9A, $53, $1A	
-00023D4B 0650 8510 9B30 9D50 A130+  SME_jAiWr_115:	dc.b 6, $50, $85, $10, $9B, $30, $9D, $50, $A1, $30, $A7, 0, $AB	
-00023D58 0450 AC10 B270 B420 BC     SME_jAiWr_122:	dc.b 4, $50, $AC, $10, $B2, $70, $B4, $20, $BC	
-00023D61 0530 C570 C920 D110 D453+  SME_jAiWr_12B:	dc.b 5, $30, $C5, $70, $C9, $20, $D1, $10, $D4, $53, $20	
-00023D6C 0450 BF10 D670 D820 E0     SME_jAiWr_136:	dc.b 4, $50, $BF, $10, $D6, $70, $D8, $20, $E0	
-00023D75 0550 8510 9B00 9170 E320+  SME_jAiWr_13F:	dc.b 5, $50, $85, $10, $9B, 0, $91, $70, $E3, $20, $EB	
-00023D80 0470 EE50 F610 FC50 FE     SME_jAiWr_14A:	dc.b 4, $70, $EE, $50, $F6, $10, $FC, $50, $FE	
-00023D89 0270 EEB1 04               SME_jAiWr_153:	dc.b 2, $70, $EE, $B1, 4	
-00023D8E 0251 1081 16               SME_jAiWr_158:	dc.b 2, $51, $10, $81, $16	
-00023D93 0451 1051 1F11 2551 27     SME_jAiWr_15D:	dc.b 4, $51, $10, $51, $1F, $11, $25, $51, $27	
-00023D9C 0251 10B1 2D               SME_jAiWr_166:	dc.b 2, $51, $10, $B1, $2D	
-00023DA1 0370 EE01 0481 39          SME_jAiWr_16B:	dc.b 3, $70, $EE, 1, 4, $81, $39	
-00023DA8 0611 4811 4A81 4C01 5501+  SME_jAiWr_172:	dc.b 6, $11, $48, $11, $4A, $81, $4C, 1, $55, 1, $56, $53, $92	
-00023DB5 0651 4221 5711 5A11 5C81+  SME_jAiWr_17F:	dc.b 6, $51, $42, $21, $57, $11, $5A, $11, $5C, $81, $5E, 1, $55	
-00023DC2 0451 6711 6D81 6F11 78     SME_jAiWr_18C:	dc.b 4, $51, $67, $11, $6D, $81, $6F, $11, $78	
-00023DCB 0521 8011 8371 8521 8D53+  SME_jAiWr_195:	dc.b 5, $21, $80, $11, $83, $71, $85, $21, $8D, $53, $9D	
-00023DD6 0451 7A11 9081 9211 9B     SME_jAiWr_1A0:	dc.b 4, $51, $7A, $11, $90, $81, $92, $11, $9B	
-00023DDF 0551 4281 9D11 5C11 A603+  SME_jAiWr_1A9:	dc.b 5, $51, $42, $81, $9D, $11, $5C, $11, $A6, 3, $A5	
-00023DEA 0251 A8B1 AE               SME_jAiWr_1B4:	dc.b 2, $51, $A8, $B1, $AE	
-00023DEF 0250 52B1 BA               SME_jAiWr_1B9:	dc.b 2, $50, $52, $B1, $BA	
-00023DF4 0251 A8B1 C6               SME_jAiWr_1BE:	dc.b 2, $51, $A8, $B1, $C6	
-00023DF9 0250 52B1 D2               SME_jAiWr_1C3:	dc.b 2, $50, $52, $B1, $D2	
-00023DFE 0451 DE11 E4B1 E601 F2     SME_jAiWr_1C8:	dc.b 4, $51, $DE, $11, $E4, $B1, $E6, 1, $F2	
-00023E07 0451 F311 F9B1 FB03 26     SME_jAiWr_1D1:	dc.b 4, $51, $F3, $11, $F9, $B1, $FB, 3, $26	
-00023E10 0612 07B2 0913 9803 9A13+  SME_jAiWr_1DA:	dc.b 6, $12, 7, $B2, 9, $13, $98, 3, $9A, $13, $9B, $13, $CD	
-00023E1D 06B2 1513 2713 A313 C913+  SME_jAiWr_1E7:	dc.b 6, $B2, $15, $13, $27, $13, $A3, $13, $C9, $13, $CB, 3, $CF	
-00023E2A 0252 21B2 27               SME_jAiWr_1F4:	dc.b 2, $52, $21, $B2, $27	
-00023E2F 0251 10B2 33               SME_jAiWr_1F9:	dc.b 2, $51, $10, $B2, $33	
-00023E34 0252 21B2 3F               SME_jAiWr_1FE:	dc.b 2, $52, $21, $B2, $3F	
-00023E39 0251 10B2 4B               SME_jAiWr_203:	dc.b 2, $51, $10, $B2, $4B	
-00023E3E 0452 5712 5DB2 5F02 6B     SME_jAiWr_208:	dc.b 4, $52, $57, $12, $5D, $B2, $5F, 2, $6B	
-00023E47 0372 6CB2 7403 DF          SME_jAiWr_211:	dc.b 3, $72, $6C, $B2, $74, 3, $DF	
-00023E4E 0412 80B2 8202 6B53 D9     SME_jAiWr_218:	dc.b 4, $12, $80, $B2, $82, 2, $6B, $53, $D9	
-00023E57 03B2 8E03 D073 D1          SME_jAiWr_221:	dc.b 3, $B2, $8E, 3, $D0, $73, $D1	
-00023E5E 0234 57B4 4B               SME_jAiWr_228:	dc.b 2, $34, $57, $B4, $4B	
-00023E63 0434 6A74 5B34 6324 67     SME_jAiWr_22D:	dc.b 4, $34, $6A, $74, $5B, $34, $63, $24, $67	
-00023E6C 0334 7DB4 6E24 7A          SME_jAiWr_236:	dc.b 3, $34, $7D, $B4, $6E, $24, $7A	
-00023E73 0252 9AB2 A0               SME_jAiWr_23D:	dc.b 2, $52, $9A, $B2, $A0	
-00023E78 0452 AC72 B212 BA02 BC     SME_jAiWr_242:	dc.b 4, $52, $AC, $72, $B2, $12, $BA, 2, $BC	
-00023E81 0412 BD72 BF22 C702 CA     SME_jAiWr_24B:	dc.b 4, $12, $BD, $72, $BF, $22, $C7, 2, $CA	
-00023E8A 0322 CB22 CEF2 D1          SME_jAiWr_254:	dc.b 3, $22, $CB, $22, $CE, $F2, $D1	
-00023E91 03B2 E172 ED00 6F          SME_jAiWr_25B:	dc.b 3, $B2, $E1, $72, $ED, 0, $6F	
-00023E98 0372 F532 FD23 01          SME_jAiWr_262:	dc.b 3, $72, $F5, $32, $FD, $23, 1	
-00023E9F 0183 04                    SME_jAiWr_269:	dc.b 1, $83, 4	
-00023EA2 0373 0D03 1533 16          SME_jAiWr_26C:	dc.b 3, $73, $D, 3, $15, $33, $16	
-00023EA9 03B3 2913 3503 37          SME_jAiWr_273:	dc.b 3, $B3, $29, $13, $35, 3, $37	
-00023EB0 04B3 3833 4403 4803 49     SME_jAiWr_27A:	dc.b 4, $B3, $38, $33, $44, 3, $48, 3, $49	
-00023EB9 04B3 4A33 5603 5A03 5B     SME_jAiWr_283:	dc.b 4, $B3, $4A, $33, $56, 3, $5A, 3, $5B	
-00023EC2 0283 5C73 65               SME_jAiWr_28C:	dc.b 2, $83, $5C, $73, $65	
-00023EC7 0383 6D23 7613 79          SME_jAiWr_291:	dc.b 3, $83, $6D, $23, $76, $13, $79	
-00023ECE 0283 7B73 84               SME_jAiWr_298:	dc.b 2, $83, $7B, $73, $84	
-00023ED3 0383 6D23 8C13 8F          SME_jAiWr_29D:	dc.b 3, $83, $6D, $23, $8C, $13, $8F	
-00023EDA 0573 A613 AE53 B033 B603+  SME_jAiWr_2A4:	dc.b 5, $73, $A6, $13, $AE, $53, $B0, $33, $B6, 3, $BA	
-00023EE5 0573 BB13 AE53 C333 B603+  SME_jAiWr_2AF:	dc.b 5, $73, $BB, $13, $AE, $53, $C3, $33, $B6, 3, $BA	
-00023EF0 0372 F532 FD23 01          SME_jAiWr_2BA:	dc.b 3, $72, $F5, $32, $FD, $23, 1	
-00023EF7 0373 0D03 1533 16          SME_jAiWr_2C1:	dc.b 3, $73, $D, 3, $15, $33, $16	
-00023EFE 03B3 E013 EC33 EE          SME_jAiWr_2C8:	dc.b 3, $B3, $E0, $13, $EC, $33, $EE	
-00023F05 02F4 0424 14               SME_jAiWr_2CF:	dc.b 2, $F4, 4, $24, $14	
-00023F0A 0353 F2B3 F810 6B          SME_jAiWr_2D4:	dc.b 3, $53, $F2, $B3, $F8, $10, $6B	
-00023F11 04F4 1714 2704 2914 2A     SME_jAiWr_2DB:	dc.b 4, $F4, $17, $14, $27, 4, $29, $14, $2A	
-00023F1A 0804 3E24 3914 3C14 2C24+  SME_jAiWr_2E4:	dc.b 8, 4, $3E, $24, $39, $14, $3C, $14, $2C, $24, $2E, $34, $31, $24, $36, 4, $35	
-00023F2B 01B4 3F                    SME_jAiWr_2F5:	dc.b 1, $B4, $3F	
-00023F2E 0412 BD72 BF22 C702 CA     SME_jAiWr_2F8:	dc.b 4, $12, $BD, $72, $BF, $22, $C7, 2, $CA	
-00023F37 0412 BD72 BF22 C702 CA     SME_jAiWr_301:	dc.b 4, $12, $BD, $72, $BF, $22, $C7, 2, $CA	
-00023F40 0412 BD72 BF22 C702 CA     SME_jAiWr_30A:	dc.b 4, $12, $BD, $72, $BF, $22, $C7, 2, $CA	
-00023F49 0412 BD72 BF22 C702 CA     SME_jAiWr_313:	dc.b 4, $12, $BD, $72, $BF, $22, $C7, 2, $CA	
-00023F52 03B4 A604 B304 B4          SME_jAiWr_31C:	dc.b 3, $B4, $A6, 4, $B3, 4, $B4	
-00023F59 03B4 A604 B304 B4          SME_jAiWr_323:	dc.b 3, $B4, $A6, 4, $B3, 4, $B4	
-00023F60 03B4 A604 B304 B4          SME_jAiWr_32A:	dc.b 3, $B4, $A6, 4, $B3, 4, $B4	
-00023F67 03B4 A604 B304 B4          SME_jAiWr_331:	dc.b 3, $B4, $A6, 4, $B3, 4, $B4	
-00023F6E 0414 9074 9224 9A04 9D     SME_jAiWr_338:	dc.b 4, $14, $90, $74, $92, $24, $9A, 4, $9D	
-00023F77 0414 9074 9224 9A04 9D     SME_jAiWr_341:	dc.b 4, $14, $90, $74, $92, $24, $9A, 4, $9D	
-00023F80 0414 9074 9224 9A04 9D     SME_jAiWr_34A:	dc.b 4, $14, $90, $74, $92, $24, $9A, 4, $9D	
-00023F89 0414 9074 9224 9A04 9D     SME_jAiWr_353:	dc.b 4, $14, $90, $74, $92, $24, $9A, 4, $9D	
-00023F92 03B4 C204 CE04 CF          SME_jAiWr_35C:	dc.b 3, $B4, $C2, 4, $CE, 4, $CF	
-00023F99 03B4 C204 CE04 CF          SME_jAiWr_363:	dc.b 3, $B4, $C2, 4, $CE, 4, $CF	
-00023FA0 03B4 C204 CE04 CF          SME_jAiWr_36A:	dc.b 3, $B4, $C2, 4, $CE, 4, $CF	
-00023FA7 03B4 C204 CE04 CF          SME_jAiWr_371:	dc.b 3, $B4, $C2, 4, $CE, 4, $CF	
+00023C36                            SME_mJOMN:	
+00023C36 0000 0000                  		dc.w SME_mJOMN_B4-SME_mJOMN, SME_mJOMN_B5-SME_mJOMN	
+00023C3A 0000 0000                  		dc.w SME_mJOMN_BE-SME_mJOMN, SME_mJOMN_CD-SME_mJOMN	
+00023C3E 0000 0000                  		dc.w SME_mJOMN_D4-SME_mJOMN, SME_mJOMN_DB-SME_mJOMN	
+00023C42 0000 0000                  		dc.w SME_mJOMN_E2-SME_mJOMN, SME_mJOMN_EB-SME_mJOMN	
+00023C46 0000 0000                  		dc.w SME_mJOMN_F0-SME_mJOMN, SME_mJOMN_F5-SME_mJOMN	
+00023C4A 0000 0000                  		dc.w SME_mJOMN_FE-SME_mJOMN, SME_mJOMN_103-SME_mJOMN	
+00023C4E 0000 0000                  		dc.w SME_mJOMN_10A-SME_mJOMN, SME_mJOMN_115-SME_mJOMN	
+00023C52 0000 0000                  		dc.w SME_mJOMN_122-SME_mJOMN, SME_mJOMN_12B-SME_mJOMN	
+00023C56 0000 0000                  		dc.w SME_mJOMN_136-SME_mJOMN, SME_mJOMN_13F-SME_mJOMN	
+00023C5A 0000 0000                  		dc.w SME_mJOMN_14A-SME_mJOMN, SME_mJOMN_153-SME_mJOMN	
+00023C5E 0000 0000                  		dc.w SME_mJOMN_158-SME_mJOMN, SME_mJOMN_15D-SME_mJOMN	
+00023C62 0000 0000                  		dc.w SME_mJOMN_166-SME_mJOMN, SME_mJOMN_16B-SME_mJOMN	
+00023C66 0000 0000                  		dc.w SME_mJOMN_172-SME_mJOMN, SME_mJOMN_17F-SME_mJOMN	
+00023C6A 0000 0000                  		dc.w SME_mJOMN_18C-SME_mJOMN, SME_mJOMN_195-SME_mJOMN	
+00023C6E 0000 0000                  		dc.w SME_mJOMN_1A0-SME_mJOMN, SME_mJOMN_1A9-SME_mJOMN	
+00023C72 0000 0000                  		dc.w SME_mJOMN_1B4-SME_mJOMN, SME_mJOMN_1B9-SME_mJOMN	
+00023C76 0000 0000                  		dc.w SME_mJOMN_1BE-SME_mJOMN, SME_mJOMN_1C3-SME_mJOMN	
+00023C7A 0000 0000                  		dc.w SME_mJOMN_1C8-SME_mJOMN, SME_mJOMN_1D1-SME_mJOMN	
+00023C7E 0000 0000                  		dc.w SME_mJOMN_1DA-SME_mJOMN, SME_mJOMN_1E7-SME_mJOMN	
+00023C82 0000 0000                  		dc.w SME_mJOMN_1F4-SME_mJOMN, SME_mJOMN_1F9-SME_mJOMN	
+00023C86 0000 0000                  		dc.w SME_mJOMN_1FE-SME_mJOMN, SME_mJOMN_203-SME_mJOMN	
+00023C8A 0000 0000                  		dc.w SME_mJOMN_208-SME_mJOMN, SME_mJOMN_211-SME_mJOMN	
+00023C8E 0000 0000                  		dc.w SME_mJOMN_218-SME_mJOMN, SME_mJOMN_221-SME_mJOMN	
+00023C92 0000 0000                  		dc.w SME_mJOMN_228-SME_mJOMN, SME_mJOMN_22D-SME_mJOMN	
+00023C96 0000 0000                  		dc.w SME_mJOMN_236-SME_mJOMN, SME_mJOMN_23D-SME_mJOMN	
+00023C9A 0000 0000                  		dc.w SME_mJOMN_242-SME_mJOMN, SME_mJOMN_24B-SME_mJOMN	
+00023C9E 0000 0000                  		dc.w SME_mJOMN_254-SME_mJOMN, SME_mJOMN_25B-SME_mJOMN	
+00023CA2 0000 0000                  		dc.w SME_mJOMN_262-SME_mJOMN, SME_mJOMN_269-SME_mJOMN	
+00023CA6 0000 0000                  		dc.w SME_mJOMN_26C-SME_mJOMN, SME_mJOMN_273-SME_mJOMN	
+00023CAA 0000 0000                  		dc.w SME_mJOMN_27A-SME_mJOMN, SME_mJOMN_283-SME_mJOMN	
+00023CAE 0000 0000                  		dc.w SME_mJOMN_28C-SME_mJOMN, SME_mJOMN_291-SME_mJOMN	
+00023CB2 0000 0000                  		dc.w SME_mJOMN_298-SME_mJOMN, SME_mJOMN_29D-SME_mJOMN	
+00023CB6 0000 0000                  		dc.w SME_mJOMN_2A4-SME_mJOMN, SME_mJOMN_2AF-SME_mJOMN	
+00023CBA 0000 0000                  		dc.w SME_mJOMN_2BA-SME_mJOMN, SME_mJOMN_2C1-SME_mJOMN	
+00023CBE 0000 0000                  		dc.w SME_mJOMN_2C8-SME_mJOMN, SME_mJOMN_2CF-SME_mJOMN	
+00023CC2 0000 0000                  		dc.w SME_mJOMN_2D4-SME_mJOMN, SME_mJOMN_2DB-SME_mJOMN	
+00023CC6 0000 0000                  		dc.w SME_mJOMN_2E4-SME_mJOMN, SME_mJOMN_2F5-SME_mJOMN	
+00023CCA 0000 0000                  		dc.w SME_mJOMN_2F8-SME_mJOMN, SME_mJOMN_301-SME_mJOMN	
+00023CCE 0000 0000                  		dc.w SME_mJOMN_30A-SME_mJOMN, SME_mJOMN_313-SME_mJOMN	
+00023CD2 0000 0000                  		dc.w SME_mJOMN_31C-SME_mJOMN, SME_mJOMN_323-SME_mJOMN	
+00023CD6 0000 0000                  		dc.w SME_mJOMN_32A-SME_mJOMN, SME_mJOMN_331-SME_mJOMN	
+00023CDA 0000 0000                  		dc.w SME_mJOMN_338-SME_mJOMN, SME_mJOMN_341-SME_mJOMN	
+00023CDE 0000 0000                  		dc.w SME_mJOMN_34A-SME_mJOMN, SME_mJOMN_353-SME_mJOMN	
+00023CE2 0000 0000                  		dc.w SME_mJOMN_35C-SME_mJOMN, SME_mJOMN_363-SME_mJOMN	
+00023CE6 0000 0000                  		dc.w SME_mJOMN_36A-SME_mJOMN, SME_mJOMN_371-SME_mJOMN	
+00023CEA 00                         SME_mJOMN_B4:	dc.b 0	
+00023CEB 0420 0020 0920 0C50 03     SME_mJOMN_B5:	dc.b 4, $20, 0, $20, 9, $20, $C, $50, 3	
+00023CF4 0720 1B50 0F00 1A03 9110+  SME_mJOMN_BE:	dc.b 7, $20, $1B, $50, $F, 0, $1A, 3, $91, $10, $15, 0, $18, 4, $81	
+00023D03 0350 1E50 1520 1B          SME_mJOMN_CD:	dc.b 3, $50, $1E, $50, $15, $20, $1B	
+00023D0A 0350 1E50 1520 24          SME_mJOMN_D4:	dc.b 3, $50, $1E, $50, $15, $20, $24	
+00023D11 0380 2720 0920 0C          SME_mJOMN_DB:	dc.b 3, $80, $27, $20, 9, $20, $C	
+00023D18 0470 3050 3850 3E10 44     SME_mJOMN_E2:	dc.b 4, $70, $30, $50, $38, $50, $3E, $10, $44	
+00023D21 0270 30B0 46               SME_mJOMN_EB:	dc.b 2, $70, $30, $B0, $46	
+00023D26 0250 5280 58               SME_mJOMN_F0:	dc.b 2, $50, $52, $80, $58	
+00023D2B 0450 5250 6150 6710 6D     SME_mJOMN_F5:	dc.b 4, $50, $52, $50, $61, $50, $67, $10, $6D	
+00023D34 0250 52B0 6F               SME_mJOMN_FE:	dc.b 2, $50, $52, $B0, $6F	
+00023D39 0370 3030 7B50 7F          SME_mJOMN_103:	dc.b 3, $70, $30, $30, $7B, $50, $7F	
+00023D40 0550 8B20 9150 9400 9A53+  SME_mJOMN_10A:	dc.b 5, $50, $8B, $20, $91, $50, $94, 0, $9A, $53, $1A	
+00023D4B 0650 8510 9B30 9D50 A130+  SME_mJOMN_115:	dc.b 6, $50, $85, $10, $9B, $30, $9D, $50, $A1, $30, $A7, 0, $AB	
+00023D58 0450 AC10 B270 B420 BC     SME_mJOMN_122:	dc.b 4, $50, $AC, $10, $B2, $70, $B4, $20, $BC	
+00023D61 0530 C570 C920 D110 D453+  SME_mJOMN_12B:	dc.b 5, $30, $C5, $70, $C9, $20, $D1, $10, $D4, $53, $20	
+00023D6C 0450 BF10 D670 D820 E0     SME_mJOMN_136:	dc.b 4, $50, $BF, $10, $D6, $70, $D8, $20, $E0	
+00023D75 0550 8510 9B00 9170 E320+  SME_mJOMN_13F:	dc.b 5, $50, $85, $10, $9B, 0, $91, $70, $E3, $20, $EB	
+00023D80 0470 EE50 F610 FC50 FE     SME_mJOMN_14A:	dc.b 4, $70, $EE, $50, $F6, $10, $FC, $50, $FE	
+00023D89 0270 EEB1 04               SME_mJOMN_153:	dc.b 2, $70, $EE, $B1, 4	
+00023D8E 0251 1081 16               SME_mJOMN_158:	dc.b 2, $51, $10, $81, $16	
+00023D93 0451 1051 1F11 2551 27     SME_mJOMN_15D:	dc.b 4, $51, $10, $51, $1F, $11, $25, $51, $27	
+00023D9C 0251 10B1 2D               SME_mJOMN_166:	dc.b 2, $51, $10, $B1, $2D	
+00023DA1 0370 EE01 0481 39          SME_mJOMN_16B:	dc.b 3, $70, $EE, 1, 4, $81, $39	
+00023DA8 0611 4811 4A81 4C01 5501+  SME_mJOMN_172:	dc.b 6, $11, $48, $11, $4A, $81, $4C, 1, $55, 1, $56, $53, $92	
+00023DB5 0651 4221 5711 5A11 5C81+  SME_mJOMN_17F:	dc.b 6, $51, $42, $21, $57, $11, $5A, $11, $5C, $81, $5E, 1, $55	
+00023DC2 0451 6711 6D81 6F11 78     SME_mJOMN_18C:	dc.b 4, $51, $67, $11, $6D, $81, $6F, $11, $78	
+00023DCB 0521 8011 8371 8521 8D53+  SME_mJOMN_195:	dc.b 5, $21, $80, $11, $83, $71, $85, $21, $8D, $53, $9D	
+00023DD6 0451 7A11 9081 9211 9B     SME_mJOMN_1A0:	dc.b 4, $51, $7A, $11, $90, $81, $92, $11, $9B	
+00023DDF 0551 4281 9D11 5C11 A603+  SME_mJOMN_1A9:	dc.b 5, $51, $42, $81, $9D, $11, $5C, $11, $A6, 3, $A5	
+00023DEA 0251 A8B1 AE               SME_mJOMN_1B4:	dc.b 2, $51, $A8, $B1, $AE	
+00023DEF 0250 52B1 BA               SME_mJOMN_1B9:	dc.b 2, $50, $52, $B1, $BA	
+00023DF4 0251 A8B1 C6               SME_mJOMN_1BE:	dc.b 2, $51, $A8, $B1, $C6	
+00023DF9 0250 52B1 D2               SME_mJOMN_1C3:	dc.b 2, $50, $52, $B1, $D2	
+00023DFE 0451 DE11 E4B1 E601 F2     SME_mJOMN_1C8:	dc.b 4, $51, $DE, $11, $E4, $B1, $E6, 1, $F2	
+00023E07 0451 F311 F9B1 FB03 26     SME_mJOMN_1D1:	dc.b 4, $51, $F3, $11, $F9, $B1, $FB, 3, $26	
+00023E10 0612 07B2 0913 9803 9A13+  SME_mJOMN_1DA:	dc.b 6, $12, 7, $B2, 9, $13, $98, 3, $9A, $13, $9B, $13, $CD	
+00023E1D 06B2 1513 2713 A313 C913+  SME_mJOMN_1E7:	dc.b 6, $B2, $15, $13, $27, $13, $A3, $13, $C9, $13, $CB, 3, $CF	
+00023E2A 0252 21B2 27               SME_mJOMN_1F4:	dc.b 2, $52, $21, $B2, $27	
+00023E2F 0251 10B2 33               SME_mJOMN_1F9:	dc.b 2, $51, $10, $B2, $33	
+00023E34 0252 21B2 3F               SME_mJOMN_1FE:	dc.b 2, $52, $21, $B2, $3F	
+00023E39 0251 10B2 4B               SME_mJOMN_203:	dc.b 2, $51, $10, $B2, $4B	
+00023E3E 0452 5712 5DB2 5F02 6B     SME_mJOMN_208:	dc.b 4, $52, $57, $12, $5D, $B2, $5F, 2, $6B	
+00023E47 0372 6CB2 7403 DF          SME_mJOMN_211:	dc.b 3, $72, $6C, $B2, $74, 3, $DF	
+00023E4E 0412 80B2 8202 6B53 D9     SME_mJOMN_218:	dc.b 4, $12, $80, $B2, $82, 2, $6B, $53, $D9	
+00023E57 03B2 8E03 D073 D1          SME_mJOMN_221:	dc.b 3, $B2, $8E, 3, $D0, $73, $D1	
+00023E5E 0234 57B4 4B               SME_mJOMN_228:	dc.b 2, $34, $57, $B4, $4B	
+00023E63 0434 6A74 5B34 6324 67     SME_mJOMN_22D:	dc.b 4, $34, $6A, $74, $5B, $34, $63, $24, $67	
+00023E6C 0334 7DB4 6E24 7A          SME_mJOMN_236:	dc.b 3, $34, $7D, $B4, $6E, $24, $7A	
+00023E73 0252 9AB2 A0               SME_mJOMN_23D:	dc.b 2, $52, $9A, $B2, $A0	
+00023E78 0452 AC72 B212 BA02 BC     SME_mJOMN_242:	dc.b 4, $52, $AC, $72, $B2, $12, $BA, 2, $BC	
+00023E81 0412 BD72 BF22 C702 CA     SME_mJOMN_24B:	dc.b 4, $12, $BD, $72, $BF, $22, $C7, 2, $CA	
+00023E8A 0322 CB22 CEF2 D1          SME_mJOMN_254:	dc.b 3, $22, $CB, $22, $CE, $F2, $D1	
+00023E91 03B2 E172 ED00 6F          SME_mJOMN_25B:	dc.b 3, $B2, $E1, $72, $ED, 0, $6F	
+00023E98 0372 F532 FD23 01          SME_mJOMN_262:	dc.b 3, $72, $F5, $32, $FD, $23, 1	
+00023E9F 0183 04                    SME_mJOMN_269:	dc.b 1, $83, 4	
+00023EA2 0373 0D03 1533 16          SME_mJOMN_26C:	dc.b 3, $73, $D, 3, $15, $33, $16	
+00023EA9 03B3 2913 3503 37          SME_mJOMN_273:	dc.b 3, $B3, $29, $13, $35, 3, $37	
+00023EB0 04B3 3833 4403 4803 49     SME_mJOMN_27A:	dc.b 4, $B3, $38, $33, $44, 3, $48, 3, $49	
+00023EB9 04B3 4A33 5603 5A03 5B     SME_mJOMN_283:	dc.b 4, $B3, $4A, $33, $56, 3, $5A, 3, $5B	
+00023EC2 0283 5C73 65               SME_mJOMN_28C:	dc.b 2, $83, $5C, $73, $65	
+00023EC7 0383 6D23 7613 79          SME_mJOMN_291:	dc.b 3, $83, $6D, $23, $76, $13, $79	
+00023ECE 0283 7B73 84               SME_mJOMN_298:	dc.b 2, $83, $7B, $73, $84	
+00023ED3 0383 6D23 8C13 8F          SME_mJOMN_29D:	dc.b 3, $83, $6D, $23, $8C, $13, $8F	
+00023EDA 0573 A613 AE53 B033 B603+  SME_mJOMN_2A4:	dc.b 5, $73, $A6, $13, $AE, $53, $B0, $33, $B6, 3, $BA	
+00023EE5 0573 BB13 AE53 C333 B603+  SME_mJOMN_2AF:	dc.b 5, $73, $BB, $13, $AE, $53, $C3, $33, $B6, 3, $BA	
+00023EF0 0372 F532 FD23 01          SME_mJOMN_2BA:	dc.b 3, $72, $F5, $32, $FD, $23, 1	
+00023EF7 0373 0D03 1533 16          SME_mJOMN_2C1:	dc.b 3, $73, $D, 3, $15, $33, $16	
+00023EFE 03B3 E013 EC33 EE          SME_mJOMN_2C8:	dc.b 3, $B3, $E0, $13, $EC, $33, $EE	
+00023F05 02F4 0424 14               SME_mJOMN_2CF:	dc.b 2, $F4, 4, $24, $14	
+00023F0A 0353 F2B3 F810 6B          SME_mJOMN_2D4:	dc.b 3, $53, $F2, $B3, $F8, $10, $6B	
+00023F11 04F4 1714 2704 2914 2A     SME_mJOMN_2DB:	dc.b 4, $F4, $17, $14, $27, 4, $29, $14, $2A	
+00023F1A 0804 3E24 3914 3C14 2C24+  SME_mJOMN_2E4:	dc.b 8, 4, $3E, $24, $39, $14, $3C, $14, $2C, $24, $2E, $34, $31, $24, $36, 4, $35	
+00023F2B 01B4 3F                    SME_mJOMN_2F5:	dc.b 1, $B4, $3F	
+00023F2E 0412 BD72 BF22 C702 CA     SME_mJOMN_2F8:	dc.b 4, $12, $BD, $72, $BF, $22, $C7, 2, $CA	
+00023F37 0412 BD72 BF22 C702 CA     SME_mJOMN_301:	dc.b 4, $12, $BD, $72, $BF, $22, $C7, 2, $CA	
+00023F40 0412 BD72 BF22 C702 CA     SME_mJOMN_30A:	dc.b 4, $12, $BD, $72, $BF, $22, $C7, 2, $CA	
+00023F49 0412 BD72 BF22 C702 CA     SME_mJOMN_313:	dc.b 4, $12, $BD, $72, $BF, $22, $C7, 2, $CA	
+00023F52 03B4 A604 B304 B4          SME_mJOMN_31C:	dc.b 3, $B4, $A6, 4, $B3, 4, $B4	
+00023F59 03B4 A604 B304 B4          SME_mJOMN_323:	dc.b 3, $B4, $A6, 4, $B3, 4, $B4	
+00023F60 03B4 A604 B304 B4          SME_mJOMN_32A:	dc.b 3, $B4, $A6, 4, $B3, 4, $B4	
+00023F67 03B4 A604 B304 B4          SME_mJOMN_331:	dc.b 3, $B4, $A6, 4, $B3, 4, $B4	
+00023F6E 0414 9074 9224 9A04 9D     SME_mJOMN_338:	dc.b 4, $14, $90, $74, $92, $24, $9A, 4, $9D	
+00023F77 0414 9074 9224 9A04 9D     SME_mJOMN_341:	dc.b 4, $14, $90, $74, $92, $24, $9A, 4, $9D	
+00023F80 0414 9074 9224 9A04 9D     SME_mJOMN_34A:	dc.b 4, $14, $90, $74, $92, $24, $9A, 4, $9D	
+00023F89 0414 9074 9224 9A04 9D     SME_mJOMN_353:	dc.b 4, $14, $90, $74, $92, $24, $9A, 4, $9D	
+00023F92 03B4 C204 CE04 CF          SME_mJOMN_35C:	dc.b 3, $B4, $C2, 4, $CE, 4, $CF	
+00023F99 03B4 C204 CE04 CF          SME_mJOMN_363:	dc.b 3, $B4, $C2, 4, $CE, 4, $CF	
+00023FA0 03B4 C204 CE04 CF          SME_mJOMN_36A:	dc.b 3, $B4, $C2, 4, $CE, 4, $CF	
+00023FA7 03B4 C204 CE04 CF          SME_mJOMN_371:	dc.b 3, $B4, $C2, 4, $CE, 4, $CF	
 00023FAE                            		even
 00023FAE                            		even
 00023FAE                            
@@ -48666,218 +48666,218 @@
 00097C64                            		even
 00097C64                            Music83:	incbin	"sound\Tutorial With Attitude.bin"
 000991E8                            		even
-000991E8                            Music84:	incbin	sound\music84.bin
-00099656                            		even
-00099656                            Music85:	incbin	sound\music85.bin
-00099AA2                            		even
-00099AA2                            Music86:	incbin	sound\music86.bin
-00099FF2                            		even
-00099FF2                            Music87:	incbin	sound\Jeopardyinv.bin
-0009A4CC                            		even
-0009A4CC                            Music88:	incbin	sound\music88.bin
-0009A5BA                            		even
-0009A5BA                            Music89:	incbin	sound\music89.bin
-0009A8E6                            		even
-0009A8E6                            Music8A:	incbin	sound\Jeopardy.bin
-0009ADEE 00                         		even
-0009ADEE                            Music8B:	incbin	sound\music8B.bin
-0009B088                            		even
-0009B088                            Music8C:	incbin	sound\music8C.bin
-0009BC3A 00                         		even
-0009BC3A                            Music8D:	incbin	sound\music8D.bin
-0009BE56                            		even
-0009BE56                            Music8E:	incbin	sound\music8E.bin
-0009BFAC                            		even
-0009BFAC                            Music8F:	incbin	sound\music8F.bin
-0009C4B6 00                         		even
-0009C4B6                            Music90:	incbin	sound\music90.bin
-0009C614                            		even
-0009C614                            Music91:	incbin	sound\music91.bin
-0009D8E2                            		even
-0009D8E2                            Music92:	incbin	sound\music92.bin
-0009DA0C                            		even
-0009DA0C                            Music93:	incbin	sound\music93.bin
-0009DADA                            		even
-0009DADA                            Music95:	incbin	sound\SpeedShoes.bin
-0009DCC0                            		even
-0009DCC0                            Music96:	incbin	sound\SpeedShoesInv.bin
-0009DEA6                            		even
-0009DEA6                            Music97:	incbin	"sound\Mind In The Gutter II.bin"
-0009EDD0                            		even
-0009EDD0                            		
-0009EDD0                            ; ---------------------------------------------------------------------------
-0009EDD0                            ; Sound	effect pointers
-0009EDD0                            ; ---------------------------------------------------------------------------
-0009EDD0                            SoundIndex:	
-0009EDD0 0000 0000 0000 0000 0000+  		dc.l SoundA0, SoundA1, SoundA2
-0009EDDC 0000 0000 0000 0000 0000+  		dc.l SoundA3, SoundA4, SoundA5
-0009EDE8 0000 0000 0000 0000 0000+  		dc.l SoundA6, SoundA7, SoundA8
-0009EDF4 0000 0000 0000 0000 0000+  		dc.l SoundA9, SoundAA, SoundAB
-0009EE00 0000 0000 0000 0000 0000+  		dc.l SoundAC, SoundAD, SoundAE
-0009EE0C 0000 0000 0000 0000 0000+  		dc.l SoundAF, SoundB0, SoundB1
-0009EE18 0000 0000 0000 0000 0000+  		dc.l SoundB2, SoundB3, SoundB4
-0009EE24 0000 0000 0000 0000 0000+  		dc.l SoundB5, SoundB6, SoundB7
-0009EE30 0000 0000 0000 0000 0000+  		dc.l SoundB8, SoundB9, SoundBA
-0009EE3C 0000 0000 0000 0000 0000+  		dc.l SoundBB, SoundBC, SoundBD
-0009EE48 0000 0000 0000 0000 0000+  		dc.l SoundBE, SoundBF, SoundC0
-0009EE54 0000 0000 0000 0000 0000+  		dc.l SoundC1, SoundC2, SoundC3
-0009EE60 0000 0000 0000 0000 0000+  		dc.l SoundC4, SoundC5, SoundC6
-0009EE6C 0000 0000 0000 0000 0000+  		dc.l SoundC7, SoundC8, SoundC9
-0009EE78 0000 0000 0000 0000 0000+  		dc.l SoundCA, SoundCB, SoundCC
-0009EE84 0000 0000 0000 0000 0000+  		dc.l SoundCD, SoundCE, SoundCF
-0009EE90 0000 0000                  SoundD0Index:	dc.l SoundD0
-0009EE94                            SoundA0:	incbin	sound\soundA0.bin
-0009EEAA                            		even
-0009EEAA                            SoundA1:	incbin	sound\soundA1.bin
-0009EED4                            		even
-0009EED4                            SoundA2:	incbin	sound\soundA2.bin
-0009EEF4                            		even
-0009EEF4                            SoundA3:	incbin	sound\soundA3.bin
-0009EF26                            		even
-0009EF26                            SoundA4:	incbin	sound\soundA4.bin
-0009EF5C                            		even
-0009EF5C                            SoundA5:	incbin	sound\soundA5.bin
-0009EF88                            		even
-0009EF88                            SoundA6:	incbin	sound\soundA6.bin
-0009EFB8                            		even
-0009EFB8                            SoundA7:	incbin	sound\soundA7.bin
-0009EFE8                            		even
-0009EFE8                            SoundA8:	incbin	sound\soundA8.bin
-0009F01C                            		even
-0009F01C                            SoundA9:	incbin	sound\soundA9.bin
-0009F02E                            		even
-0009F02E                            SoundAA:	incbin	sound\soundAA.bin
-0009F070                            		even
-0009F070                            SoundAB:	incbin	sound\soundAB.bin
-0009F090                            		even
-0009F090                            SoundAC:	incbin	sound\soundAC.bin
-0009F0C4                            		even
-0009F0C4                            SoundAD:	incbin	sound\soundAD.bin
-0009F0FA                            		even
-0009F0FA                            SoundAE:	incbin	sound\soundAE.bin
-0009F144                            		even
-0009F144                            SoundAF:	incbin	sound\soundAF.bin
-0009F172                            		even
-0009F172                            SoundB0:	incbin	sound\soundB0.bin
-0009F1A4                            		even
-0009F1A4                            SoundB1:	incbin	sound\soundB1.bin
-0009F1D0                            		even
-0009F1D0                            SoundB2:	incbin	sound\soundB2.bin
-0009F220                            		even
-0009F220                            SoundB3:	incbin	sound\soundB3.bin
-0009F26A                            		even
-0009F26A                            SoundB4:	incbin	sound\soundB4.bin
-0009F2C6                            		even
-0009F2C6                            SoundB5:	incbin	sound\soundB5.bin
-0009F2F4                            		even
-0009F2F4                            SoundB6:	incbin	sound\soundB6.bin
-0009F312                            		even
-0009F312                            SoundB7:	incbin	sound\soundB7.bin
-0009F34E                            		even
-0009F34E                            SoundB8:	incbin	sound\soundB8.bin
-0009F36C                            		even
-0009F36C                            SoundB9:	incbin	sound\soundB9.bin
-0009F3D0                            		even
-0009F3D0                            SoundBA:	incbin	sound\soundBA.bin
-0009F3F8                            		even
-0009F3F8                            SoundBB:	incbin	sound\soundBB.bin
-0009F424                            		even
-0009F424                            SoundBC:	incbin	sound\soundBC.bin
-0009F466                            		even
-0009F466                            SoundBD:	incbin	sound\soundBD.bin
-0009F4BA                            		even
-0009F4BA                            SoundBE:	incbin	sound\soundBE.bin
-0009F4F4                            		even
-0009F4F4                            SoundBF:	incbin	sound\soundBF.bin
-0009F566                            		even
-0009F566                            SoundC0:	incbin	sound\soundC0.bin
-0009F594                            		even
-0009F594                            SoundC1:	incbin	sound\soundC1.bin
-0009F5CE                            		even
-0009F5CE                            SoundC2:	incbin	sound\soundC2.bin
-0009F5F8                            		even
-0009F5F8                            SoundC3:	incbin	sound\soundC3.bin
-0009F672                            		even
-0009F672                            SoundC4:	incbin	sound\soundC4.bin
-0009F69A                            		even
-0009F69A                            SoundC5:	incbin	sound\soundC5.bin
-0009F702                            		even
-0009F702                            SoundC6:	incbin	sound\soundC6.bin
-0009F744                            		even
-0009F744                            SoundC7:	incbin	sound\soundC7.bin
-0009F772                            		even
-0009F772                            SoundC8:	incbin	sound\soundC8.bin
-0009F784                            		even
-0009F784                            SoundC9:	incbin	sound\soundC9.bin
-0009F7B2                            		even
-0009F7B2                            SoundCA:	incbin	sound\soundCA.bin
-0009F7E0                            		even
-0009F7E0                            SoundCB:	incbin	sound\soundCB.bin
-0009F82C                            		even
-0009F82C                            SoundCC:	incbin	sound\soundCC.bin
-0009F866                            		even
-0009F866                            SoundCD:	incbin	sound\soundCD.bin
-0009F874                            		even
-0009F874                            SoundCE:	incbin	sound\soundCE.bin
-0009F8A2                            		even
-0009F8A2                            SoundCF:	incbin	sound\soundCF.bin
-0009F8DA                            		even
-0009F8DA                            SoundD0:	incbin	sound\soundD0.bin
-0009F914                            		even
-0009F914                            SoundD1:	incbin	sound\soundD1.bin
-0009F950                            		even
-0009F950                            SoundD2:	incbin	sound\Gen_Jump.bin
-0009F966                            		even
-0009F966                            SoundD3:	incbin	sound\PeeloutCharge.bin
-0009F9A0 00                         		even
-0009F9A0                            SoundD4:	incbin	sound\PeeloutStop.bin
-0009F9AC                            		even
-0009F9AC                            SoundD5:	incbin	sound\S3K_Shoot.bin
-0009F9DA 00                         		even
-0009F9DA                            SoundD6:	incbin	sound\Peelout_Release.bin
-0009FA72                            		even
-0009FA72                            SegaPCM:	incbin	sound\segapcm.bin
-000A63EA                            SegaPCM_End	even
-000A63EA                            ; ===========================================================================
-000A63EA                            Art_Dust	incbin	artunc\spindust.bin
-000A7D2A                            ; ===========================================================================
-000A7D2A                            
-000A7D2A                            LoadDPLC:
-000A7D2A 7000                       		moveq	#0,d0
-000A7D2C 1028 001A                  		move.b	$1A(a0),d0	; load frame number
-000A7D30 D040                       		add.w	d0,d0
-000A7D32 D4F2 0000                  		adda.w	(a2,d0.w),a2
-000A7D36 7A00                       		moveq	#0,d5
-000A7D38 1A1A                       		move.b	(a2)+,d5
-000A7D3A 5345                       		subq.w	#1,d5
-000A7D3C 6B00                       		bmi.s	DPLC_End
-000A7D3E                            
-000A7D3E                            DPLC_ReadEntry:
-000A7D3E 7200                       		moveq	#0,d1
-000A7D40 121A                       		move.b	(a2)+,d1
-000A7D42 E149                       		lsl.w	#8,d1
-000A7D44 121A                       		move.b	(a2)+,d1
-000A7D46 3601                       		move.w	d1,d3
-000A7D48 E04B                       		lsr.w	#8,d3
-000A7D4A 0243 00F0                  		andi.w	#$F0,d3
-000A7D4E 0643 0010                  		addi.w	#$10,d3
-000A7D52 0241 0FFF                  		andi.w	#$FFF,d1
-000A7D56 EB89                       		lsl.l	#5,d1
-000A7D58 D286                       		add.l	d6,d1
-000A7D5A 3404                       		move.w	d4,d2
-000A7D5C D843                       		add.w	d3,d4
-000A7D5E D843                       		add.w	d3,d4
-000A7D60 4EB9 0000 13BC             		jsr	(QueueDMATransfer).l
-000A7D66 51CD FFD6                  		dbf	d5,DPLC_ReadEntry	; repeat for number of entries
-000A7D6A                            
-000A7D6A                            DPLC_End:
-000A7D6A 4E75                       		rts	
-000A7D6C                            ; End of function LoadSonicDynPLC
-000A7D6C                            
-000A7D6C                            ; ===========================================================================
-000A7D6C                            Music94:		incbin	"sound\owarisoft logo.bin"
-000A7EAA                            		even
-000A7EAA                            ;	include "#Owarisoft/main.asm"
-000A7EAA                            ;	inform 0,""
-000A7EAA                            
-000A7EAA                            EndOfRom:
+000991E8                            Music84:	incbin	"sound\Welcome to the Alleyway.bin"
+0009A0D2                            		even
+0009A0D2                            Music85:	incbin	sound\music85.bin
+0009A51E                            		even
+0009A51E                            Music86:	incbin	sound\music86.bin
+0009AA6E                            		even
+0009AA6E                            Music87:	incbin	sound\Jeopardyinv.bin
+0009AF48                            		even
+0009AF48                            Music88:	incbin	sound\music88.bin
+0009B036                            		even
+0009B036                            Music89:	incbin	sound\music89.bin
+0009B362                            		even
+0009B362                            Music8A:	incbin	sound\Jeopardy.bin
+0009B86A 00                         		even
+0009B86A                            Music8B:	incbin	"sound\Grand Finale.bin"
+0009DF3C                            		even
+0009DF3C                            Music8C:	incbin	sound\music8C.bin
+0009EAEE 00                         		even
+0009EAEE                            Music8D:	incbin	sound\music8D.bin
+0009ED0A                            		even
+0009ED0A                            Music8E:	incbin	sound\music8E.bin
+0009EE60                            		even
+0009EE60                            Music8F:	incbin	sound\music8F.bin
+0009F36A 00                         		even
+0009F36A                            Music90:	incbin	"sound\Life Or Death.bin"
+0009F4BC                            		even
+0009F4BC                            Music91:	incbin	sound\music91.bin
+000A078A                            		even
+000A078A                            Music92:	incbin	"sound\I Cannot Breathe.bin"
+000A11C2 00                         		even
+000A11C2                            Music93:	incbin	sound\music93.bin
+000A1290                            		even
+000A1290                            Music95:	incbin	sound\SpeedShoes.bin
+000A1476                            		even
+000A1476                            Music96:	incbin	sound\SpeedShoesInv.bin
+000A165C                            		even
+000A165C                            Music97:	incbin	"sound\Mind In The Gutter II.bin"
+000A2586                            		even
+000A2586                            		
+000A2586                            ; ---------------------------------------------------------------------------
+000A2586                            ; Sound	effect pointers
+000A2586                            ; ---------------------------------------------------------------------------
+000A2586                            SoundIndex:	
+000A2586 0000 0000 0000 0000 0000+  		dc.l SoundA0, SoundA1, SoundA2
+000A2592 0000 0000 0000 0000 0000+  		dc.l SoundA3, SoundA4, SoundA5
+000A259E 0000 0000 0000 0000 0000+  		dc.l SoundA6, SoundA7, SoundA8
+000A25AA 0000 0000 0000 0000 0000+  		dc.l SoundA9, SoundAA, SoundAB
+000A25B6 0000 0000 0000 0000 0000+  		dc.l SoundAC, SoundAD, SoundAE
+000A25C2 0000 0000 0000 0000 0000+  		dc.l SoundAF, SoundB0, SoundB1
+000A25CE 0000 0000 0000 0000 0000+  		dc.l SoundB2, SoundB3, SoundB4
+000A25DA 0000 0000 0000 0000 0000+  		dc.l SoundB5, SoundB6, SoundB7
+000A25E6 0000 0000 0000 0000 0000+  		dc.l SoundB8, SoundB9, SoundBA
+000A25F2 0000 0000 0000 0000 0000+  		dc.l SoundBB, SoundBC, SoundBD
+000A25FE 0000 0000 0000 0000 0000+  		dc.l SoundBE, SoundBF, SoundC0
+000A260A 0000 0000 0000 0000 0000+  		dc.l SoundC1, SoundC2, SoundC3
+000A2616 0000 0000 0000 0000 0000+  		dc.l SoundC4, SoundC5, SoundC6
+000A2622 0000 0000 0000 0000 0000+  		dc.l SoundC7, SoundC8, SoundC9
+000A262E 0000 0000 0000 0000 0000+  		dc.l SoundCA, SoundCB, SoundCC
+000A263A 0000 0000 0000 0000 0000+  		dc.l SoundCD, SoundCE, SoundCF
+000A2646 0000 0000                  SoundD0Index:	dc.l SoundD0
+000A264A                            SoundA0:	incbin	sound\soundA0.bin
+000A2660                            		even
+000A2660                            SoundA1:	incbin	sound\soundA1.bin
+000A268A                            		even
+000A268A                            SoundA2:	incbin	sound\soundA2.bin
+000A26AA                            		even
+000A26AA                            SoundA3:	incbin	sound\soundA3.bin
+000A26DC                            		even
+000A26DC                            SoundA4:	incbin	sound\soundA4.bin
+000A2712                            		even
+000A2712                            SoundA5:	incbin	sound\soundA5.bin
+000A273E                            		even
+000A273E                            SoundA6:	incbin	sound\soundA6.bin
+000A276E                            		even
+000A276E                            SoundA7:	incbin	sound\soundA7.bin
+000A279E                            		even
+000A279E                            SoundA8:	incbin	sound\soundA8.bin
+000A27D2                            		even
+000A27D2                            SoundA9:	incbin	sound\soundA9.bin
+000A27E4                            		even
+000A27E4                            SoundAA:	incbin	sound\soundAA.bin
+000A2826                            		even
+000A2826                            SoundAB:	incbin	sound\soundAB.bin
+000A2846                            		even
+000A2846                            SoundAC:	incbin	sound\soundAC.bin
+000A287A                            		even
+000A287A                            SoundAD:	incbin	sound\soundAD.bin
+000A28B0                            		even
+000A28B0                            SoundAE:	incbin	sound\soundAE.bin
+000A28FA                            		even
+000A28FA                            SoundAF:	incbin	sound\soundAF.bin
+000A2928                            		even
+000A2928                            SoundB0:	incbin	sound\soundB0.bin
+000A295A                            		even
+000A295A                            SoundB1:	incbin	sound\soundB1.bin
+000A2986                            		even
+000A2986                            SoundB2:	incbin	sound\soundB2.bin
+000A29D6                            		even
+000A29D6                            SoundB3:	incbin	sound\soundB3.bin
+000A2A20                            		even
+000A2A20                            SoundB4:	incbin	sound\soundB4.bin
+000A2A7C                            		even
+000A2A7C                            SoundB5:	incbin	sound\soundB5.bin
+000A2AAA                            		even
+000A2AAA                            SoundB6:	incbin	sound\soundB6.bin
+000A2AC8                            		even
+000A2AC8                            SoundB7:	incbin	sound\soundB7.bin
+000A2B04                            		even
+000A2B04                            SoundB8:	incbin	sound\soundB8.bin
+000A2B22                            		even
+000A2B22                            SoundB9:	incbin	sound\soundB9.bin
+000A2B86                            		even
+000A2B86                            SoundBA:	incbin	sound\soundBA.bin
+000A2BAE                            		even
+000A2BAE                            SoundBB:	incbin	sound\soundBB.bin
+000A2BDA                            		even
+000A2BDA                            SoundBC:	incbin	sound\soundBC.bin
+000A2C1C                            		even
+000A2C1C                            SoundBD:	incbin	sound\soundBD.bin
+000A2C70                            		even
+000A2C70                            SoundBE:	incbin	sound\soundBE.bin
+000A2CAA                            		even
+000A2CAA                            SoundBF:	incbin	sound\soundBF.bin
+000A2D1C                            		even
+000A2D1C                            SoundC0:	incbin	sound\soundC0.bin
+000A2D4A                            		even
+000A2D4A                            SoundC1:	incbin	sound\soundC1.bin
+000A2D84                            		even
+000A2D84                            SoundC2:	incbin	sound\soundC2.bin
+000A2DAE                            		even
+000A2DAE                            SoundC3:	incbin	sound\soundC3.bin
+000A2E28                            		even
+000A2E28                            SoundC4:	incbin	sound\soundC4.bin
+000A2E50                            		even
+000A2E50                            SoundC5:	incbin	sound\soundC5.bin
+000A2EB8                            		even
+000A2EB8                            SoundC6:	incbin	sound\soundC6.bin
+000A2EFA                            		even
+000A2EFA                            SoundC7:	incbin	sound\soundC7.bin
+000A2F28                            		even
+000A2F28                            SoundC8:	incbin	sound\soundC8.bin
+000A2F3A                            		even
+000A2F3A                            SoundC9:	incbin	sound\soundC9.bin
+000A2F68                            		even
+000A2F68                            SoundCA:	incbin	sound\soundCA.bin
+000A2F96                            		even
+000A2F96                            SoundCB:	incbin	sound\soundCB.bin
+000A2FE2                            		even
+000A2FE2                            SoundCC:	incbin	sound\soundCC.bin
+000A301C                            		even
+000A301C                            SoundCD:	incbin	sound\soundCD.bin
+000A302A                            		even
+000A302A                            SoundCE:	incbin	sound\soundCE.bin
+000A3058                            		even
+000A3058                            SoundCF:	incbin	sound\soundCF.bin
+000A3090                            		even
+000A3090                            SoundD0:	incbin	sound\soundD0.bin
+000A30CA                            		even
+000A30CA                            SoundD1:	incbin	sound\soundD1.bin
+000A3106                            		even
+000A3106                            SoundD2:	incbin	sound\Gen_Jump.bin
+000A311C                            		even
+000A311C                            SoundD3:	incbin	sound\PeeloutCharge.bin
+000A3156 00                         		even
+000A3156                            SoundD4:	incbin	sound\PeeloutStop.bin
+000A3162                            		even
+000A3162                            SoundD5:	incbin	sound\S3K_Shoot.bin
+000A3190 00                         		even
+000A3190                            SoundD6:	incbin	sound\Peelout_Release.bin
+000A3228                            		even
+000A3228                            SegaPCM:	incbin	sound\segapcm.bin
+000A9BA0                            SegaPCM_End	even
+000A9BA0                            ; ===========================================================================
+000A9BA0                            Art_Dust	incbin	artunc\spindust.bin
+000AB4E0                            ; ===========================================================================
+000AB4E0                            
+000AB4E0                            LoadDPLC:
+000AB4E0 7000                       		moveq	#0,d0
+000AB4E2 1028 001A                  		move.b	$1A(a0),d0	; load frame number
+000AB4E6 D040                       		add.w	d0,d0
+000AB4E8 D4F2 0000                  		adda.w	(a2,d0.w),a2
+000AB4EC 7A00                       		moveq	#0,d5
+000AB4EE 1A1A                       		move.b	(a2)+,d5
+000AB4F0 5345                       		subq.w	#1,d5
+000AB4F2 6B00                       		bmi.s	DPLC_End
+000AB4F4                            
+000AB4F4                            DPLC_ReadEntry:
+000AB4F4 7200                       		moveq	#0,d1
+000AB4F6 121A                       		move.b	(a2)+,d1
+000AB4F8 E149                       		lsl.w	#8,d1
+000AB4FA 121A                       		move.b	(a2)+,d1
+000AB4FC 3601                       		move.w	d1,d3
+000AB4FE E04B                       		lsr.w	#8,d3
+000AB500 0243 00F0                  		andi.w	#$F0,d3
+000AB504 0643 0010                  		addi.w	#$10,d3
+000AB508 0241 0FFF                  		andi.w	#$FFF,d1
+000AB50C EB89                       		lsl.l	#5,d1
+000AB50E D286                       		add.l	d6,d1
+000AB510 3404                       		move.w	d4,d2
+000AB512 D843                       		add.w	d3,d4
+000AB514 D843                       		add.w	d3,d4
+000AB516 4EB9 0000 13BC             		jsr	(QueueDMATransfer).l
+000AB51C 51CD FFD6                  		dbf	d5,DPLC_ReadEntry	; repeat for number of entries
+000AB520                            
+000AB520                            DPLC_End:
+000AB520 4E75                       		rts	
+000AB522                            ; End of function LoadSonicDynPLC
+000AB522                            
+000AB522                            ; ===========================================================================
+000AB522                            Music94:		incbin	"sound\owarisoft logo.bin"
+000AB660                            		even
+000AB660                            ;	include "#Owarisoft/main.asm"
+000AB660                            ;	inform 0,""
+000AB660                            
+000AB660                            EndOfRom:

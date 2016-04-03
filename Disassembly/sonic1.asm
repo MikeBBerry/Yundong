@@ -41187,7 +41187,7 @@ Music82:	incbin	"sound\I Died On Jeopardy.bin"
 		even
 Music83:	incbin	"sound\Tutorial With Attitude.bin"
 		even
-Music84:	incbin	sound\music84.bin
+Music84:	incbin	"sound\Welcome to the Alleyway.bin"
 		even
 Music85:	incbin	sound\music85.bin
 		even
@@ -41201,7 +41201,7 @@ Music89:	incbin	sound\music89.bin
 		even
 Music8A:	incbin	sound\Jeopardy.bin
 		even
-Music8B:	incbin	sound\music8B.bin
+Music8B:	incbin	"sound\Grand Finale.bin"
 		even
 Music8C:	incbin	sound\music8C.bin
 		even
@@ -41211,11 +41211,11 @@ Music8E:	incbin	sound\music8E.bin
 		even
 Music8F:	incbin	sound\music8F.bin
 		even
-Music90:	incbin	sound\music90.bin
+Music90:	incbin	"sound\Life Or Death.bin"
 		even
 Music91:	incbin	sound\music91.bin
 		even
-Music92:	incbin	sound\music92.bin
+Music92:	incbin	"sound\I Cannot Breathe.bin"
 		even
 Music93:	incbin	sound\music93.bin
 		even
