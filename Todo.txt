@@ -1,0 +1,9 @@
+; ===========================================================================
+Todo List:
+	- Make Crawling sprites.
+	- Make a background for the tutorial level.
+	- Make zone art and layouts for other zones.
+	- Make Music for said zones.
+	- New bosses?
+	- Better sound test?
+; ===========================================================================
