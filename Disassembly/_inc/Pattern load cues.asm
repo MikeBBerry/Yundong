@@ -93,58 +93,43 @@ PLC_GHZ2:	dc.w 5
 ; ---------------------------------------------------------------------------
 ; Pattern load cues - Labyrinth
 ; ---------------------------------------------------------------------------
-PLC_LZ:		dc.w $B
-		dc.l Nem_LZ		; LZ main patterns
+PLC_LZ:		
+		dc.w $A
+		dc.l Nem_LZ			; LZ main patterns
 		dc.w 0
-		dc.l Nem_LzBlock1	; block
-		dc.w $3C00
-		dc.l Nem_LzBlock2	; blocks
-		dc.w $3E00
-		dc.l Nem_Splash		; waterfalls and splash
-		dc.w $4B20
-		dc.l Nem_Water		; water	surface
-		dc.w $6000
-		dc.l Nem_LzSpikeBall	; spiked ball
-		dc.w $6200
-		dc.l Nem_FlapDoor	; flapping door
-		dc.w $6500
-		dc.l Nem_Bubbles	; bubbles and numbers
-		dc.w $6900
-		dc.l Nem_LzBlock3	; block
-		dc.w $7780
-		dc.l Nem_LzDoor1	; vertical door
-		dc.w $7880
-		dc.l Nem_Harpoon	; harpoon
-		dc.w $7980
-		dc.l Nem_Burrobot	; burrobot enemy
-		dc.w $94C0
-PLC_LZ2:	dc.w $C
-		dc.l Nem_LzPole		; pole that breaks
-		dc.w $7BC0
-		dc.l Nem_LzDoor2	; large	horizontal door
-		dc.w $7CC0
-		dc.l Nem_LzWheel	; wheel
-		dc.w $7EC0
-		dc.l Nem_Gargoyle	; gargoyle head
-		dc.w $5D20
-		dc.l Nem_LzSonic	; Sonic	holding	his breath
-		dc.w $8800
-		dc.l Nem_LzPlatfm	; rising platform
-		dc.w $89E0
+		dc.l Nem_Bomb		; bomb enemy
+		dc.w $8000
 		dc.l Nem_Orbinaut	; orbinaut enemy
-		dc.w $8CE0
-		dc.l Nem_Jaws		; jaws enemy
-		dc.w $90C0
-		dc.l Nem_LzSwitch	; switch
-		dc.w $A1E0
-		dc.l Nem_Cork		; cork block
-		dc.w $A000
+		dc.w $8520
+		dc.l Nem_MzFire		; fireballs
+		dc.w $9000
+		dc.l Nem_SlzBlock	; block
+		dc.w $9C00
+		dc.l Nem_SlzWall	; breakable wall
+		dc.w $A260
 		dc.l Nem_Spikes		; spikes
 		dc.w $A360
 		dc.l Nem_HSpring	; horizontal spring
 		dc.w $A460
 		dc.l Nem_VSpring	; vertical spring
 		dc.w $A660
+		dc.l Nem_Water		; water	surface
+		dc.w $6000
+		dc.l Nem_Bubbles	; bubbles and numbers
+		dc.w $6900
+PLC_LZ2:	dc.w 5
+		dc.l Nem_Seesaw		; seesaw
+		dc.w $6E80
+		dc.l Nem_Fan		; fan
+		dc.w $7400
+		dc.l Nem_Splash		; waterfalls and splash
+		dc.w $7980
+		dc.l Nem_SlzSwing	; swinging platform
+		dc.w $7B80
+		dc.l Nem_SlzCannon	; fireball launcher
+		dc.w $9B00
+		dc.l Nem_SlzSpike	; spikeball
+		dc.w $9E00
 ; ---------------------------------------------------------------------------
 ; Pattern load cues - Marble
 ; ---------------------------------------------------------------------------
