@@ -1,3 +1,7 @@
 !*.exe
 !*.dll
 need4speed.bin
+sonic1.asm~
+sonic.lst
+sonic.sym
+sonic.symcmp
