@@ -2,20 +2,20 @@
 <ObjDef xmlns="http://www.sonicretro.org" Namespace="S12005ObjectDefinitions.Common" TypeName="Spring" Language="cs" Name="Spring" Image="redvert" RememberState="false" Debug="false">
   <Images>
     <ImageFromMappings id="redvert">
-      <ArtFile filename="../artnem/springh.bin" />
-      <MapFile type="ASM" filename="../_maps/obj41.asm" frame="0" startpal="0" />
+      <ArtFile filename="../art/nemesis/springh.bin" />
+      <MapFile type="ASM" filename="../mappings/sprite/obj41.asm" frame="0" startpal="0" />
     </ImageFromMappings>
     <ImageFromMappings id="yelvert">
-      <ArtFile filename="../artnem/springh.bin" />
-      <MapFile type="ASM" filename="../_maps/obj41.asm" frame="0" startpal="1" />
+      <ArtFile filename="../art/nemesis/springh.bin" />
+      <MapFile type="ASM" filename="../mappings/sprite/obj41.asm" frame="0" startpal="1" />
     </ImageFromMappings>
     <ImageFromMappings id="redhorz">
-      <ArtFile filename="../artnem/springv.bin" />
-      <MapFile type="ASM" filename="../_maps/obj41.asm" frame="3" startpal="0" />
+      <ArtFile filename="../art/nemesis/springv.bin" />
+      <MapFile type="ASM" filename="../mappings/sprite/obj41.asm" frame="3" startpal="0" />
     </ImageFromMappings>
     <ImageFromMappings id="yelhorz">
-      <ArtFile filename="../artnem/springv.bin" />
-      <MapFile type="ASM" filename="../_maps/obj41.asm" frame="3" startpal="1" />
+      <ArtFile filename="../art/nemesis/springv.bin" />
+      <MapFile type="ASM" filename="../mappings/sprite/obj41.asm" frame="3" startpal="1" />
     </ImageFromMappings>
   </Images>
   <Subtypes>

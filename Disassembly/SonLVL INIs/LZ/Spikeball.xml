@@ -2,16 +2,16 @@
 <ObjDef xmlns="http://www.sonicretro.org" Namespace="S12005ObjectDefinitions.LZ" TypeName="Spikeball" Language="cs" Name="Spikeball on Chain" Image="spikeball" DefaultSubtype="05">
   <Images>
     <ImageFromMappings id="link">
-      <ArtFile filename="../artnem/lzspball.bin"/>
-      <MapFile type="ASM" filename="../_maps/obj57lz.asm" frame="0" startpal="0"/>
+      <ArtFile filename="../art/nemesis/lzspball.bin"/>
+      <MapFile type="ASM" filename="../mappings/sprite/obj57lz.asm" frame="0" startpal="0"/>
     </ImageFromMappings>
     <ImageFromMappings id="spikeball">
-      <ArtFile filename="../artnem/lzspball.bin"/>
-      <MapFile type="ASM" filename="../_maps/obj57lz.asm" frame="1" startpal="0"/>
+      <ArtFile filename="../art/nemesis/lzspball.bin"/>
+      <MapFile type="ASM" filename="../mappings/sprite/obj57lz.asm" frame="1" startpal="0"/>
     </ImageFromMappings>
     <ImageFromMappings id="base">
-      <ArtFile filename="../artnem/lzspball.bin"/>
-      <MapFile type="ASM" filename="../_maps/obj57lz.asm" frame="2" startpal="0"/>
+      <ArtFile filename="../art/nemesis/lzspball.bin"/>
+      <MapFile type="ASM" filename="../mappings/sprite/obj57lz.asm" frame="2" startpal="0"/>
     </ImageFromMappings>
   </Images>
   <Properties>

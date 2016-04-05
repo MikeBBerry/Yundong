@@ -1,0 +1,251 @@
+version=S1
+objlst=obj.ini|obj128.ini
+chunkfmt=S2
+layoutfmt=S2
+layoutcmp=Uncompressed
+colindfmt=S2
+colindcmp=Uncompressed
+colarr1=../level/collision/carray_n.bin
+colarr2=../level/collision/carray_r.bin
+angles=../level/collision/anglemap.bin
+
+[Green Hill Zone Act 1]
+tiles=../art/nemesis/8x8ghz.bin
+blocks=../level/blocks/GHZ.bin
+chunks=../level/chunks/GHZ.bin
+layout=../levels/ghz1.bin
+objects=../level/objpos/ghz1.bin
+palette=../palette/sonic.bin:0:0:16|../palette/ghz.bin:0:16:48
+startpos=../level/startpos/ghz1.bin:Sonic:Level Start
+colind1=../level/collision/ghz1.bin
+colind2=../level/collision/ghz2.bin
+objlst=objGHZ.ini
+
+[Green Hill Zone Act 2]
+tiles=../art/nemesis/8x8ghz.bin
+blocks=../level/blocks/GHZ.bin
+chunks=../level/chunks/GHZ.bin
+layout=../levels/ghz2.bin
+objects=../level/objpos/ghz2.bin
+palette=../palette/sonic.bin:0:0:16|../palette/ghz.bin:0:16:48
+startpos=../level/startpos/ghz2.bin:Sonic:Level Start
+colind1=../level/collision/ghz1.bin
+colind2=../level/collision/ghz2.bin
+objlst=objGHZ.ini
+
+[Green Hill Zone Act 3]
+tiles=../art/nemesis/8x8ghz.bin
+blocks=../level/blocks/GHZ.bin
+chunks=../level/chunks/GHZ.bin
+layout=../levels/ghz3.bin
+objects=../level/objpos/ghz3.bin
+palette=../palette/sonic.bin:0:0:16|../palette/ghz.bin:0:16:48
+startpos=../level/startpos/ghz3.bin:Sonic:Level Start
+colind1=../level/collision/ghz1.bin
+colind2=../level/collision/ghz2.bin
+objlst=objGHZ.ini
+
+[Marble Zone Act 1]
+tiles=../art/nemesis/8x8mz.bin
+blocks=../level/blocks/MZ.bin
+chunks=../level/chunks/MZ.bin
+layout=../levels/mz1.bin
+objects=../level/objpos/mz1.bin
+palette=../palette/sonic.bin:0:0:16|../palette/mz.bin:0:16:48
+startpos=../level/startpos/mz1.bin:Sonic:Level Start
+colind1=../level/collision/mz1.bin
+colind2=../level/collision/mz2.bin
+objlst=objMZ.ini
+
+[Marble Zone Act 2]
+tiles=../art/nemesis/8x8mz.bin
+blocks=../level/blocks/MZ.bin
+chunks=../level/chunks/MZ.bin
+layout=../levels/mz2.bin
+objects=../level/objpos/mz2.bin
+palette=../palette/sonic.bin:0:0:16|../palette/mz.bin:0:16:48
+startpos=../level/startpos/mz2.bin:Sonic:Level Start
+
+colind1=../level/collision/mz1.bin
+colind2=../level/collision/mz2.bin
+objlst=objMZ.ini
+
+[Marble Zone Act 3]
+tiles=../art/nemesis/8x8mz.bin
+blocks=../level/blocks/MZ.bin
+chunks=../level/chunks/MZ.bin
+layout=../levels/mz3.bin
+objects=../level/objpos/mz3.bin
+palette=../palette/sonic.bin:0:0:16|../palette/mz.bin:0:16:48
+startpos=../level/startpos/mz3.bin:Sonic:Level Start
+colind1=../level/collision/mz1.bin
+colind2=../level/collision/mz2.bin
+objlst=objMZ.ini
+
+[Spring Yard Zone Act 1]
+tiles=../art/nemesis/8x8syz.bin
+blocks=../level/blocks/SYZ.bin
+chunks=../level/chunks/SYZ.bin
+layout=../levels/syz1.bin
+objects=../level/objpos/syz1.bin
+palette=../palette/sonic.bin:0:0:16|../palette/syz.bin:0:16:48
+startpos=../level/startpos/syz1.bin:Sonic:Level Start
+colind1=../level/collision/syz1.bin
+colind2=../level/collision/syz2.bin
+objlst=objSYZ.ini
+
+[Spring Yard Zone Act 2]
+tiles=../art/nemesis/8x8syz.bin
+blocks=../level/blocks/SYZ.bin
+chunks=../level/chunks/SYZ.bin
+layout=../levels/syz2.bin
+objects=../level/objpos/syz2.bin
+palette=../palette/sonic.bin:0:0:16|../palette/syz.bin:0:16:48
+startpos=../level/startpos/syz2.bin:Sonic:Level Start
+colind1=../level/collision/syz1.bin
+colind2=../level/collision/syz2.bin
+objlst=objSYZ.ini
+
+[Spring Yard Zone Act 3]
+tiles=../art/nemesis/8x8syz.bin
+blocks=../level/blocks/SYZ.bin
+chunks=../level/chunks/SYZ.bin
+layout=../levels/syz3.bin
+objects=../level/objpos/syz3.bin
+palette=../palette/sonic.bin:0:0:16|../palette/syz.bin:0:16:48
+startpos=../level/startpos/syz3.bin:Sonic:Level Start
+
+colind1=../level/collision/syz1.bin
+colind2=../level/collision/syz2.bin
+objlst=objSYZ.ini
+
+[Labyrinth Zone Act 1]
+tiles=../art/nemesis/8x8lz.bin
+blocks=../level/blocks/LZ.bin
+chunks=../level/chunks/LZ.bin
+layout=../levels/lz1.bin
+objects=../level/objpos/lz1.bin
+palette=../palette/sonic.bin:0:0:16|../palette/lz.bin:0:16:48
+startpos=../level/startpos/lz1.bin:Sonic:Level Start
+colind1=../level/collision/lz1.bin
+colind2=../level/collision/lz2.bin
+objlst=objLZ.ini
+
+[Labyrinth Zone Act 2]
+tiles=../art/nemesis/8x8lz.bin
+blocks=../level/blocks/LZ.bin
+chunks=../level/chunks/LZ.bin
+layout=../levels/lz2.bin
+objects=../level/objpos/lz2.bin
+palette=../palette/sonic.bin:0:0:16|../palette/lz.bin:0:16:48
+startpos=../level/startpos/lz2.bin:Sonic:Level Start
+colind1=../level/collision/lz1.bin
+colind2=../level/collision/lz2.bin
+objlst=objLZ.ini
+
+[Labyrinth Zone Act 3]
+tiles=../art/nemesis/8x8lz.bin
+blocks=../level/blocks/LZ.bin
+chunks=../level/chunks/LZ.bin
+layout=../levels/lz3.bin
+objects=../level/objpos/lz3.bin
+palette=../palette/sonic.bin:0:0:16|../palette/lz.bin:0:16:48
+startpos=../level/startpos/lz3.bin:Sonic:Level Start
+colind1=../level/collision/lz1.bin
+colind2=../level/collision/lz2.bin
+objlst=objLZ.ini
+
+[Star light Zone Zone Act 1]
+tiles=../art/nemesis/8x8slz.bin
+blocks=../level/blocks/SLZ.bin
+chunks=../level/chunks/SLZ.bin
+layout=../levels/slz1.bin
+objects=../level/objpos/slz1.bin
+palette=../palette/sonic.bin:0:0:16|../palette/slz.bin:0:16:48
+startpos=../level/startpos/slz1.bin:Sonic:Level Start
+colind1=../level/collision/slz1.bin
+colind2=../level/collision/slz2.bin
+objlst=objSLZ.ini
+
+[Star light Zone Zone Act 2]
+tiles=../art/nemesis/8x8slz.bin
+blocks=../level/blocks/SLZ.bin
+chunks=../level/chunks/SLZ.bin
+layout=../levels/slz2.bin
+objects=../level/objpos/slz2.bin
+palette=../palette/sonic.bin:0:0:16|../palette/slz.bin:0:16:48
+startpos=../level/startpos/slz2.bin:Sonic:Level Start
+colind1=../level/collision/slz1.bin
+colind2=../level/collision/slz2.bin
+objlst=objSLZ.ini
+
+[Star light Zone Act 3]
+tiles=../art/nemesis/8x8slz.bin
+blocks=../level/blocks/SLZ.bin
+chunks=../level/chunks/SLZ.bin
+layout=../levels/slz3.bin
+objects=../level/objpos/slz3.bin
+palette=../palette/sonic.bin:0:0:16|../palette/slz.bin:0:16:48
+startpos=../level/startpos/slz3.bin:Sonic:Level Start
+colind1=../level/collision/slz1.bin
+colind2=../level/collision/slz2.bin
+objlst=objSLZ.ini
+
+[Scrape Brain Zone Act 1]
+tiles=../art/nemesis/8x8sbz.bin
+blocks=../level/blocks/SBZ.bin
+chunks=../level/chunks/SBZ.bin
+layout=../levels/sbz1.bin
+objects=../level/objpos/sbz1.bin
+palette=../palette/sonic.bin:0:0:16|../palette/sbz_act1.bin:0:16:48
+startpos=../level/startpos/sbz1.bin:Sonic:Level Start
+colind1=../level/collision/sbz1.bin
+colind2=../level/collision/sbz2.bin
+objlst=objSBZ.ini
+
+[Scrape Brain Zone Act 2]
+tiles=../art/nemesis/8x8sbz.bin
+blocks=../level/blocks/SBZ.bin
+chunks=../level/chunks/SBZ.bin
+layout=../levels/sbz2.bin
+objects=../level/objpos/sbz2.bin
+palette=../palette/sonic.bin:0:0:16|../palette/sbz_act2.bin:0:16:48
+startpos=../level/startpos/sbz2.bin:Sonic:Level Start
+colind1=../level/collision/sbz1.bin
+colind2=../level/collision/sbz2.bin
+objlst=objSBZ.ini
+
+[Scrape Brain Zone Act 3]
+tiles=../art/nemesis/8x8lz.bin
+blocks=../level/blocks/LZ.bin
+chunks=../level/chunks/LZ.bin
+layout=../levels/sbz3.bin
+objects=../level/objpos/sbz3.bin
+palette=../palette/sonic.bin:0:0:16|../palette/sbz_act3.bin:0:16:48
+startpos=../level/startpos/sbz3.bin:Sonic:Level Start
+colind1=../level/collision/lz1.bin
+colind2=../level/collision/lz2.bin
+objlst=objLZ.ini
+
+[Final Zone]
+tiles=../art/nemesis/8x8sbz.bin
+blocks=../level/blocks/SBZ.bin
+chunks=../level/chunks/SBZ.bin
+layout=../levels/sbz2.bin
+objects=../level/objpos/fz.bin
+palette=../palette/sonic.bin:0:0:16|../palette/sbz_act2.bin:0:16:48
+startpos=../level/startpos/fz.bin:Sonic:Level Start
+colind1=../level/collision/sbz1.bin
+colind2=../level/collision/sbz2.bin
+objlst=objSBZ.ini
+
+[Ending]
+tiles=../art/nemesis/8x8ghz.bin
+blocks=../level/blocks/GHZ.bin
+chunks=../level/chunks/GHZ.bin
+layout=../levels/ending.bin
+objects=../level/objpos/ending.bin
+palette=../palette/sonic.bin:0:0:16|../palette/ghz.bin:0:16:48
+startpos=../level/startpos/end1.bin:Sonic:Level Start (All Emeralds)|../level/startpos/end2.bin:Sonic:Level Start
+colind1=../level/collision/ghz1.bin
+colind2=../level/collision/ghz2.bin

@@ -2,16 +2,16 @@
 <ObjDef xmlns="http://www.sonicretro.org" Namespace="S12005ObjectDefinitions.Common" TypeName="PointBonus" Language="cs" Name="Hidden Point Bonus" Image="img100" RememberState="false" DefaultSubtype="03" Debug="false">
   <Images>
     <ImageFromMappings id="img10000">
-      <ArtFile filename="../artnem/bonus.bin" />
-      <MapFile type="ASM" filename="../_maps/obj7D.asm" frame="1" startpal="0" />
+      <ArtFile filename="../art/nemesis/bonus.bin" />
+      <MapFile type="ASM" filename="../mappings/sprite/obj7D.asm" frame="1" startpal="0" />
     </ImageFromMappings>
     <ImageFromMappings id="img1000">
-      <ArtFile filename="../artnem/bonus.bin" />
-      <MapFile type="ASM" filename="../_maps/obj7D.asm" frame="2" startpal="0" />
+      <ArtFile filename="../art/nemesis/bonus.bin" />
+      <MapFile type="ASM" filename="../mappings/sprite/obj7D.asm" frame="2" startpal="0" />
     </ImageFromMappings>
     <ImageFromMappings id="img100">
-      <ArtFile filename="../artnem/bonus.bin" />
-      <MapFile type="ASM" filename="../_maps/obj7D.asm" frame="3" startpal="0" />
+      <ArtFile filename="../art/nemesis/bonus.bin" />
+      <MapFile type="ASM" filename="../mappings/sprite/obj7D.asm" frame="3" startpal="0" />
     </ImageFromMappings>
   </Images>
   <Subtypes>

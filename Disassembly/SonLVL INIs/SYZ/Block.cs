@@ -14,9 +14,9 @@ namespace S12005ObjectDefinitions.SYZ
         public override void Init(ObjectData data)
         {
             byte[] artfile = ObjectHelper.LevelArt;
-            img = ObjectHelper.MapASMToBmp(artfile, "../_maps/obj56.asm", 0, 2);
+            img = ObjectHelper.MapASMToBmp(artfile, "../mappings/sprite/obj56.asm", 0, 2);
             for (int i = 0; i < 8; i++)
-                imgs.Add(ObjectHelper.MapASMToBmp(artfile, "../_maps/obj56.asm", i, 2));
+                imgs.Add(ObjectHelper.MapASMToBmp(artfile, "../mappings/sprite/obj56.asm", i, 2));
         }
 
         public override ReadOnlyCollection<byte> Subtypes
