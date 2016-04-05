@@ -3,11 +3,8 @@
 ; --------------------------------------------------------------------------------
 
 SME_D3SvB:	
-		dc.w SME_D3SvB_8-SME_D3SvB, SME_D3SvB_13-SME_D3SvB	
+		dc.w SME_D3SvB_13-SME_D3SvB	
 		dc.w SME_D3SvB_1E-SME_D3SvB, SME_D3SvB_29-SME_D3SvB	
-SME_D3SvB_8:	dc.b 2	
-		dc.b 4, $C, 0, 0, $EC	
-		dc.b $F4, 2, 0, 4, $C	
 SME_D3SvB_13:	dc.b 2	
 		dc.b 4, $C, 0, 0, $EC	
 		dc.b $F4, 6, 0, 7, 8	

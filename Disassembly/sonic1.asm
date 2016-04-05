@@ -15081,13 +15081,13 @@ Obj34_ActNumber:
 		cmpi.b	#7,d0
 		bne.s	Obj34_MakeSprite
 		move.b	($FFFFFE11).w,d0
-		cmpi.b	#3,d0
-		bne.s	Obj34_MakeSprite
-		subq.b	#1,d0
+		cmpi.b	#2,d0
+		blt.s	Obj34_MakeSprite
+		move.b	#1,d0
 		bra.s	Obj34_MakeSprite
 		
 Obj34_Oval:
-		move.b	#3,d0
+		move.b	#2,d0
 
 Obj34_MakeSprite:
 		move.b	d0,$1A(a1)	; display frame	number d0
@@ -15365,6 +15365,11 @@ loc_C5CA:
 		move.b	d0,$1A(a1)
 		move.l	#Map_obj3A,4(a1)
 		move.w	#$8580,2(a1)
+		cmpi.w	#5,d1
+		blt.s	@NotText
+		move.w	#$85AD,2(a1)
+		
+	@NotText:
 		move.b	#0,1(a1)
 		lea	$40(a1),a1
 		dbf	d1,Obj3A_Loop	; repeat 6 times
@@ -15783,7 +15788,7 @@ Map_obj34:
 ; Sprite mappings - "GAME OVER"	and "TIME OVER"
 ; ---------------------------------------------------------------------------
 Map_obj39:
-	include "_maps/obj39.asm"
+	include "_maps\obj39.asm"
 
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - "SONIC HAS PASSED" title card
@@ -41342,6 +41347,8 @@ Nem_TitleCard_Teeth:	incbin "artnem\Title Cards\MyTeethFeelFunny.bin"
 Nem_TitleCard_Hell:	incbin "artnem\Title Cards\YoureInHellNow.bin"
 		even
 Nem_TitleCard_Final:	incbin "artnem\Title Cards\Final.bin"
+		even
+Nem_LoverWentRight:		incbin "artnem\Title Cards\LoverWentRight.bin"
 		even
 ; ===============================================================
 ; MUST BE AT THE END OF THE ROM
