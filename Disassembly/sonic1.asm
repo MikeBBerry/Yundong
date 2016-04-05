@@ -24218,84 +24218,7 @@ locret_1314E:
 
 
 Sonic_RollSpeed:			; XREF: Obj01_MdRoll
-		move.w	($FFFFF760).w,d6
-		asl.w	#1,d6
-		move.w	($FFFFF762).w,d5
-		asr.w	#1,d5
-		move.w	($FFFFF764).w,d4
-		asr.w	#2,d4
-		tst.b	($FFFFF7CA).w
-		bne.w	loc_131CC
-		tst.w	$3E(a0)
-		bne.s	loc_13188
-		btst	#2,($FFFFF602).w ; is left being pressed?
-		beq.s	loc_1317C	; if not, branch
-		bsr.w	Sonic_RollLeft
-
-loc_1317C:
-		btst	#3,($FFFFF602).w ; is right being pressed?
-		beq.s	loc_13188	; if not, branch
-		bsr.w	Sonic_RollRight
-
-loc_13188:
-		move.w	$14(a0),d0
-		beq.s	loc_131AA
-		bmi.s	loc_1319E
-		sub.w	d5,d0
-		bcc.s	loc_13198
-		move.w	#0,d0
-
-loc_13198:
-		move.w	d0,$14(a0)
-		bra.s	loc_131AA
-; ===========================================================================
-
-loc_1319E:				; XREF: Sonic_RollSpeed
-		add.w	d5,d0
-		bcc.s	loc_131A6
-		move.w	#0,d0
-
-loc_131A6:
-		move.w	d0,$14(a0)
-
-loc_131AA:
-		tst.w	$14(a0)		; is Sonic moving?
-		bne.s	loc_131CC	; if yes, branch
-		bclr	#2,$22(a0)
-		move.b	#$13,$16(a0)
-		move.b	#9,$17(a0)
-		move.b	#5,$1C(a0)	; use "standing" animation
-		subq.w	#5,$C(a0)
-
-loc_131CC:
-		cmp.w	#$60,($FFFFF73E).w
-		beq.s	@cont2
-		bcc.s	@cont1
-		addq.w	#4,($FFFFF73E).w
-		
-@cont1:
-		subq.w	#2,($FFFFF73E).w
-		
-@cont2:
-		move.b	$26(a0),d0
-		jsr	(CalcSine).l
-		muls.w	$14(a0),d0
-		asr.l	#8,d0
-		move.w	d0,$12(a0)
-		muls.w	$14(a0),d1
-		asr.l	#8,d1
-		cmpi.w	#$1000,d1
-		ble.s	loc_131F0
-		move.w	#$1000,d1
-
-loc_131F0:
-		cmpi.w	#-$1000,d1
-		bge.s	loc_131FA
-		move.w	#-$1000,d1
-
-loc_131FA:
-		move.w	d1,$10(a0)
-		bra.w	loc_1300C
+		rts
 ; End of function Sonic_RollSpeed
 
 
@@ -24303,23 +24226,6 @@ loc_131FA:
 
 
 Sonic_RollLeft:				; XREF: Sonic_RollSpeed
-		move.w	$14(a0),d0
-		beq.s	loc_1320A
-		bpl.s	loc_13218
-
-loc_1320A:
-		bset	#0,$22(a0)
-		move.b	#2,$1C(a0)	; use "rolling"	animation
-		rts	
-; ===========================================================================
-
-loc_13218:
-		sub.w	d4,d0
-		bcc.s	loc_13220
-		move.w	#-$80,d0
-
-loc_13220:
-		move.w	d0,$14(a0)
 		rts	
 ; End of function Sonic_RollLeft
 
@@ -24328,20 +24234,6 @@ loc_13220:
 
 
 Sonic_RollRight:			; XREF: Sonic_RollSpeed
-		move.w	$14(a0),d0
-		bmi.s	loc_1323A
-		bclr	#0,$22(a0)
-		move.b	#2,$1C(a0)	; use "rolling"	animation
-		rts	
-; ===========================================================================
-
-loc_1323A:
-		add.w	d4,d0
-		bcc.s	loc_13242
-		move.w	#$80,d0
-
-loc_13242:
-		move.w	d0,$14(a0)
 		rts	
 ; End of function Sonic_RollRight
 
@@ -24429,6 +24321,7 @@ locret_132D2:
 ; ---------------------------------------------------------------------------
 ; Unused subroutine to squash Sonic
 ; ---------------------------------------------------------------------------
+sonic_squash:
 		move.b	$26(a0),d0
 		addi.b	#$20,d0
 		andi.b	#$C0,d0
@@ -24642,34 +24535,6 @@ locret_13508:
 
 
 Sonic_RollRepel:			; XREF: Obj01_MdRoll
-		move.b	$26(a0),d0
-		addi.b	#$60,d0
-		cmpi.b	#-$40,d0
-		bcc.s	locret_13544
-		move.b	$26(a0),d0
-		jsr	(CalcSine).l
-		muls.w	#$50,d0
-		asr.l	#8,d0
-		tst.w	$14(a0)
-		bmi.s	loc_1353A
-		tst.w	d0
-		bpl.s	loc_13534
-		asr.l	#2,d0
-
-loc_13534:
-		add.w	d0,$14(a0)
-		rts	
-; ===========================================================================
-
-loc_1353A:
-		tst.w	d0
-		bmi.s	loc_13540
-		asr.l	#2,d0
-
-loc_13540:
-		add.w	d0,$14(a0)
-
-locret_13544:
 		rts	
 ; End of function Sonic_RollRepel
 
