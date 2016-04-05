@@ -459,7 +459,6 @@ loc_DA6:				; XREF: off_B6E
 		move.w	#$7C00,(a5)
 		move.w	#$83,($FFFFF640).w
 		move.w	($FFFFF640).w,(a5)
-		bsr.w	PalCycle_SS
 		jsr	(ProcessDMAQueue).l
 
 loc_E64:
@@ -4768,511 +4767,7 @@ Demo_SS:	incbin	demodata\i_ss.bin
 ; ---------------------------------------------------------------------------
 
 SpecialStage:				; XREF: GameModeArray
-		move.w	#$CA,d0
-		bsr.w	PlaySound_Special ; play special stage entry sound
-		bsr.w	Pal_MakeFlash
-		move	#$2700,sr
-		lea	($C00004).l,a6
-		move.w	#$8B03,(a6)
-		move.w	#$8004,(a6)
-		move.w	#$8AAF,($FFFFF624).w
-		move.w	#$9011,(a6)
-		move.w	($FFFFF60C).w,d0
-		andi.b	#$BF,d0
-		move.w	d0,($C00004).l
-		bsr.w	ClearScreen
-		move	#$2300,sr
-		lea	($C00004).l,a5
-		move.w	#$8F01,(a5)
-		move.l	#$946F93FF,(a5)
-		move.w	#$9780,(a5)
-		move.l	#$50000081,(a5)
-		move.w	#0,($C00000).l
-
-loc_463C:
-		move.w	(a5),d1
-		btst	#1,d1
-		bne.s	loc_463C
-		move.w	#$8F02,(a5)
-		bsr.w	SS_BGLoad
-		moveq	#$14,d0
-		bsr.w	RunPLC_ROM	; load special stage patterns
-		lea	($FFFFD000).w,a1
-		moveq	#0,d0
-		move.w	#$7FF,d1
-
-SS_ClrObjRam:
-		move.l	d0,(a1)+
-		dbf	d1,SS_ClrObjRam	; clear	the object RAM
-
-		lea	($FFFFF700).w,a1
-		moveq	#0,d0
-		move.w	#$3F,d1
-
-SS_ClrRam:
-		move.l	d0,(a1)+
-		dbf	d1,SS_ClrRam	; clear	variables
-
-		lea	($FFFFFE60).w,a1
-		moveq	#0,d0
-		move.w	#$27,d1
-
-SS_ClrRam2:
-		move.l	d0,(a1)+
-		dbf	d1,SS_ClrRam2	; clear	variables
-
-		lea	($FFFFAA00).w,a1
-		moveq	#0,d0
-		move.w	#$7F,d1
-
-SS_ClrNemRam:
-		move.l	d0,(a1)+
-		dbf	d1,SS_ClrNemRam	; clear	Nemesis	buffer
-
-		clr.b	($FFFFF64E).w
-		clr.w	($FFFFFE02).w
-		moveq	#$A,d0
-		bsr.w	PalLoad1	; load special stage Palette
-		jsr	SS_Load
-		move.l	#0,($FFFFF700).w
-		move.l	#0,($FFFFF704).w
-		move.b	#9,($FFFFD000).w ; load	special	stage Sonic object
-		bsr.w	PalCycle_SS
-		clr.w	($FFFFF780).w	; set stage angle to "upright"
-		move.w	#$40,($FFFFF782).w ; set stage rotation	speed
-		
-		moveq	#0,d0
-		move.b	($FFFFFE16).w,d0
-		tst.b	d0
-		beq.s	SS_Num_Not_Zero
-		move.b	#6,d0
-
-SS_Num_Not_Zero:
-		subq.w	#1,d0
-
-		lea	(MusicList_SpecialStages).l,a1 ; load Music Playlist for Special Stages
-		move.b	(a1,d0.w),d0 ; get d0-th entry from the playlist
-		bsr.w	PlaySound	; play special stage BG	music
-		
-		move.w	#0,($FFFFF790).w
-		lea	(Demo_Index).l,a1
-		moveq	#6,d0
-		lsl.w	#2,d0
-		movea.l	(a1,d0.w),a1
-		move.b	1(a1),($FFFFF792).w
-		subq.b	#1,($FFFFF792).w
-		clr.w	($FFFFFE20).w
-		clr.b	($FFFFFE1B).w
-		move.w	#0,($FFFFFE08).w
-		move.w	#1800,($FFFFF614).w
-		tst.b	($FFFFFFE2).w	; has debug cheat been entered?
-		beq.s	SS_NoDebug	; if not, branch
-		btst	#6,($FFFFF604).w ; is A	button pressed?
-		beq.s	SS_NoDebug	; if not, branch
-		move.b	#1,($FFFFFFFA).w ; enable debug	mode
-
-SS_NoDebug:
-		move.w	($FFFFF60C).w,d0
-		ori.b	#$40,d0
-		move.w	d0,($C00004).l
-		bsr.w	Pal_MakeWhite
-
-; ---------------------------------------------------------------------------
-; Main Special Stage loop
-; ---------------------------------------------------------------------------
-
-SS_MainLoop:
-		bsr.w	PauseGame
-		move.b	#$A,($FFFFF62A).w
-		bsr.w	DelayProgram
-		bsr.w	MoveSonicInDemo
-		move.w	($FFFFF604).w,($FFFFF602).w
-		jsr	ObjectsLoad
-		jsr	BuildSprites
-		jsr	SS_ShowLayout
-		bsr.w	SS_BGAnimate
-		tst.w	($FFFFFFF0).w	; is demo mode on?
-		beq.s	SS_ChkEnd	; if not, branch
-		tst.w	($FFFFF614).w	; is there time	left on	the demo?
-		beq.w	SS_ToSegaScreen	; if not, branch
-
-SS_ChkEnd:
-		cmpi.b	#$10,($FFFFF600).w ; is	game mode $10 (special stage)?
-		beq.w	SS_MainLoop	; if yes, branch
-
-		tst.w	($FFFFFFF0).w	; is demo mode on?
-		bne.w	SS_ToSegaScreen	; if yes, branch
-		move.b	#$C,($FFFFF600).w ; set	screen mode to $0C (level)
-		cmpi.w	#$503,($FFFFFE10).w ; is level number higher than FZ?
-		bcs.s	SS_End		; if not, branch
-		clr.w	($FFFFFE10).w	; set to GHZ1
-
-SS_End:
-		move.w	#60,($FFFFF614).w ; set	delay time to 1	second
-		move.w	#$3F,($FFFFF626).w
-		clr.w	($FFFFF794).w
-
-SS_EndLoop:
-		move.b	#$16,($FFFFF62A).w
-		bsr.w	DelayProgram
-		bsr.w	MoveSonicInDemo
-		move.w	($FFFFF604).w,($FFFFF602).w
-		jsr	ObjectsLoad
-		jsr	BuildSprites
-		jsr	SS_ShowLayout
-		bsr.w	SS_BGAnimate
-		subq.w	#1,($FFFFF794).w
-		bpl.s	loc_47D4
-		move.w	#2,($FFFFF794).w
-		bsr.w	Pal_ToWhite
-
-loc_47D4:
-		tst.w	($FFFFF614).w
-		bne.s	SS_EndLoop
-
-		move	#$2700,sr
-		lea	($C00004).l,a6
-		move.w	#$8230,(a6)
-		move.w	#$8407,(a6)
-		move.w	#$9001,(a6)
-		bsr.w	ClearScreen
-		move.l	#$70000002,($C00004).l
-		lea	(Nem_TitleCard).l,a0 ; load title card patterns
-		bsr.w	NemDec
-		jsr	Hud_Base
-		clr.w	($FFFFC800).w
-		move.l	#$FFFFC800,($FFFFC8FC).w
-		move	#$2300,sr
-		moveq	#$11,d0
-		bsr.w	PalLoad2	; load results screen Palette
-		moveq	#0,d0
-		bsr.w	LoadPLC2
-		moveq	#$1B,d0
-		bsr.w	LoadPLC		; load results screen patterns
-		move.b	#1,($FFFFFE1F).w ; update score	counter
-		move.b	#1,($FFFFF7D6).w ; update ring bonus counter
-		move.w	($FFFFFE20).w,d0
-		mulu.w	#10,d0		; multiply rings by 10
-		move.w	d0,($FFFFF7D4).w ; set rings bonus
-		move.w	#$8E,d0
-		jsr	(PlaySound_Special).l ;	play end-of-level music
-		lea	($FFFFD000).w,a1
-		moveq	#0,d0
-		move.w	#$7FF,d1
-
-SS_EndClrObjRam:
-		move.l	d0,(a1)+
-		dbf	d1,SS_EndClrObjRam ; clear object RAM
-
-		move.b	#$7E,($FFFFD5C0).w ; load results screen object
-
-SS_NormalExit:
-		bsr.w	PauseGame
-		move.b	#$C,($FFFFF62A).w
-		bsr.w	DelayProgram
-		jsr	ObjectsLoad
-		jsr	BuildSprites
-		bsr.w	RunPLC_RAM
-		tst.w	($FFFFFE02).w
-		beq.s	SS_NormalExit
-		tst.l	($FFFFF680).w
-		bne.s	SS_NormalExit
-		move.w	#$CA,d0
-		bsr.w	PlaySound_Special ; play special stage exit sound
-		bsr.w	Pal_MakeFlash
-		rts	
-; ===========================================================================
-
-SS_ToSegaScreen:
-		move.b	#$20,($FFFFF600).w ; set screen mode to 00 (Sega screen)
 		rts
-
-; ---------------------------------------------------------------------------
-; Special stage	background loading subroutine
-; ---------------------------------------------------------------------------
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
-SS_BGLoad:				; XREF: SpecialStage
-		lea	($FF0000).l,a1
-		lea	(Eni_SSBg1).l,a0 ; load	mappings for the birds and fish
-		move.w	#$4051,d0
-		bsr.w	EniDec
-		move.l	#$50000001,d3
-		lea	($FF0080).l,a2
-		moveq	#6,d7
-
-loc_48BE:
-		move.l	d3,d0
-		moveq	#3,d6
-		moveq	#0,d4
-		cmpi.w	#3,d7
-		bcc.s	loc_48CC
-		moveq	#1,d4
-
-loc_48CC:
-		moveq	#7,d5
-
-loc_48CE:
-		movea.l	a2,a1
-		eori.b	#1,d4
-		bne.s	loc_48E2
-		cmpi.w	#6,d7
-		bne.s	loc_48F2
-		lea	($FF0000).l,a1
-
-loc_48E2:
-		movem.l	d0-d4,-(sp)
-		moveq	#7,d1
-		moveq	#7,d2
-		bsr.w	ShowVDPGraphics
-		movem.l	(sp)+,d0-d4
-
-loc_48F2:
-		addi.l	#$100000,d0
-		dbf	d5,loc_48CE
-		addi.l	#$3800000,d0
-		eori.b	#1,d4
-		dbf	d6,loc_48CC
-		addi.l	#$10000000,d3
-		bpl.s	loc_491C
-		swap	d3
-		addi.l	#$C000,d3
-		swap	d3
-
-loc_491C:
-		adda.w	#$80,a2
-		dbf	d7,loc_48BE
-		lea	($FF0000).l,a1
-		lea	(Eni_SSBg2).l,a0 ; load	mappings for the clouds
-		move.w	#$4000,d0
-		bsr.w	EniDec
-		lea	($FF0000).l,a1
-		move.l	#$40000003,d0
-		moveq	#$3F,d1
-		moveq	#$1F,d2
-		bsr.w	ShowVDPGraphics
-		lea	($FF0000).l,a1
-		move.l	#$50000003,d0
-		moveq	#$3F,d1
-		moveq	#$3F,d2
-		bsr.w	ShowVDPGraphics
-		rts	
-; End of function SS_BGLoad
-
-; ---------------------------------------------------------------------------
-; Palette cycling routine - special stage
-; ---------------------------------------------------------------------------
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
-PalCycle_SS:				; XREF: loc_DA6; SpecialStage
-		tst.w	($FFFFF63A).w
-		bne.s	locret_49E6
-		subq.w	#1,($FFFFF79C).w
-		bpl.s	locret_49E6
-		lea	($C00004).l,a6
-		move.w	($FFFFF79A).w,d0
-		addq.w	#1,($FFFFF79A).w
-		andi.w	#$1F,d0
-		lsl.w	#2,d0
-		lea	(byte_4A3C).l,a0
-		adda.w	d0,a0
-		move.b	(a0)+,d0
-		bpl.s	loc_4992
-		move.w	#$1FF,d0
-
-loc_4992:
-		move.w	d0,($FFFFF79C).w
-		moveq	#0,d0
-		move.b	(a0)+,d0
-		move.w	d0,($FFFFF7A0).w
-		lea	(byte_4ABC).l,a1
-		lea	(a1,d0.w),a1
-		move.w	#-$7E00,d0
-		move.b	(a1)+,d0
-		move.w	d0,(a6)
-		move.b	(a1),($FFFFF616).w
-		move.w	#-$7C00,d0
-		move.b	(a0)+,d0
-		move.w	d0,(a6)
-		move.l	#$40000010,($C00004).l
-		move.l	($FFFFF616).w,($C00000).l
-		moveq	#0,d0
-		move.b	(a0)+,d0
-		bmi.s	loc_49E8
-		lea	(Pal_SSCyc1).l,a1
-		adda.w	d0,a1
-		lea	($FFFFFB4E).w,a2
-		move.l	(a1)+,(a2)+
-		move.l	(a1)+,(a2)+
-		move.l	(a1)+,(a2)+
-
-locret_49E6:
-		rts	
-; ===========================================================================
-
-loc_49E8:				; XREF: PalCycle_SS
-		move.w	($FFFFF79E).w,d1
-		cmpi.w	#$8A,d0
-		bcs.s	loc_49F4
-		addq.w	#1,d1
-
-loc_49F4:
-		mulu.w	#$2A,d1
-		lea	(Pal_SSCyc2).l,a1
-		adda.w	d1,a1
-		andi.w	#$7F,d0
-		bclr	#0,d0
-		beq.s	loc_4A18
-		lea	($FFFFFB6E).w,a2
-		move.l	(a1),(a2)+
-		move.l	4(a1),(a2)+
-		move.l	8(a1),(a2)+
-
-loc_4A18:
-		adda.w	#$C,a1
-		lea	($FFFFFB5A).w,a2
-		cmpi.w	#$A,d0
-		bcs.s	loc_4A2E
-		subi.w	#$A,d0
-		lea	($FFFFFB7A).w,a2
-
-loc_4A2E:
-		move.w	d0,d1
-		add.w	d0,d0
-		add.w	d1,d0
-		adda.w	d0,a1
-		move.l	(a1)+,(a2)+
-		move.w	(a1)+,(a2)+
-		rts	
-; End of function PalCycle_SS
-
-; ===========================================================================
-byte_4A3C:	dc.b 3,	0, 7, $92, 3, 0, 7, $90, 3, 0, 7, $8E, 3, 0, 7,	$8C
-					; XREF: PalCycle_SS
-		dc.b 3,	0, 7, $8B, 3, 0, 7, $80, 3, 0, 7, $82, 3, 0, 7,	$84
-		dc.b 3,	0, 7, $86, 3, 0, 7, $88, 7, 8, 7, 0, 7,	$A, 7, $C
-		dc.b $FF, $C, 7, $18, $FF, $C, 7, $18, 7, $A, 7, $C, 7,	8, 7, 0
-		dc.b 3,	0, 6, $88, 3, 0, 6, $86, 3, 0, 6, $84, 3, 0, 6,	$82
-		dc.b 3,	0, 6, $81, 3, 0, 6, $8A, 3, 0, 6, $8C, 3, 0, 6,	$8E
-		dc.b 3,	0, 6, $90, 3, 0, 6, $92, 7, 2, 6, $24, 7, 4, 6,	$30
-		dc.b $FF, 6, 6,	$3C, $FF, 6, 6,	$3C, 7,	4, 6, $30, 7, 2, 6, $24
-		even
-byte_4ABC:	dc.b $10, 1, $18, 0, $18, 1, $20, 0, $20, 1, $28, 0, $28, 1
-					; XREF: PalCycle_SS
-		even
-
-Pal_SSCyc1:	incbin	Palette\c_ss_1.bin
-		even
-Pal_SSCyc2:	incbin	Palette\c_ss_2.bin
-		even
-
-; ---------------------------------------------------------------------------
-; Subroutine to	make the special stage background animated
-; ---------------------------------------------------------------------------
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
-SS_BGAnimate:				; XREF: SpecialStage
-		move.w	($FFFFF7A0).w,d0
-		bne.s	loc_4BF6
-		move.w	#0,($FFFFF70C).w
-		move.w	($FFFFF70C).w,($FFFFF618).w
-
-loc_4BF6:
-		cmpi.w	#8,d0
-		bcc.s	loc_4C4E
-		cmpi.w	#6,d0
-		bne.s	loc_4C10
-		addq.w	#1,($FFFFF718).w
-		addq.w	#1,($FFFFF70C).w
-		move.w	($FFFFF70C).w,($FFFFF618).w
-
-loc_4C10:
-		moveq	#0,d0
-		move.w	($FFFFF708).w,d0
-		neg.w	d0
-		swap	d0
-		lea	(byte_4CCC).l,a1
-		lea	($FFFFAA00).w,a3
-		moveq	#9,d3
-
-loc_4C26:
-		move.w	2(a3),d0
-		bsr.w	CalcSine
-		moveq	#0,d2
-		move.b	(a1)+,d2
-		muls.w	d2,d0
-		asr.l	#8,d0
-		move.w	d0,(a3)+
-		move.b	(a1)+,d2
-		ext.w	d2
-		add.w	d2,(a3)+
-		dbf	d3,loc_4C26
-		lea	($FFFFAA00).w,a3
-		lea	(byte_4CB8).l,a2
-		bra.s	loc_4C7E
-; ===========================================================================
-
-loc_4C4E:				; XREF: SS_BGAnimate
-		cmpi.w	#$C,d0
-		bne.s	loc_4C74
-		subq.w	#1,($FFFFF718).w
-		lea	($FFFFAB00).w,a3
-		move.l	#$18000,d2
-		moveq	#6,d1
-
-loc_4C64:
-		move.l	(a3),d0
-		sub.l	d2,d0
-		move.l	d0,(a3)+
-		subi.l	#$2000,d2
-		dbf	d1,loc_4C64
-
-loc_4C74:
-		lea	($FFFFAB00).w,a3
-		lea	(byte_4CC4).l,a2
-
-loc_4C7E:
-		lea	($FFFFCC00).w,a1
-		move.w	($FFFFF718).w,d0
-		neg.w	d0
-		swap	d0
-		moveq	#0,d3
-		move.b	(a2)+,d3
-		move.w	($FFFFF70C).w,d2
-		neg.w	d2
-		andi.w	#$FF,d2
-		lsl.w	#2,d2
-
-loc_4C9A:
-		move.w	(a3)+,d0
-		addq.w	#2,a3
-		moveq	#0,d1
-		move.b	(a2)+,d1
-		subq.w	#1,d1
-
-loc_4CA4:
-		move.l	d0,(a1,d2.w)
-		addq.w	#4,d2
-		andi.w	#$3FC,d2
-		dbf	d1,loc_4CA4
-		dbf	d3,loc_4C9A
-		rts	
-; End of function SS_BGAnimate
-
-; ===========================================================================
-byte_4CB8:	dc.b 9,	$28, $18, $10, $28, $18, $10, $30, $18,	8, $10,	0
-		even
-byte_4CC4:	dc.b 6,	$30, $30, $30, $28, $18, $18, $18
-		even
-byte_4CCC:	dc.b 8,	2, 4, $FF, 2, 3, 8, $FF, 4, 2, 2, 3, 8,	$FD, 4,	2, 2, 3, 2, $FF
-		even
-					; XREF: SS_BGAnimate
 ; ===========================================================================
 
 ; ---------------------------------------------------------------------------
@@ -38679,15 +38174,15 @@ Go_PSGIndex:	dc.l PSG_Index		; XREF: sub_72926
 PSG_Index:	dc.l PSG1, PSG2, PSG3
 		dc.l PSG4, PSG5, PSG6
 		dc.l PSG7, PSG8, PSG9
-PSG1:		incbin	sound\psg1.bin
-PSG2:		incbin	sound\psg2.bin
-PSG3:		incbin	sound\psg3.bin
-PSG4:		incbin	sound\psg4.bin
-PSG6:		incbin	sound\psg6.bin
-PSG5:		incbin	sound\psg5.bin
-PSG7:		incbin	sound\psg7.bin
-PSG8:		incbin	sound\psg8.bin
-PSG9:		incbin	sound\psg9.bin
+PSG1:		incbin	"sound\PSG\psg1.bin"
+PSG2:		incbin	"sound\PSG\psg2.bin"
+PSG3:		incbin	"sound\PSG\psg3.bin"
+PSG4:		incbin	"sound\PSG\psg4.bin"
+PSG6:		incbin	"sound\PSG\psg6.bin"
+PSG5:		incbin	"sound\PSG\psg5.bin"
+PSG7:		incbin	"sound\PSG\psg7.bin"
+PSG8:		incbin	"sound\PSG\psg8.bin"
+PSG9:		incbin	"sound\PSG\psg9.bin"
 
 byte_71A94:	dc.b 7,	$72, $73, $26, $15, 8, $FF, 5
 ; ---------------------------------------------------------------------------
@@ -39287,27 +38782,10 @@ Sound_ExIndex:
 		bra.w	Sound_E4
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
-; Play "Say-gaa" PCM sound
+; Unused
 ; ---------------------------------------------------------------------------
 
 Sound_E1:				  
-		lea	(SegaPCM).l,a2			; Load the SEGA PCM sample into a2. It's important that we use a2 since a0 and a1 are going to be used up ahead when reading the joypad ports 
-		move.l	#(SegaPCM_End-SegaPCM),d3			; Load the size of the SEGA PCM sample into d3 
-		move.b	#$2A,($A04000).l		; $A04000 = $2A -> Write to DAC channel	  
-PlayPCM_Loop:	  
-		move.b	(a2)+,($A04001).l		; Write the PCM data (contained in a2) to $A04001 (YM2612 register D0) 
-		move.w	#$14,d0				; Write the pitch ($14 in this case) to d0 
-		dbf	d0,*				; Decrement d0; jump to itself if not 0. (for pitch control, avoids playing the sample too fast)  
-		sub.l	#1,d3				; Subtract 1 from the PCM sample size 
-		beq.s	return_PlayPCM			; If d3 = 0, we finished playing the PCM sample, so stop playing, leave this loop, and unfreeze the 68K 
-		lea	($FFFFF604).w,a0		; address where JoyPad states are written 
-		lea	($A10003).l,a1			; address where JoyPad states are read from 
-		jsr	(Joypad_Read).w			; Read only the first joypad port. It's important that we do NOT do the two ports, we don't have the cycles for that 
-		btst	#7,($FFFFF604).w		; Check for Start button 
-		bne.s	return_PlayPCM			; If start is pressed, stop playing, leave this loop, and unfreeze the 68K 
-		bra.s	PlayPCM_Loop			; Otherwise, continue playing PCM sample 
-return_PlayPCM: 
-		addq.w	#4,sp 
 		rts
 
 ; ===========================================================================
@@ -40979,50 +40457,50 @@ loc_72E64:				; XREF: loc_72A64
 		bra.w	sub_7272E
 ; ===========================================================================
 Kos_Z80:	include    'MegaPCM.asm'
-
-Music81:	incbin	"sound\Mind In The Gutter I.bin"
+; ===========================================================================
+Music81:	incbin	"sound\Music\Mind In The Gutter I.bin"
 		even
-Music82:	incbin	"sound\I Died On Jeopardy.bin"
+Music82:	incbin	"sound\Music\I Died On Jeopardy.bin"
 		even
-Music83:	incbin	"sound\Tutorial With Attitude.bin"
+Music83:	incbin	"sound\Music\Tutorial With Attitude.bin"
 		even
-Music84:	incbin	"sound\Welcome to the Alleyway.bin"
+Music84:	incbin	"sound\Music\Welcome to the Alleyway.bin"
 		even
-Music85:	incbin	"sound\I'm An Edgy Motherfucker.bin"
+Music85:	incbin	"sound\Music\I'm An Edgy Motherfucker.bin"
 		even
-Music86:	incbin	sound\music86.bin
+Music86:	incbin	"sound\Music\music86.bin"
 		even
-Music87:	incbin	sound\Jeopardyinv.bin
+Music87:	incbin	"sound\Music\Jeopardyinv.bin"
 		even
-Music88:	incbin	sound\music88.bin
+Music88:	incbin	"sound\Music\music88.bin"
 		even
-Music89:	incbin	sound\music89.bin
+Music89:	incbin	"sound\Music\music89.bin"
 		even
-Music8A:	incbin	sound\Jeopardy.bin
+Music8A:	incbin	"sound\Music\Jeopardy.bin"
 		even
-Music8B:	incbin	"sound\Grand Finale.bin"
+Music8B:	incbin	"sound\Music\Grand Finale.bin"
 		even
-Music8C:	incbin	sound\music8C.bin
+Music8C:	incbin	"sound\Music\music8C.bin"
 		even
-Music8D:	incbin	sound\music8D.bin
+Music8D:	incbin	"sound\Music\music8D.bin"
 		even
-Music8E:	incbin	"sound\Lover Went Right.bin"
+Music8E:	incbin	"sound\Music\Lover Went Right.bin"
 		even
-Music8F:	incbin	sound\music8F.bin
+Music8F:	incbin	"sound\Music\music8F.bin"
 		even
-Music90:	incbin	"sound\Life Or Death.bin"
+Music90:	incbin	"sound\Music\Life Or Death.bin"
 		even
-Music91:	incbin	sound\music91.bin
+Music91:	incbin	"sound\Music\music91.bin"
 		even
-Music92:	incbin	"sound\I Cannot Breathe.bin"
+Music92:	incbin	"sound\Music\I Cannot Breathe.bin"
 		even
-Music93:	incbin	sound\music93.bin
+Music93:	incbin	"sound\Music\music93.bin"
 		even
-Music95:	incbin	sound\SpeedShoes.bin
+Music95:	incbin	"sound\Music\SpeedShoes.bin"
 		even
-Music96:	incbin	sound\SpeedShoesInv.bin
+Music96:	incbin	"sound\Music\SpeedShoesInv.bin"
 		even
-Music97:	incbin	"sound\Mind In The Gutter II.bin"
+Music97:	incbin	"sound\Music\Mind In The Gutter II.bin"
 		even
 		
 ; ---------------------------------------------------------------------------
@@ -41046,121 +40524,120 @@ SoundIndex:
 		dc.l SoundCA, SoundCB, SoundCC
 		dc.l SoundCD, SoundCE, SoundCF
 SoundD0Index:	dc.l SoundD0
-SoundA0:	incbin	sound\soundA0.bin
+SoundA0:	incbin	"sound\SFX\soundA0.bin"
 		even
-SoundA1:	incbin	sound\soundA1.bin
+SoundA1:	incbin	"sound\SFX\soundA1.bin"
 		even
-SoundA2:	incbin	sound\soundA2.bin
+SoundA2:	incbin	"sound\SFX\soundA2.bin"
 		even
-SoundA3:	incbin	sound\soundA3.bin
+SoundA3:	incbin	"sound\SFX\soundA3.bin"
 		even
-SoundA4:	incbin	sound\soundA4.bin
+SoundA4:	incbin	"sound\SFX\soundA4.bin"
 		even
-SoundA5:	incbin	sound\soundA5.bin
+SoundA5:	incbin	"sound\SFX\soundA5.bin"
 		even
-SoundA6:	incbin	sound\soundA6.bin
+SoundA6:	incbin	"sound\SFX\soundA6.bin"
 		even
-SoundA7:	incbin	sound\soundA7.bin
+SoundA7:	incbin	"sound\SFX\soundA7.bin"
 		even
-SoundA8:	incbin	sound\soundA8.bin
+SoundA8:	incbin	"sound\SFX\soundA8.bin"
 		even
-SoundA9:	incbin	sound\soundA9.bin
+SoundA9:	incbin	"sound\SFX\soundA9.bin"
 		even
-SoundAA:	incbin	sound\soundAA.bin
+SoundAA:	incbin	"sound\SFX\soundAA.bin"
 		even
-SoundAB:	incbin	sound\soundAB.bin
+SoundAB:	incbin	"sound\SFX\soundAB.bin"
 		even
-SoundAC:	incbin	sound\soundAC.bin
+SoundAC:	incbin	"sound\SFX\soundAC.bin"
 		even
-SoundAD:	incbin	sound\soundAD.bin
+SoundAD:	incbin	"sound\SFX\soundAD.bin"
 		even
-SoundAE:	incbin	sound\soundAE.bin
+SoundAE:	incbin	"sound\SFX\soundAE.bin"
 		even
-SoundAF:	incbin	sound\soundAF.bin
+SoundAF:	incbin	"sound\SFX\soundAF.bin"
 		even
-SoundB0:	incbin	sound\soundB0.bin
+SoundB0:	incbin	"sound\SFX\soundB0.bin"
 		even
-SoundB1:	incbin	sound\soundB1.bin
+SoundB1:	incbin	"sound\SFX\soundB1.bin"
 		even
-SoundB2:	incbin	sound\soundB2.bin
+SoundB2:	incbin	"sound\SFX\soundB2.bin"
 		even
-SoundB3:	incbin	sound\soundB3.bin
+SoundB3:	incbin	"sound\SFX\soundB3.bin"
 		even
-SoundB4:	incbin	sound\soundB4.bin
+SoundB4:	incbin	"sound\SFX\soundB4.bin"
 		even
-SoundB5:	incbin	sound\soundB5.bin
+SoundB5:	incbin	"sound\SFX\soundB5.bin"
 		even
-SoundB6:	incbin	sound\soundB6.bin
+SoundB6:	incbin	"sound\SFX\soundB6.bin"
 		even
-SoundB7:	incbin	sound\soundB7.bin
+SoundB7:	incbin	"sound\SFX\soundB7.bin"
 		even
-SoundB8:	incbin	sound\soundB8.bin
+SoundB8:	incbin	"sound\SFX\soundB8.bin"
 		even
-SoundB9:	incbin	sound\soundB9.bin
+SoundB9:	incbin	"sound\SFX\soundB9.bin"
 		even
-SoundBA:	incbin	sound\soundBA.bin
+SoundBA:	incbin	"sound\SFX\soundBA.bin"
 		even
-SoundBB:	incbin	sound\soundBB.bin
+SoundBB:	incbin	"sound\SFX\soundBB.bin"
 		even
-SoundBC:	incbin	sound\soundBC.bin
+SoundBC:	incbin	"sound\SFX\soundBC.bin"
 		even
-SoundBD:	incbin	sound\soundBD.bin
+SoundBD:	incbin	"sound\SFX\soundBD.bin"
 		even
-SoundBE:	incbin	sound\soundBE.bin
+SoundBE:	incbin	"sound\SFX\soundBE.bin"
 		even
-SoundBF:	incbin	sound\soundBF.bin
+SoundBF:	incbin	"sound\SFX\soundBF.bin"
 		even
-SoundC0:	incbin	sound\soundC0.bin
+SoundC0:	incbin	"sound\SFX\soundC0.bin"
 		even
-SoundC1:	incbin	sound\soundC1.bin
+SoundC1:	incbin	"sound\SFX\soundC1.bin"
 		even
-SoundC2:	incbin	sound\soundC2.bin
+SoundC2:	incbin	"sound\SFX\soundC2.bin"
 		even
-SoundC3:	incbin	sound\soundC3.bin
+SoundC3:	incbin	"sound\SFX\soundC3.bin"
 		even
-SoundC4:	incbin	sound\soundC4.bin
+SoundC4:	incbin	"sound\SFX\soundC4.bin"
 		even
-SoundC5:	incbin	sound\soundC5.bin
+SoundC5:	incbin	"sound\SFX\soundC5.bin"
 		even
-SoundC6:	incbin	sound\soundC6.bin
+SoundC6:	incbin	"sound\SFX\soundC6.bin"
 		even
-SoundC7:	incbin	sound\soundC7.bin
+SoundC7:	incbin	"sound\SFX\soundC7.bin"
 		even
-SoundC8:	incbin	sound\soundC8.bin
+SoundC8:	incbin	"sound\SFX\soundC8.bin"
 		even
-SoundC9:	incbin	sound\soundC9.bin
+SoundC9:	incbin	"sound\SFX\soundC9.bin"
 		even
-SoundCA:	incbin	sound\soundCA.bin
+SoundCA:	incbin	"sound\SFX\soundCA.bin"
 		even
-SoundCB:	incbin	sound\soundCB.bin
+SoundCB:	incbin	"sound\SFX\soundCB.bin"
 		even
-SoundCC:	incbin	sound\soundCC.bin
+SoundCC:	incbin	"sound\SFX\soundCC.bin"
 		even
-SoundCD:	incbin	sound\soundCD.bin
+SoundCD:	incbin	"sound\SFX\soundCD.bin"
 		even
-SoundCE:	incbin	sound\soundCE.bin
+SoundCE:	incbin	"sound\SFX\soundCE.bin"
 		even
-SoundCF:	incbin	sound\soundCF.bin
+SoundCF:	incbin	"sound\SFX\soundCF.bin"
 		even
-SoundD0:	incbin	sound\soundD0.bin
+SoundD0:	incbin	"sound\SFX\soundD0.bin"
 		even
-SoundD1:	incbin	sound\soundD1.bin
+SoundD1:	incbin	"sound\SFX\soundD1.bin"
 		even
-SoundD2:	incbin	sound\Gen_Jump.bin
+SoundD2:	incbin	"sound\SFX\Gen_Jump.bin"
 		even
-SoundD3:	incbin	sound\PeeloutCharge.bin
+SoundD3:	incbin	"sound\SFX\PeeloutCharge.bin"
 		even
-SoundD4:	incbin	sound\PeeloutStop.bin
+SoundD4:	incbin	"sound\SFX\PeeloutStop.bin"
 		even
-SoundD5:	incbin	sound\S3K_Shoot.bin
+SoundD5:	incbin	"sound\SFX\S3K_Shoot.bin"
 		even
-SoundD6:	incbin	sound\Peelout_Release.bin
+SoundD6:	incbin	"sound\SFX\Peelout_Release.bin"
 		even
-SegaPCM:	incbin	sound\segapcm.bin
-SegaPCM_End	even
 ; ===========================================================================
-Music94:		incbin	"sound\owarisoft logo.bin"
+Music94:		incbin	"sound\Music\owarisoft logo.bin"
 		even
+; ===========================================================================
 ;	include "#Owarisoft/main.asm"
 ;	inform 0,""
 ; ===========================================================================
