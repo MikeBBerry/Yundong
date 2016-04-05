@@ -58,15 +58,16 @@ MegaPCM:
 	DAC_Entry	$08, Kick, dpcm			; $81	- Kick
 	DAC_Entry	$08, Snare, dpcm		; $82	- Snare
 	DAC_Entry	$1B, Timpani, dpcm		; $83	- Timpani
-	DAC_Entry	$08, bah, dpcm			; $84	- Timpani
-	DAC_Entry	$08, grunt, dpcm		; $85	- <Free>
-	dc.l	0,0					; $86	- <Free>
-	dc.l	0,0					; $87	- <Free>
+	DAC_Entry	$08, eh, dpcm			; $84	- Streets Of Rage "Eh!"
+	DAC_Entry	$04, cymbcrash, dpcm	; $85	- Cymbal Crash
+	DAC_Entry	$04, nowthatsfresh, dpcm; $86	- President BPM "Now that's fresh!"
+	DAC_Entry	$08, goodnight, dpcm	; $87	- Wario Ware Inc. Jimmy T. "Good Night"
 	DAC_Entry	$12, Timpani, dpcm		; $88	- Hi-Timpani
 	DAC_Entry	$15, Timpani, dpcm		; $89	- Mid-Timpani
 	DAC_Entry	$1B, Timpani, dpcm		; $8A	- Mid-Low-Timpani
 	DAC_Entry	$1D, Timpani, dpcm		; $8B	- Low-Timpani
 	DAC_Entry	$03, sega, pcm			; $8C   - Sega
+	DAC_Entry	$1D, laughing, dpcm		; $8D	- SegaSonic Robotnik Laughing
 
 MegaPCM_End:
 
@@ -77,8 +78,11 @@ MegaPCM_End:
 	IncludeDAC	Kick, bin
 	IncludeDAC	Snare, bin
 	IncludeDAC	Timpani, bin
-	IncludeDAC	bah, bin
-	IncludeDAC	grunt, bin
+	IncludeDAC	eh, bin
+	IncludeDAC	cymbcrash, bin
+	IncludeDAC	nowthatsfresh, bin
+	IncludeDAC	goodnight, bin
+	IncludeDAC	laughing, bin
 	IncludeDAC  sega, raw
 	even
 
