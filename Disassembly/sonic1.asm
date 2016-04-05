@@ -34909,7 +34909,7 @@ Hurt_NoRings:
 KillSonic:
 		tst.w	($FFFFFE08).w	; is debug mode	active?
 		bne.s	Kill_NoDeath	; if yes, branch
-		move.b	#0,($FFFFFE2D).w ; remove invincibility
+		move.w	#0,($FFFFFE2C).w ; remove shield and invincibility
 		move.b	#6,$24(a0)
 		bsr.w	Sonic_ResetOnFloor
 		bset	#1,$22(a0)
@@ -38955,14 +38955,14 @@ loc_71C38:
 		jsr	sub_72850(pc)
 
 loc_71C44:
-		btst	#6,($FFFFFFF8).w	   ; is Megadrive PAL?
-		beq.s	@end		 			 ; if not, branch
-		cmpi.b  #$5,($FFFFFFBF).w	   ; 5th frame?
-		bne.s   @end			   ; if not, branch
-		move.b  #$0,($FFFFFFBF).w	   ; reset counter
-		bra.w	sub_71B4C		   ; run sound driver again
+		btst	#6,($FFFFFFF8).w	   	; is Megadrive PAL?
+		beq.s	@end		 			; if not, branch
+		subq.b	#1,($FFFFFFBF).w		; decrement timer
+		bpl.s	@end					; if it's not 0, return
+		move.b  #5,($FFFFFFBF).w	   	; reset counter
+		bra.w	sub_71B4C		  		; run sound driver again
+		
 @end:
-		addq.b  #$1,($FFFFFFBF).w	   ; add 1 to frame count
 		rts
 ; End of function sub_71B4C
 
