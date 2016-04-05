@@ -3636,6 +3636,14 @@ MusicList_Bosses:
 		even
 ; ===========================================================================
 
+TitleCard_ArtArray:
+		dc.l Nem_TitleCard_Tutorial
+		dc.l Nem_TitleCard_FuckedUp
+		dc.l Nem_TitleCard_Dzien
+		dc.l Nem_TitleCard_Appendicitis
+		dc.l Nem_TitleCard_Teeth
+		dc.l Nem_TitleCard_Hell
+
 ; ---------------------------------------------------------------------------
 ; Level
 ; ---------------------------------------------------------------------------
@@ -3655,6 +3663,23 @@ loc_37B6:
 		move	#$2700,sr
 		move.l	#$70000002,($C00004).l
 		lea	(Nem_TitleCard).l,a0 ; load title card patterns
+		bsr.w	NemDec
+		move.l	#$75A00002,($C00004).l
+		
+		lea	(Nem_TitleCard_Hell).l,a0
+		cmpi.w	#$103,($FFFFFE10).w
+		beq.s	@IsSBZ3Final
+		lea	(Nem_TitleCard_Final).l,a0
+		cmpi.w	#$502,($FFFFFE10).w
+		beq.s	@IsSBZ3Final
+		moveq	#0,d0
+		move.b	($FFFFFE10).w,d0
+		add.w	d0,d0
+		add.w	d0,d0
+		lea	(TitleCard_ArtArray).l,a1
+		movea.l	(a1,d0.w),a0
+		
+	@IsSBZ3Final:
 		bsr.w	NemDec
 		move	#$2300,sr
 		moveq	#0,d0
@@ -8292,6 +8317,7 @@ Resize_lz:				; XREF: Resize_Index
 Resize_lzx:	dc.w Resize_lz12-Resize_lzx
 		dc.w Resize_lz12-Resize_lzx
 		dc.w Resize_lz3-Resize_lzx
+		dc.w Resize_SBZ3-Resize_LZx
 ; ===========================================================================
 
 Resize_lz12:
@@ -8341,7 +8367,20 @@ lz_715C:
 Resize_lz3end:
 		move.w	($FFFFF700).w,($FFFFF728).w
 		rts
-		rts
+; ===========================================================================
+
+Resize_SBZ3:
+		cmpi.w	#$D00,($FFFFF700).w
+		bcs.s	locret_6F8C
+		cmpi.w	#$18,($FFFFD00C).w ; has Sonic reached the top of the level?
+		bcc.s	locret_6F8C	; if not, branch
+		clr.b	($FFFFFE30).w
+		move.w	#1,($FFFFFE02).w ; restart level
+		move.w	#$502,($FFFFFE10).w ; set level	number to 0502 (FZ)
+		move.b	#1,($FFFFF7C8).w ; freeze Sonic
+
+locret_6F8C:
+		rts	
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Marble Zone dynamic screen resizing
@@ -15014,19 +15053,11 @@ Obj34_Index:	dc.w Obj34_CheckSBZ3-Obj34_Index
 Obj34_CheckSBZ3:			; XREF: Obj34_Index
 		movea.l	a0,a1
 		moveq	#0,d0
-		move.b	($FFFFFE10).w,d0
-		cmpi.w	#$103,($FFFFFE10).w ; check if level is	SBZ 3
-		bne.s	Obj34_CheckFZ
-		moveq	#5,d0		; load title card number 5 (SBZ)
-
-Obj34_CheckFZ:
-		move.w	d0,d2
-		cmpi.w	#$502,($FFFFFE10).w ; check if level is	FZ
-		bne.s	Obj34_LoadConfig
-		moveq	#6,d0		; load title card number 6 (FZ)
-		moveq	#$B,d2		; use "FINAL" mappings
-
-Obj34_LoadConfig:
+		cmpi.w	#$502,($FFFFFE10).w
+		bne.s	@NotFinal
+		moveq	#6,d0
+		
+	@NotFinal:
 		lea	(Obj34_ConData).l,a3
 		lsl.w	#4,d0
 		adda.w	d0,a3
@@ -15045,17 +15076,37 @@ Obj34_Loop:
 		move.b	d2,d0
 
 Obj34_ActNumber:
+		cmpi.b	#$A,d0
+		beq.s	Obj34_Oval
 		cmpi.b	#7,d0
 		bne.s	Obj34_MakeSprite
-		add.b	($FFFFFE11).w,d0
-		cmpi.b	#3,($FFFFFE11).w
+		move.b	($FFFFFE11).w,d0
+		cmpi.b	#3,d0
 		bne.s	Obj34_MakeSprite
 		subq.b	#1,d0
+		bra.s	Obj34_MakeSprite
+		
+Obj34_Oval:
+		move.b	#3,d0
 
 Obj34_MakeSprite:
 		move.b	d0,$1A(a1)	; display frame	number d0
 		move.l	#Map_obj34,4(a1)
 		move.w	#$8580,2(a1)
+		cmpi.w	#1,d1
+		ble.s	@NotText
+		move.l	#Map_obj34_Hell,4(a1)
+		cmpi.w	#$103,($FFFFFE10).w
+		beq.s	@IsSBZ3Final
+		move.l	#Map_obj34_Final,4(a1)
+		cmpi.w	#$502,($FFFFFE10).w
+		beq.s	@IsSBZ3Final
+		bsr.w	Obj34_GetMappings
+		
+	@IsSBZ3Final:
+		move.w	#$85AD,2(a1)
+		
+	@NotText:
 		move.b	#$78,$19(a1)
 		move.b	#0,1(a1)
 		move.b	#0,$18(a1)
@@ -15079,6 +15130,8 @@ loc_C3C8:
 		bmi.s	locret_C3D8
 		cmpi.w	#$200,d0	; has item moved beyond	$200 on	x-axis?
 		bcc.s	locret_C3D8	; if yes, branch
+		
+Obj34_Display:
 		bra.w	DisplaySprite
 ; ===========================================================================
 
@@ -15090,7 +15143,7 @@ Obj34_Wait:				; XREF: Obj34_Index
 		tst.w	$1E(a0)		; is time remaining zero?
 		beq.s	Obj34_ChkPos2	; if yes, branch
 		subq.w	#1,$1E(a0)	; subtract 1 from time
-		bra.w	DisplaySprite
+		bra.w	Obj34_Display
 ; ===========================================================================
 
 Obj34_ChkPos2:				; XREF: Obj34_Wait
@@ -15109,7 +15162,7 @@ Obj34_Move2:
 		bmi.s	locret_C412
 		cmpi.w	#$200,d0	; has item moved beyond	$200 on	x-axis?
 		bcc.s	locret_C412	; if yes, branch
-		bra.w	DisplaySprite
+		bra.w	Obj34_Display
 ; ===========================================================================
 
 locret_C412:
@@ -15132,7 +15185,7 @@ Obj34_Delete:
 Obj34_ItemData:	dc.w $D0	; y-axis position
 		dc.b 2,	0	; routine number, frame	number (changes)
 		dc.w $E4
-		dc.b 2,	6
+		dc.b 2,	1
 		dc.w $EA
 		dc.b 2,	7
 		dc.w $E0
@@ -15150,6 +15203,37 @@ Obj34_ConData:	dc.w 0,	$120, $FEFC, $13C, $414, $154, $214, $154 ; GHZ
 		dc.w 0,	$120, $FF04, $144, $41C, $15C, $21C, $15C ; SYZ
 		dc.w 0,	$120, $FF04, $144, $41C, $15C, $21C, $15C ; SBZ
 		dc.w 0,	$120, $FEE4, $124, $3EC, $3EC, $1EC, $12C ; FZ
+; ===========================================================================
+Obj34_MappingArray:
+		dc.l Map_obj34_Tutorial
+		dc.l Map_obj34_FuckedUp
+		dc.l Map_obj34_Dzien
+		dc.l Map_obj34_Appendicitis
+		dc.l Map_obj34_Teeth
+		dc.l Map_obj34_Hell
+; ===========================================================================
+Obj34_GetMappings:
+		moveq	#0,d0
+		move.b	($FFFFFE10).w,d0
+		add.w	d0,d0
+		add.w	d0,d0
+		move.l	Obj34_MappingArray(pc,d0.w),4(a1)
+		rts
+; ===========================================================================
+Map_obj34_Tutorial:
+		include "_maps/Title Cards/obj34_tutorial.asm"
+Map_obj34_FuckedUp:
+		include "_maps/Title Cards/obj34_fuckedup.asm"
+Map_obj34_Dzien:
+		include "_maps/Title Cards/obj34_dzien.asm"
+Map_obj34_Appendicitis:
+		include "_maps/Title Cards/obj34_appendicitis.asm"
+Map_obj34_Teeth:
+		include "_maps/Title Cards/obj34_teeth.asm"
+Map_obj34_Hell:
+		include "_maps/Title Cards/obj34_hell.asm"
+Map_obj34_Final:
+		include "_maps/Title Cards/obj34_final.asm"
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Object 39 - "GAME OVER" and "TIME OVER"
@@ -15694,12 +15778,12 @@ Obj7F_Display:
 ; Sprite mappings - zone title cards
 ; ---------------------------------------------------------------------------
 Map_obj34:	
-
+	include "_maps\obj34_title_card.asm"
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - "GAME OVER"	and "TIME OVER"
 ; ---------------------------------------------------------------------------
 Map_obj39:
-	include "_maps\obj34_title_card.asm"
+	include "_maps/obj39.asm"
 
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - "SONIC HAS PASSED" title card
@@ -41244,7 +41328,21 @@ DPLC_ReadEntry:
 DPLC_End:
 		rts	
 ; End of function LoadSonicDynPLC
-
+; ===============================================================
+Nem_TitleCard_Tutorial:	incbin "artnem\Title Cards\Tutorial.bin"
+		even
+Nem_TitleCard_FuckedUp:	incbin "artnem\Title Cards\OhShitSonYouFuckedUpNow.bin"
+		even
+Nem_TitleCard_Dzien:	incbin "artnem\Title Cards\DzienDobry.bin"
+		even
+Nem_TitleCard_Appendicitis:	incbin "artnem\Title Cards\IThinkIHaveAppendicitis.bin"
+		even
+Nem_TitleCard_Teeth:	incbin "artnem\Title Cards\MyTeethFeelFunny.bin"
+		even
+Nem_TitleCard_Hell:	incbin "artnem\Title Cards\YoureInHellNow.bin"
+		even
+Nem_TitleCard_Final:	incbin "artnem\Title Cards\Final.bin"
+		even
 ; ===============================================================
 ; MUST BE AT THE END OF THE ROM
 ; ===============================================================
