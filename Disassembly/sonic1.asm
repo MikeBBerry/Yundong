@@ -2999,11 +2999,15 @@ Sega_WaitPalette:
 		bsr.w	PalCycle_Sega
 		bne.s	Sega_WaitPalette
 
-		move.b	#$E1,d0
-		bsr.w	PlaySound_Special ; play "SEGA"	sound
+		;move.b	#$E1,d0
+		;bsr.w	PlaySound_Special ; play "SEGA"	sound
+		
+		moveq	#$FFFFFF8C,d0
+		jsr	PlaySample
+		
 		move.b	#$14,($FFFFF62A).w
 		bsr.w	DelayProgram
-		move.w	#$1E,($FFFFF614).w
+		move.w	#$E0,($FFFFF614).w
 
 Sega_WaitEnd:
 		move.b	#2,($FFFFF62A).w
@@ -23521,7 +23525,6 @@ Obj01_ApplySpeedCap:
 ; ===========================================================================
 
 Obj01:					; XREF: Obj_Index
-		illegal
 		tst.w	($FFFFFE08).w	; is debug mode	being used?
 		beq.s	Obj01_Normal	; if not, branch
 		jmp	DebugMode

@@ -66,6 +66,7 @@ MegaPCM:
 	DAC_Entry	$15, Timpani, dpcm		; $89	- Mid-Timpani
 	DAC_Entry	$1B, Timpani, dpcm		; $8A	- Mid-Low-Timpani
 	DAC_Entry	$1D, Timpani, dpcm		; $8B	- Low-Timpani
+	DAC_Entry	$03, sega, pcm			; $8C   - Sega
 
 MegaPCM_End:
 
@@ -78,5 +79,6 @@ MegaPCM_End:
 	IncludeDAC	Timpani, bin
 	IncludeDAC	bah, bin
 	IncludeDAC	grunt, bin
+	IncludeDAC  sega, raw
 	even
 
