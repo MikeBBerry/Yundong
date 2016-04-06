@@ -3727,7 +3727,7 @@ LevelMenuText:
 		dc.b "MARBLE @ONE      STAGE 1"
 		dc.b "                 STAGE 2"
 		dc.b "                 STAGE 3"
-		dc.b "SPRING YARD @ONE STAGE 1"
+		dc.b "SPRING ?ARD @ONE STAGE 1"
 		dc.b "                 STAGE 2"
 		dc.b "                 STAGE 3"
 		dc.b "LAB?RINTH @ONE   STAGE 1"
