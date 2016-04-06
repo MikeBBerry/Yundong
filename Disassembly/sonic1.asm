@@ -34857,7 +34857,7 @@ AniArt_Pause:
 
 ; ===========================================================================
 AniArt_Index:	dc.w AniArt_none-AniArt_Index, AniArt_none-AniArt_Index
-		dc.w AniArt_none-AniArt_Index, AniArt_none-AniArt_Index
+		dc.w AniArt_mz-AniArt_Index, AniArt_none-AniArt_Index
 		dc.w AniArt_none-AniArt_Index, AniArt_none-AniArt_Index
 		dc.w AniArt_ending-AniArt_Index
 ; ===========================================================================
