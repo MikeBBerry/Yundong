@@ -2863,6 +2863,9 @@ PalPointers:
 	dc.l Pal_Notice
 	dc.w $FB20
 	dc.w $17
+	dc.l Pal_SndTest
+	dc.w $FB00
+	dc.w $17
 ; ---------------------------------------------------------------------------
 ; Palette data
 ; ---------------------------------------------------------------------------
@@ -3373,7 +3376,19 @@ Title_ClrVram:
 		move.l	d0,(a6)
 		dbf	d1,Title_ClrVram ; fill	VRAM with 0
 
+		;jmp	SoundTest
+
+StartLvlSelect:
+		move.b	#$E4,d0
+		bsr.w	PlaySound_Special
+		bsr.w	ClearPLC
+		bsr.w	Pal_FadeFrom
+		move	#$2700,sr
+		bsr.w	ClearScreen
+		moveq	#$15,d0
+		jsr	PalLoad1
 		bsr.w	LevSelTextLoad
+		bsr.w	Pal_FadeTo
 
 ; ---------------------------------------------------------------------------
 ; Level	Select
@@ -3391,20 +3406,7 @@ LevelSelect:
 		move.w	($FFFFFF82).w,d0
 		cmpi.w	#$14,d0		; have you selected item $14 (sound test)?
 		bne.s	LevSel_Level	; if not, go to	Level/SS subroutine
-		move.w	($FFFFFF84).w,d0
-		addi.w	#$80,d0
-	;	tst.b	($FFFFFFE3).w	; is Japanese Credits cheat on?
-	;	beq.s	LevSel_NoCheat	; if not, branch
-		cmpi.w	#$9F,d0		; is sound $9F being played?
-		beq.s	LevSel_Ending	; if yes, branch
-		cmpi.w	#$80,d0		; is sound $9E being played?
-		beq.s	LevSel_Credits	; if yes, branch
-
-LevSel_NoCheat:
-		cmpi.w	#$97,d0		; is sound $80-$94 being played?
-		bcs.s	LevSel_PlaySnd	; if yes, branch
-		cmpi.w	#$A0,d0		; is sound $95-$A0 being played?
-		bcs.s	LevelSelect	; if yes, branch
+		jmp	SoundTest
 
 LevSel_PlaySnd:
 		bsr.w	PlaySound_Special
@@ -3473,7 +3475,7 @@ LSelectPointers:
 		dc.w $0103
 		dc.w $0502
 		dc.w $8000
-		dc.w $8000
+		dc.w $9000
 		even
 ; ---------------------------------------------------------------------------
 ; Level	select codes
@@ -3657,44 +3659,6 @@ loc_34FE:				; XREF: LevSelTextLoad+26j
 		adda.w	d1,a1
 		move.w	#$C650,d3
 		move.l	d4,4(a6)
-		bsr.w	LevSel_ChgLine
-		move.w	#$E650,d3
-		cmpi.w	#$14,($FFFFFF82).w
-		bne.s	loc_3550
-		move.w	#$C650,d3
-
-loc_3550:
-		move.l	#$6C300003,($C00004).l ; screen	position (sound	test)
-		move.w	($FFFFFF84).w,d0
-		addi.w	#$80,d0
-		move.b	d0,d2
-		lsr.b	#4,d0
-		bsr.w	LevSel_ChgSnd
-		move.b	d2,d0
-		bsr.w	LevSel_ChgSnd
-		rts	
-; End of function LevSelTextLoad
-
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
-LevSel_ChgSnd:				; XREF: LevSelTextLoad
-		andi.w	#$F,d0
-		cmpi.b	#$A,d0
-		bcs.s	loc_3580
-		addi.b	#7,d0
-
-loc_3580:
-		add.w	d3,d0
-		addi.w	#$30,d0
-		move.w	d0,(a6)
-		rts	
-; End of function LevSel_ChgSnd
-
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
 
 LevSel_ChgLine:				; XREF: LevSelTextLoad
 		moveq	#$17,d2		; number of characters per line
@@ -38011,6 +37975,8 @@ Nem_TitleCard_Final:	incbin "art/nemesis/Title Cards/Final.bin"
 		even
 Nem_LoverWentRight:		incbin "art/nemesis/Title Cards/LoverWentRight.bin"
 		even
+; ===========================================================================
+		include "screens/soundtest/code.asm"
 ; ===========================================================================
 ; MUST BE AT THE END OF THE ROM
 ; ===========================================================================
