@@ -12,6 +12,8 @@ PSG_Index:
 		dc.l PSG1, PSG2, PSG3
 		dc.l PSG4, PSG5, PSG6
 		dc.l PSG7, PSG8, PSG9
+		dc.l PSGA, PSGB, PSGC
+		dc.l PSGD
 PSG1:		incbin	"sound\PSG\S1 and S2\PSG 1.bin"
 PSG2:		incbin	"sound\PSG\S1 and S2\PSG 2.bin"
 PSG3:		incbin	"sound\PSG\S1 and S2\PSG 3.bin"
@@ -21,6 +23,10 @@ PSG6:		incbin	"sound\PSG\S1 and S2\PSG 6.bin"
 PSG7:		incbin	"sound\PSG\S1 and S2\PSG 7.bin"
 PSG8:		incbin	"sound\PSG\S1 and S2\PSG 8.bin"
 PSG9:		incbin	"sound\PSG\S1 and S2\PSG 9.bin"
+PSGA:		incbin	"sound\PSG\S1 and S2\PSG A (S2).bin"
+PSGB:		incbin	"sound\PSG\S1 and S2\PSG B (S2).bin"
+PSGC:		incbin	"sound\PSG\S1 and S2\PSG C (S2).bin"
+PSGD:		incbin	"sound\PSG\S1 and S2\PSG D (S2).bin"
 ; ---------------------------------------------------------------------------
 SpeedUpIndex:	dc.b 7,	$72, $73, $26, $15, 8, $FF, 5
 ; ---------------------------------------------------------------------------
