@@ -63,7 +63,7 @@ ErrorTrap:	bra.w	*
 IntMain:	jmp	V_Int
 			jmp	H_Int
 ; ===========================================================================
-Console:		dc.b 'SEGA MEGA DRIVE ' ; Hardware system ID
+Console:		dc.b 'SEGA IS TERRIBLE' ; Hardware system ID
 Date:			dc.b 'OWARI   2016.NOV' ; Release date
 Title_Local:	dc.b 'Yundong Zixingche                               ' ; Domestic name
 Title_Int:		dc.b 'Yundong Zixingche                               ' ; International name
