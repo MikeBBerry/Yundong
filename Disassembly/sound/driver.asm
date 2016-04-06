@@ -13,7 +13,18 @@ PSG_Index:
 		dc.l PSG4, PSG5, PSG6
 		dc.l PSG7, PSG8, PSG9
 		dc.l PSGA, PSGB, PSGC
-		dc.l PSGD
+		dc.l PSGD, PSGE, PSGF
+		dc.l PSG10, PSG11, PSG12
+		dc.l PSG13, PSG14, PSG15
+		dc.l PSG16, PSG17, PSG18
+		dc.l PSG19, PSG1A, PSG1B
+		dc.l PSG1C, PSG1D, PSG1E
+		dc.l PSG1F, PSG20, PSG21
+		dc.l PSG22, PSG23, PSG24
+		dc.l PSG25, PSG26, PSG27
+		dc.l PSG28, PSG29, PSG2A
+		dc.l PSG2B, PSG2C, PSG2D
+		dc.l PSG2E
 PSG1:		incbin	"sound\PSG\S1 and S2\PSG 1.bin"
 PSG2:		incbin	"sound\PSG\S1 and S2\PSG 2.bin"
 PSG3:		incbin	"sound\PSG\S1 and S2\PSG 3.bin"
@@ -27,6 +38,39 @@ PSGA:		incbin	"sound\PSG\S1 and S2\PSG A (S2).bin"
 PSGB:		incbin	"sound\PSG\S1 and S2\PSG B (S2).bin"
 PSGC:		incbin	"sound\PSG\S1 and S2\PSG C (S2).bin"
 PSGD:		incbin	"sound\PSG\S1 and S2\PSG D (S2).bin"
+PSGE:		incbin	"sound\PSG\S3K\PSG 1.bin"
+PSGF:		incbin	"sound\PSG\S3K\PSG 2.bin"
+PSG10:		incbin	"sound\PSG\S3K\PSG 3.bin"
+PSG11:		incbin	"sound\PSG\S3K\PSG 4 (S3, SK).bin"
+PSG12:		incbin	"sound\PSG\S3K\PSG 4 (S3D).bin"
+PSG13:		incbin	"sound\PSG\S3K\PSG 5.bin"
+PSG14:		incbin	"sound\PSG\S3K\PSG 6.bin"
+PSG15:		incbin	"sound\PSG\S3K\PSG 7.bin"
+PSG16:		incbin	"sound\PSG\S3K\PSG 8.bin"
+PSG17:		incbin	"sound\PSG\S3K\PSG 9.bin"
+PSG18:		incbin	"sound\PSG\S3K\PSG A.bin"
+PSG19:		incbin	"sound\PSG\S3K\PSG B.bin"
+PSG1A:		incbin	"sound\PSG\S3K\PSG C.bin"
+PSG1B:		incbin	"sound\PSG\S3K\PSG D.bin"
+PSG1C:		incbin	"sound\PSG\S3K\PSG 10.bin"
+PSG1D:		incbin	"sound\PSG\S3K\PSG 11.bin"
+PSG1E:		incbin	"sound\PSG\S3K\PSG 14.bin"
+PSG1F:		incbin	"sound\PSG\S3K\PSG 18.bin"
+PSG20:		incbin	"sound\PSG\S3K\PSG 1A.bin"
+PSG21:		incbin	"sound\PSG\S3K\PSG 1C.bin"
+PSG22:		incbin	"sound\PSG\S3K\PSG 1D.bin"
+PSG23:		incbin	"sound\PSG\S3K\PSG 1E.bin"
+PSG24:		incbin	"sound\PSG\S3K\PSG 1F.bin"
+PSG25:		incbin	"sound\PSG\S3K\PSG 20.bin"
+PSG26:		incbin	"sound\PSG\S3K\PSG 21.bin"
+PSG27:		incbin	"sound\PSG\S3K\PSG 22.bin"
+PSG28:		incbin	"sound\PSG\S3K\PSG 23.bin"
+PSG29:		incbin	"sound\PSG\S3K\PSG 24.bin"
+PSG2A:		incbin	"sound\PSG\S3K\PSG 25.bin"
+PSG2B:		incbin	"sound\PSG\S3K\PSG 26 (S3).bin"
+PSG2C:		incbin	"sound\PSG\S3K\PSG 26 (SK, S3D).bin"
+PSG2D:		incbin	"sound\PSG\S3K\PSG 27.bin"
+PSG2E:		incbin	"sound\PSG\S3K\PSG 28 (S3D).bin"
 ; ---------------------------------------------------------------------------
 SpeedUpIndex:	dc.b 7,	$72, $73, $26, $15, 8, $FF, 5
 ; ---------------------------------------------------------------------------
