@@ -68,6 +68,9 @@ MegaPCM:
 	DAC_Entry	$1D, Timpani, dpcm		; $8B	- Low-Timpani
 	DAC_Entry	$03, sega, pcm			; $8C   - Sega
 	DAC_Entry	$09, laughing, dpcm		; $8D	- SegaSonic Robotnik Laughing
+	DAC_Entry	$09, go, dpcm			; $8E	- Andrew Hockenberg "Go"
+	DAC_Entry	$1B, knockhimout, dpcm	; $8F	- Punch Out Arcade "Knock Him Out"
+	DAC_Entry	$09, sa2robovoice, dpcm	; $90	- Sonic Adventure 2 "Hip Hop, House, Techno"
 
 MegaPCM_End:
 
@@ -83,6 +86,9 @@ MegaPCM_End:
 	IncludeDAC	nowthatsfresh, bin
 	IncludeDAC	goodnight, bin
 	IncludeDAC	laughing, bin
+	IncludeDAC	go, bin
+	IncludeDAC	knockhimout, bin
 	IncludeDAC  sega, raw
+	IncludeDAC  sa2robovoice, bin
 	even
 

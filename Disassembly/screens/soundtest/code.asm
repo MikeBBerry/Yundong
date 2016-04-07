@@ -118,7 +118,7 @@ SndTest_Addresses:
 SndTest_Maxes:
 		dc.w $16
 		dc.w $2F
-		dc.w $0B
+		dc.w $0F
 ; ===========================================================================
 SndTest_Add:
 		dc.w $81, $A0, $81

@@ -37756,7 +37756,7 @@ Music87:	incbin	"sound\Music\Jeopardyinv.bin"
 		even
 Music88:	incbin	"sound\Music\music88.bin"
 		even
-Music89:	incbin	"sound\Music\music89.bin"
+Music89:	incbin	"sound\Music\Aurora Numerique.bin"
 		even
 Music8A:	incbin	"sound\Music\Jeopardy.bin"
 		even
