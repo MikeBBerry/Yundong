@@ -37750,7 +37750,7 @@ Music84:	incbin	"sound\Music\Welcome to the Alleyway.bin"
 		even
 Music85:	incbin	"sound\Music\I'm An Edgy Motherfucker.bin"
 		even
-Music86:	incbin	"sound\Music\Crank The Dial To 11.bin"
+Music86:	incbin	"sound\Music\Get That Elephant.bin"
 		even
 Music87:	incbin	"sound\Music\Jeopardyinv.bin"
 		even
@@ -37764,7 +37764,7 @@ Music8B:	incbin	"sound\Music\Grand Finale.bin"
 		even
 Music8C:	incbin	"sound\Music\music8C.bin"
 		even
-Music8D:	incbin	"sound\Music\music8D.bin"
+Music8D:	incbin	"sound\Music\Crank The Dial To 11.bin"
 		even
 Music8E:	incbin	"sound\Music\Lover Went Right.bin"
 		even
