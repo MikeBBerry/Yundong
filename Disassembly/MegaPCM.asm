@@ -71,6 +71,13 @@ MegaPCM:
 	DAC_Entry	$09, go, dpcm			; $8E	- Andrew Hockenberg "Go"
 	DAC_Entry	$1B, knockhimout, dpcm	; $8F	- Punch Out Arcade "Knock Him Out"
 	DAC_Entry	$09, sa2robovoice, dpcm	; $90	- Sonic Adventure 2 "Hip Hop, House, Techno"
+	DAC_Entry	$09, joholoop1, dpcm	; $91	- Joe The Ho Drum Loop 1
+	DAC_Entry	$09, joholoop2, dpcm	; $92	- Joe The Ho Drum Loop 2
+	DAC_Entry	$09, johorap1, dpcm		; $93	- Joe The Ho Rap 1
+	DAC_Entry	$09, johorap2, dpcm		; $94	- Joe The Ho Rap 2
+	DAC_Entry	$09, johorap3, dpcm		; $95	- Joe The Ho Rap 3
+	DAC_Entry	$09, johorap4, dpcm		; $96	- Joe The Ho Rap 4
+	DAC_Entry	$09, johocmon, dpcm		; $97	- Joe The Ho Drum Loop Vada Break
 
 MegaPCM_End:
 
@@ -90,5 +97,12 @@ MegaPCM_End:
 	IncludeDAC	knockhimout, bin
 	IncludeDAC  sega, raw
 	IncludeDAC  sa2robovoice, bin
+	IncludeDAC  joholoop1, bin
+	IncludeDAC  joholoop2, bin
+	IncludeDAC  johorap1, bin
+	IncludeDAC  johorap2, bin
+	IncludeDAC  johorap3, bin
+	IncludeDAC  johorap4, bin
+	IncludeDAC  johocmon, bin
 	even
 

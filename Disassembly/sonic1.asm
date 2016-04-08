@@ -3714,7 +3714,7 @@ MusicList_Levels:
 		dc.b $83, $83, $83, $83
 		dc.b $82, $82, $82, $86
 		dc.b $81, $97, $81, $97
-		dc.b $84, $84, $84, $84
+		dc.b $89, $89, $84, $84
 		dc.b $85, $85, $85, $85
 		dc.b $86, $86, $8D, $86
 		even
@@ -37782,7 +37782,7 @@ Music94:	incbin	"sound\Music\owarisoft logo.bin"
 		even
 Music95:	incbin	"sound\Music\SpeedShoes.bin"
 		even
-Music96:	incbin	"sound\Music\SpeedShoesInv.bin"
+Music96:	incbin	"sound\Music\Joe The Ho.bin"
 		even
 Music97:	incbin	"sound\Music\Mind In The Gutter II.bin"
 		even
