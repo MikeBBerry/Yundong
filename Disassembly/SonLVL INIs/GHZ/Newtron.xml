@@ -3,11 +3,11 @@
   <Images>
     <ImageFromMappings id="img1">
       <ArtFile filename="../art/nemesis/newtron.bin"/>
-      <MapFile type="ASM" filename="../_maps/obj42.asm" frame="3" startpal="0"/>
+      <MapFile type="ASM" filename="../mappings/sprite/obj42.asm" frame="3" startpal="0"/>
     </ImageFromMappings>
     <ImageFromMappings id="img2">
       <ArtFile filename="../art/nemesis/newtron.bin"/>
-      <MapFile type="ASM" filename="../_maps/obj42.asm" frame="1" startpal="1"/>
+      <MapFile type="ASM" filename="../mappings/sprite/obj42.asm" frame="1" startpal="1"/>
     </ImageFromMappings>
   </Images>
   <Subtypes>

@@ -14,7 +14,7 @@ namespace S12005ObjectDefinitions.GHZ
         public override void Init(ObjectData data)
         {
             byte[] artfile = ObjectHelper.OpenArtFile("../art/nemesis/ghzbridg.bin", CompressionType.Nemesis);
-            img = ObjectHelper.MapASMToBmp(artfile, "../_maps/obj11.asm", 0, 2);
+            img = ObjectHelper.MapASMToBmp(artfile, "../mappings/sprite/obj11.asm", 0, 2);
         }
 
         public override ReadOnlyCollection<byte> Subtypes
