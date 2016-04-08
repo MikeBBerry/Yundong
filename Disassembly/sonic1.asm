@@ -2949,7 +2949,7 @@ CalcSine:				; XREF: SS_BGAnimate; et al
 
 ; ===========================================================================
 
-Sine_Data:	incbin	data/trig/sinewave.bin	; values for a 360º sine wave
+Sine_Data:	incbin	data/trig/sinewave.bin	; values for a 360\BA sine wave
 
 ; ===========================================================================
 		movem.l	d1-d2,-(sp)
@@ -3291,16 +3291,7 @@ loc_317C:
 ; ===========================================================================
 
 Title_ChkRegion:
-		tst.b	($FFFFFFF8).w	; check	if the machine is US or	Japanese
-		bpl.s	Title_RegionJ	; if Japanese, branch
-		lea	(LevelSelectCode_US).l,a0 ; load US code
-		bra.s	Title_EnterCheat
-; ===========================================================================
-
-Title_RegionJ:				; XREF: Title_ChkRegion
-		lea	(LevelSelectCode_J).l,a0 ; load	J code
-
-Title_EnterCheat:			; XREF: Title_ChkRegion
+		lea	(LevelSelectCode).l,a0
 		move.w	($FFFFFFE4).w,d0
 		adda.w	d0,a0
 		move.b	($FFFFF605).w,d0 ; get button press
@@ -3387,6 +3378,8 @@ StartLvlSelect:
 		bsr.w	ClearScreen
 		moveq	#$15,d0
 		jsr	PalLoad1
+		move.w	#$8B,d0
+		jsr	PlaySound
 		bsr.w	LevSelTextLoad
 		bsr.w	Pal_FadeTo
 
@@ -3470,21 +3463,17 @@ LSelectPointers:
 		dc.w $0300
 		dc.w $0301
 		dc.w $0302
-		dc.w $5000
-		dc.w $5001
+		dc.w $0500
+		dc.w $0501
 		dc.w $0103
 		dc.w $0502
 		dc.w $8000
-		dc.w $9000
+		dc.w $8000
 		even
 ; ---------------------------------------------------------------------------
 ; Level	select codes
 ; ---------------------------------------------------------------------------
-LevelSelectCode_J:
-		dc.b 1, 2, 4, 8, 0, $FF
-		even
-
-LevelSelectCode_US:
+LevelSelectCode:
 		dc.b 1, 2, 4, 8, 0, $FF
 		even
 ; ===========================================================================
@@ -3717,9 +3706,6 @@ MusicList_Levels:
 		dc.b $89, $89, $84, $84
 		dc.b $85, $85, $85, $85
 		dc.b $86, $86, $8D, $86
-		even
-MusicList_SpecialStages:
-		dc.b $89, $89, $89, $89, $89, $89
 		even
 MusicList_Credits:
 		dc.b $91, $91
@@ -11141,13 +11127,15 @@ Obj29_Index:	dc.w Obj29_Main-Obj29_Index
 Obj29_Main:				; XREF: Obj29_Index
 		addq.b	#2,$24(a0)
 		move.l	#Map_obj29,4(a0)
-		move.w	#$2797,2(a0)
+		move.w	#$2570,2(a0)
 		move.b	#4,1(a0)
 		move.b	#1,$18(a0)
 		move.b	#8,$19(a0)
 		move.w	#-$300,$12(a0)	; move object upwards
 
 Obj29_Slower:				; XREF: Obj29_Index
+		cmpi.b	#$39,($FFFFD0C0).w
+		beq.w	DeleteObject
 		tst.w	$12(a0)		; is object moving?
 		bpl.w	DeleteObject	; if not, branch
 		bsr.w	SpeedToPos
@@ -16003,7 +15991,7 @@ loc_D37C:
 ; ---------------------------------------------------------------------------
 Obj_Index:
 	dc.l Obj01, ObjectFall,	Obj03, ObjectFall
-	dc.l SpinDash_dust, ObjectFall, ObjectFall, Obj08
+	dc.l Obj05, ObjectFall, ObjectFall, Obj08
 	dc.l Obj09, Obj0A, Obj0B, Obj0C
 	dc.l Obj0D, Obj0E, Obj0F, Obj10
 	dc.l Obj11, Obj12, Obj13, Obj14
@@ -22333,7 +22321,7 @@ Obj61_Type01:				; XREF: Obj61_TypeIndex
 		bne.s	loc_120D6	; if yes, branch
 		btst	#3,$22(a0)
 		beq.s	locret_120D4
-		move.w	#30,$36(a0)	; wait for « second
+		move.w	#30,$36(a0)	; wait for \AB second
 
 locret_120D4:
 		rts	
@@ -23200,10 +23188,8 @@ Ani_obj65:
 ; ---------------------------------------------------------------------------
 Map_obj65:
 	include "mappings/sprite/obj65.asm"
-
-SpinDash_dust:
+; ===========================================================================
 	include "objects\spindash_dust.asm"
-
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Object 01 - Sonic
@@ -23265,7 +23251,8 @@ Obj01_ApplySpeedCap:
 @no_cap:
 		rts
 ; ===========================================================================
-
+Sonic_Dust			= $FFFFD1C0
+; ===========================================================================
 Obj01:					; XREF: Obj_Index
 		tst.w	($FFFFFE08).w	; is debug mode	being used?
 		beq.s	Obj01_Normal	; if not, branch
@@ -23299,7 +23286,7 @@ Obj01_Main:				; XREF: Obj01_Index
 		move.w	#$600,($FFFFF760).w ; Sonic's top speed
 		move.w	#$C,($FFFFF762).w ; Sonic's acceleration
 		move.w	#$80,($FFFFF764).w ; Sonic's deceleration
-		move.b	#5,($FFFFD1C0).w
+		move.b	#5,(Sonic_Dust).w
 
 Obj01_Control:				; XREF: Obj01_Index
 		tst.w	($FFFFFFFA).w	; is debug cheat enabled?
@@ -23458,11 +23445,11 @@ Obj01_InWater:
 		bsr.w	StopDrowning
 		move.b	#$A,($FFFFD340).w ; load bubbles object	from Sonic's mouth
 		move.b	#$81,($FFFFD368).w
-		asr	$10(a0)
-		asr	$12(a0)
-		asr	$12(a0)
+		asr.w	$10(a0)
+		asr.w	$12(a0)
+		asr.w	$12(a0)
 		beq.s	locret_12D80
-		move.b	#8,($FFFFD300).w ; load	splash object
+		move.w	#$100,(Sonic_Dust+$1C).w
 		move.w	#$AA,d0
 		jmp	(PlaySound_Special).l ;	play splash sound
 ; ===========================================================================
@@ -23471,9 +23458,14 @@ Obj01_OutWater:
 		bclr	#6,$22(a0)
 		beq.s	locret_12D80
 		bsr.w	StopDrowning
-		asl	$12(a0)
+		cmpi.b	#4,$24(a0)
+		beq.s	@IsHurt
+		asl.w	$12(a0)
+		
+@IsHurt:
+		tst.w	$12(a0)
 		beq.w	locret_12D80
-		move.b	#8,($FFFFD300).w ; load	splash object
+		move.w	#$100,(Sonic_Dust+$1C).w
 		cmpi.w	#-$1000,$12(a0)
 		bgt.s	loc_12E0E
 		move.w	#-$1000,$12(a0)	; set maximum speed on leaving water
@@ -23767,7 +23759,7 @@ locret_1307C:
 Sonic_MoveLeft:		   ; XREF: Sonic_Move
 		move.w	$14(a0),d0
 		beq.s	loc_13086
-		bpl.s	loc_130B2
+		bpl.s	Sonic_TurnLeft
 
 loc_13086:
 		bset	#0,$22(a0)
@@ -23792,7 +23784,7 @@ loc_130A6:
 		rts
 ; ===========================================================================
 
-loc_130B2:				; XREF: Sonic_MoveLeft
+Sonic_TurnLeft:				; XREF: Sonic_MoveLeft
 		sub.w	d4,d0
 		bcc.s	loc_130BA
 		move.w	#-$80,d0
@@ -23809,6 +23801,8 @@ loc_130BA:
 		bclr	#0,$22(a0)
 		move.w	#$A4,d0
 		jsr	(PlaySound_Special).l ;	play stopping sound
+		move.b	#6,(Sonic_Dust+$24).w
+		move.b	#$15,(Sonic_Dust+$1A).w
 
 locret_130E8:
 		rts	
@@ -23820,7 +23814,7 @@ locret_130E8:
 
 Sonic_MoveRight:	   ; XREF: Sonic_Move
 		move.w	$14(a0),d0
-		bmi.s	loc_13118
+		bmi.s	Sonic_TurnRight
 		bclr	#0,$22(a0)
 		beq.s	loc_13104
 		bclr	#5,$22(a0)
@@ -23841,7 +23835,7 @@ loc_1310C:
 		rts
 ; ===========================================================================
 
-loc_13118:				; XREF: Sonic_MoveRight
+Sonic_TurnRight:				; XREF: Sonic_MoveRight
 		add.w	d4,d0
 		bcc.s	loc_13120
 		move.w	#$80,d0
@@ -23858,6 +23852,8 @@ loc_13120:
 		bset	#0,$22(a0)
 		move.w	#$A4,d0
 		jsr	(PlaySound_Special).l ;	play stopping sound
+		move.b	#6,(Sonic_Dust+$24).w
+		move.b	#$15,(Sonic_Dust+$1A).w
 
 locret_1314E:
 		rts	
@@ -36656,11 +36652,11 @@ PLC_Main:	dc.w 5
 		dc.l Nem_Lives		; lives	counter
 		dc.w $FA80
 		dc.l Nem_LivesPic	; lives	counter pic
-		dc.w $ACA0
+		dc.w $F380
 		dc.l Nem_Ring		; rings
 		dc.w $F640
 		dc.l Nem_Points		; points from enemy
-		dc.w $F2E0
+		dc.w $570*$20
 ; ---------------------------------------------------------------------------
 ; Pattern load cues - standard block 2
 ; ---------------------------------------------------------------------------
@@ -37928,6 +37924,9 @@ SoundD6:	incbin	"sound\SFX\Peelout_Release.bin"
 LoadDPLC:
 		moveq	#0,d0
 		move.b	$1A(a0),d0	; load frame number
+		cmp.b	$30(a0),d0
+		beq.s	DPLC_End
+		move.b	d0,$30(a0)
 		add.w	d0,d0
 		adda.w	(a2,d0.w),a2
 		moveq	#0,d5
@@ -37955,9 +37954,12 @@ DPLC_ReadEntry:
 
 DPLC_End:
 		rts	
-; End of function LoadSonicDynPLC
+; End of function LoadDPLC
 ; ===========================================================================
-Art_Dust	incbin	art/uncompressed/spindust.bin
+Art_Dust:
+		incbin	"art/uncompressed/spindust.bin"
+		incbin	"art/uncompressed/Skid smoke.bin"
+		even
 ; ===========================================================================
 Nem_TitleCard_Tutorial:	incbin "art/nemesis/Title Cards/Tutorial.bin"
 		even
