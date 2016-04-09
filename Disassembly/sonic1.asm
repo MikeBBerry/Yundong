@@ -6192,7 +6192,7 @@ LevSz_SonicPos:
 		move.b	($FFFFF600).w,d2			; MJ: load game mode
 		andi.w	#$00FC,d2				; MJ: keep in range
 		cmpi.b	#$04,d2					; MJ: is screen mode at title?
-		bne	loc_60D0				; MJ: if not, branch
+		bne.s	loc_60D0				; MJ: if not, branch
 		move.w	#$0050,d1				; MJ: set positions for title screen
 		move.w	#$03B0,d0				; MJ: ''
 		move.w	d1,($FFFFD008).w			; MJ: save to object 1 so title screen follows
@@ -6202,6 +6202,7 @@ loc_60D0:				; XREF: LevSz_ChkLamp
 		clr.w	($FFFFF7A8).w		; reset Sonic's position tracking index
 		lea	($FFFFCB00).w,a2	; load the tracking array into a2
 		moveq	#63,d2				; begin a 64-step loop
+		
 @looppoint:
 		move.w	d1,(a2)+			; fill in X
 		move.w	d0,(a2)+			; fill in Y
@@ -6228,6 +6229,7 @@ loc_60EE:
 		move.w	($FFFFF72E).w,d0
 
 loc_60F8:
+		bclr	#0,d0
 		move.w	d0,($FFFFF704).w
 		bsr.w	BgScrollSpeed
 		moveq	#0,d0
@@ -6241,7 +6243,8 @@ loc_60F8:
 ; End of function LevelSizeLoad
 
 ; ===========================================================================
-dword_61B4:	dc.l $700100, $1000100
+dword_61B4:
+		dc.l $700100, $1000100
 		dc.l $8000100, $1000000
 		dc.l $8000100, $1000000
 		dc.l $8000100, $1000000
@@ -6362,12 +6365,6 @@ BgScroll_End:				; XREF: BgScroll_Index
 		move.w	#$1E,($FFFFF714).w
 		rts	
 ; ===========================================================================
-		move.w	#$A8,($FFFFF708).w
-		move.w	#$1E,($FFFFF70C).w
-		move.w	#-$40,($FFFFF710).w
-		move.w	#$1E,($FFFFF714).w
-		rts
-
 ; ---------------------------------------------------------------------------
 ; Background layer deformation subroutines
 ; ---------------------------------------------------------------------------
@@ -6863,11 +6860,11 @@ ScrollVertical:				; XREF: DeformBgLayer
 		moveq	#0,d1
 		move.w	($FFFFD00C).w,d0
 		sub.w	($FFFFF704).w,d0
-		btst	#2,($FFFFD022).w
-		beq.s	loc_662A
-		subq.w	#5,d0
-
-loc_662A:
+		cmpi.w	#-$100,($FFFFF72E).w
+		bne.s	@NoWrap
+		andi.w	#$7FF,d0
+		
+@NoWrap:
 		btst	#1,($FFFFD022).w
 		beq.s	loc_664A
 		addi.w	#$20,d0
@@ -6954,8 +6951,6 @@ loc_66CC:
 		bgt.s	loc_66F0
 		andi.w	#$7FF,d1
 		andi.w	#$7FF,($FFFFD00C).w
-		andi.w	#$7FF,($FFFFF704).w
-		andi.w	#$3FF,($FFFFF70C).w
 		bra.s	loc_6724
 ; ===========================================================================
 
@@ -6975,9 +6970,7 @@ loc_6700:
 		blt.s	loc_6724
 		subi.w	#$800,d1
 		bcs.s	loc_6720
-		andi.w	#$7FF,($FFFFD00C).w
 		subi.w	#$800,($FFFFF704).w
-		andi.w	#$3FF,($FFFFF70C).w
 		bra.s	loc_6724
 ; ===========================================================================
 
@@ -7905,52 +7898,52 @@ Resize_GHZ3end:
 ; Labyrinth Zone dynamic screen	resizing
 ; ---------------------------------------------------------------------------
 
-Resize_lz:				; XREF: Resize_Index
+Resize_LZ:				; XREF: Resize_Index
 		moveq	#0,d0
 		move.b	($FFFFFE11).w,d0
 		add.w	d0,d0
-		move.w	Resize_lzx(pc,d0.w),d0
-		jmp	Resize_lzx(pc,d0.w)
+		move.w	Resize_LZx(pc,d0.w),d0
+		jmp	Resize_LZx(pc,d0.w)
 ; ===========================================================================
-Resize_lzx:	dc.w Resize_lz12-Resize_lzx
-		dc.w Resize_lz12-Resize_lzx
-		dc.w Resize_lz3-Resize_lzx
+Resize_LZx:	dc.w Resize_LZ12-Resize_LZx
+		dc.w Resize_LZ12-Resize_LZx
+		dc.w Resize_LZ3-Resize_LZx
 		dc.w Resize_SBZ3-Resize_LZx
 ; ===========================================================================
 
-Resize_lz12:
+Resize_LZ12:
 		rts	
 ; ===========================================================================
 
-Resize_lz3:
+Resize_LZ3:
 		moveq	#0,d0
 		move.b	($FFFFF742).w,d0
-		move.w	lz_7118(pc,d0.w),d0
-		jmp	lz_7118(pc,d0.w)
+		move.w	LZ_7118(pc,d0.w),d0
+		jmp	LZ_7118(pc,d0.w)
 ; ===========================================================================
-lz_7118:	dc.w Resize_lz3main-lz_7118
-		dc.w Resize_lz3boss-lz_7118
-		dc.w Resize_lz3end-lz_7118
+LZ_7118:	dc.w Resize_LZ3main-lz_7118
+		dc.w Resize_LZ3boss-lz_7118
+		dc.w Resize_LZ3end-lz_7118
 ; ===========================================================================
 
-Resize_lz3main:
+Resize_LZ3main:
 		cmpi.w	#$1E70,($FFFFF700).w
-		bcs.s	lz_7130
+		bcs.s	LZ_7130
 		move.w	#$210,($FFFFF726).w
 		addq.b	#2,($FFFFF742).w
 
-lz_7130:
+LZ_7130:
 		rts	
 ; ===========================================================================
 
-Resize_lz3boss:
+Resize_LZ3boss:
 		cmpi.w	#$2000,($FFFFF700).w
-		bcs.s	lz_715C
+		bcs.s	LZ_715C
 		bsr.w	SingleObjLoad
-		bne.s	lz_7144
+		bne.s	LZ_7144
 		move.b	#$77,(a1)	; load LZ boss	object
 
-lz_7144:
+LZ_7144:
 		move.b	#1,($FFFFFFFF).w	; set boss flag
 		move.b	#1,($FFFFF7AA).w ; lock	screen
 		addq.b	#2,($FFFFF742).w
@@ -7958,11 +7951,11 @@ lz_7144:
 		bra.w	LoadPLC		; load boss patterns
 ; ===========================================================================
 
-lz_715C:
+LZ_715C:
 		rts	
 ; ===========================================================================
 
-Resize_lz3end:
+Resize_LZ3end:
 		move.w	($FFFFF700).w,($FFFFF728).w
 		rts
 ; ===========================================================================
@@ -36115,22 +36108,16 @@ Debug_Main:				; XREF: Debug_Index
 		addq.b	#2,($FFFFFE08).w
 		move.w	($FFFFF72C).w,($FFFFFEF0).w ; buffer level x-boundary
 		move.w	($FFFFF726).w,($FFFFFEF2).w ; buffer level y-boundary
-		move.w	#0,($FFFFF72C).w
-		move.w	#$720,($FFFFF726).w
+		tst.w	($FFFFD00C).w
+		bpl.s	@NotNeg
+		move.w	#0,($FFFFD00C).w
+		
+@NotNeg:
 		andi.w	#$7FF,($FFFFD00C).w
 		andi.w	#$7FF,($FFFFF704).w
-		andi.w	#$3FF,($FFFFF70C).w
+		andi.w	#$7FF,($FFFFF70C).w
 		move.b	#0,$1A(a0)
 		move.b	#0,$1C(a0)
-		cmpi.b	#$10,($FFFFF600).w ; is	game mode = $10	(special stage)?
-		bne.s	Debug_Zone	; if not, branch
-		move.w	#0,($FFFFF782).w ; stop	special	stage rotating
-		move.w	#0,($FFFFF780).w ; make	special	stage "upright"
-		moveq	#6,d0		; use 6th debug	item list
-		bra.s	Debug_UseList
-; ===========================================================================
-
-Debug_Zone:
 		moveq	#0,d0
 		move.b	($FFFFFE10).w,d0
 
@@ -36149,13 +36136,8 @@ loc_1CF9E:
 		move.b	#1,($FFFFFE0B).w
 
 Debug_Skip:				; XREF: Debug_Index
-		moveq	#6,d0
-		cmpi.b	#$10,($FFFFF600).w
-		beq.s	loc_1CFBE
 		moveq	#0,d0
 		move.b	($FFFFFE10).w,d0
-
-loc_1CFBE:
 		lea	(DebugList).l,a2
 		add.w	d0,d0
 		adda.w	(a2,d0.w),a2
@@ -36277,23 +36259,25 @@ Debug_Exit:
 		move.w	d0,($FFFFFE08).w ; deactivate debug mode
 		move.l	#Map_Sonic,($FFFFD004).w
 		move.w	#$780,($FFFFD002).w
-		move.b	d0,($FFFFD01C).w
-		move.w	d0,$A(a0)
-		move.w	d0,$E(a0)
+		bsr.s	ResetSonic
+		move.b	#$13,($FFFFD016).w
+		move.b	#9,($FFFFFD017).w
 		move.w	($FFFFFEF0).w,($FFFFF72C).w ; restore level boundaries
 		move.w	($FFFFFEF2).w,($FFFFF726).w
-		cmpi.b	#$10,($FFFFF600).w ; are you in	the special stage?
-		bne.s	Debug_DoNothing	; if not, branch
-		clr.w	($FFFFF780).w
-		move.w	#$40,($FFFFF782).w ; set new level rotation speed
-		move.l	#Map_Sonic,($FFFFD004).w
-		move.w	#$780,($FFFFD002).w
-		move.b	#2,($FFFFD01C).w
-		bset	#2,($FFFFD022).w
-		bset	#1,($FFFFD022).w
-
+		
 Debug_DoNothing:
 		rts	
+		
+ResetSonic:
+		move.b	d0,($FFFFD01C).w
+		move.w	d0,($FFFFD00A).w
+		move.w	d0,($FFFFD00E).w
+		move.b	d0,($FFFFD010).w
+		move.b	d0,($FFFFD012).w
+		move.b	d0,($FFFFD014).w
+		move.b	#2,($FFFFD022).w
+		move.b	#2,($FFFFD024).w
+		rts
 ; End of function Debug_Control
 
 
