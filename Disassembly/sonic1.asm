@@ -3438,32 +3438,31 @@ PlayLevel:				; XREF: ROM:00003246j ...
 		move.l	d0,($FFFFFE5C).w ; clear emeralds
 		move.b	d0,($FFFFFE18).w ; clear continues
 		move.b	#$E0,d0
-		bsr.w	PlaySound_Special ; fade out music
-		rts	
+		bra.w	PlaySound_Special ; fade out music
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Level	select - level pointers
 ; ---------------------------------------------------------------------------
 LSelectPointers:
 		dc.w $0000
-		dc.w $0001
-		dc.w $0002
+		dc.w $8000
+		dc.w $8000
 		dc.w $0200
 		dc.w $0201
-		dc.w $0202
+		dc.w $8000
 		dc.w $0400
 		dc.w $0401
-		dc.w $0402
+		dc.w $8000
 		dc.w $0100
 		dc.w $0101
-		dc.w $0102
+		dc.w $8000
 		dc.w $0300
 		dc.w $0301
-		dc.w $0302
+		dc.w $8000
 		dc.w $0500
 		dc.w $0501
-		dc.w $0103
 		dc.w $0502
+		dc.w $8000
 		dc.w $8000
 		dc.w $8000
 		even
@@ -15822,26 +15821,15 @@ locret_D180:
 ; ===========================================================================
 
 Obj3C_ChkRoll:				; XREF: Obj3C_Solid
-	;	cmpi.b	#2,$1C(a1)	; is Sonic rolling?
-	;	bne.s	locret_D180	; if not, branch
-		move.w	$30(a0),d0
-		bpl.s	Obj3C_ChkSpeed
-		neg.w	d0
-
-Obj3C_ChkSpeed:
-		cmpi.w	#$480,d0	; is Sonic's speed $480 or higher?
-		bcs.s	locret_D180	; if not, branch
-		move.w	$30(a0),$10(a1)
-		addq.w	#4,8(a1)
+		tst.b	$3A(a1)	; is Sonic biting?
+		beq.s	locret_D180	; if not, branch
 		lea	(Obj3C_FragSpd1).l,a4 ;	use fragments that move	right
 		move.w	8(a0),d0
 		cmp.w	8(a1),d0	; is Sonic to the right	of the block?
 		bcs.s	Obj3C_Smash	; if yes, branch
-		subq.w	#8,8(a1)
 		lea	(Obj3C_FragSpd2).l,a4 ;	use fragments that move	left
 
 Obj3C_Smash:
-		move.w	$10(a1),$14(a1)
 		bclr	#5,$22(a0)
 		bclr	#5,$22(a1)
 		moveq	#7,d1		; load 8 fragments
