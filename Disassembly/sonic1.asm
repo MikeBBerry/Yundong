@@ -500,11 +500,7 @@ loc_EEE:
 		move.w	#$7800,(a5)
 		move.w	#$83,($FFFFF640).w
 		move.w	($FFFFF640).w,(a5)
-		tst.b	($FFFFF767).w
-		beq.s	loc_F54
 		jsr	(ProcessDMAQueue).l
-
-loc_F54:
 		movem.l	($FFFFF700).w,d0-d7
 		movem.l	d0-d7,($FFFFFF10).w
 		movem.l	($FFFFF754).w,d0-d1
@@ -5258,9 +5254,9 @@ End_LoadData:
 End_LoadSonic:
 		move.b	#1,($FFFFD000).w ; load	Sonic object
 		bset	#0,($FFFFD022).w ; make	Sonic face left
-	;	move.b	#1,($FFFFF7CC).w ; lock	controls
-	;	move.w	#$400,($FFFFF602).w ; move Sonic to the	left
-	;	move.w	#$F800,($FFFFD014).w ; set Sonic's speed
+		move.b	#1,($FFFFF7CC).w ; lock	controls
+		move.w	#$400,($FFFFF602).w ; move Sonic to the	left
+		move.w	#$F800,($FFFFD014).w ; set Sonic's speed
 	;	move.b	#$21,($FFFFD040).w ; load HUD object
 		jsr	ObjPosLoad
 		jsr	ObjectsLoad
@@ -5298,7 +5294,7 @@ End_MainLoop:
 		move.b	#$18,($FFFFF62A).w
 		bsr.w	DelayProgram
 		addq.w	#1,($FFFFFE04).w
-	;	bsr.w	End_MoveSonic
+		bsr.w	End_MoveSonic
 		jsr	ObjectsLoad
 		bsr.w	DeformBgLayer
 		jsr	BuildSprites
@@ -5332,7 +5328,7 @@ End_AllEmlds:				; XREF: loc_5334
 		move.b	#$18,($FFFFF62A).w
 		bsr.w	DelayProgram
 		addq.w	#1,($FFFFFE04).w
-	;	bsr.w	End_MoveSonic
+		bsr.w	End_MoveSonic
 		jsr	ObjectsLoad
 		bsr.w	DeformBgLayer
 		jsr	BuildSprites
@@ -5368,7 +5364,6 @@ loc_5334:
 
 
 End_MoveSonic:				; XREF: End_MainLoop
-		rts
 		move.b	($FFFFF7D7).w,d0
 		bne.s	End_MoveSonic2
 		cmpi.w	#$90,($FFFFD008).w ; has Sonic passed $90 on y-axis?
@@ -5391,7 +5386,7 @@ End_MoveSonic2:				; XREF: End_MoveSonic
 		move.w	d0,($FFFFD014).w
 		move.b	#$81,($FFFFF7C8).w
 		move.b	#3,($FFFFD01A).w
-	;	move.w	#$505,($FFFFD01C).w ; use "standing" animation
+		move.w	#$505,($FFFFD01C).w ; use "standing" animation
 		move.b	#3,($FFFFD01E).w
 		rts	
 ; ===========================================================================
@@ -5401,8 +5396,8 @@ End_MoveSonic3:				; XREF: End_MoveSonic
 		bne.s	End_MoveSonExit
 		addq.b	#2,($FFFFF7D7).w
 		move.w	#$A0,($FFFFD008).w
-	;	move.b	#$87,($FFFFD000).w ; load Sonic	ending sequence	object
-		clr.w	($FFFFD024).w
+		move.w	#0,($FFFFD024).w
+		move.b	#$87,($FFFFD000).w ; load Sonic	ending sequence	object
 
 End_MoveSonExit:
 		rts	
@@ -5512,7 +5507,7 @@ Obj87_Leap:				; XREF: Obj87_Index
 		clr.b	$22(a0)
 		move.b	#2,$18(a0)
 		move.b	#5,$1A(a0)
-		move.b	#$1F,$1C(a0)	; use "leaping"	animation
+		move.b	#2,$1C(a0)	; use "leaping"	animation
 		move.b	#$89,($FFFFD400).w ; load "SONIC THE HEDGEHOG" object
 		bra.s	Obj87_Animate
 ; ===========================================================================
@@ -5631,7 +5626,7 @@ Obj89_Move:				; XREF: Obj89_Index
 		cmpi.w	#$C0,8(a0)	; has object reached $C0?
 		beq.s	Obj89_Delay	; if yes, branch
 		addi.w	#$10,8(a0)	; move object to the right
-		jsr	DisplaySprite
+		jmp	DisplaySprite
 ; ===========================================================================
 
 Obj89_Delay:				; XREF: Obj89_Move
@@ -5644,7 +5639,7 @@ Obj89_GotoCredits:			; XREF: Obj89_Index
 		move.b	#$1C,($FFFFF600).w ; exit to credits
 
 Obj89_Display:
-		jsr	DisplaySprite
+		jmp	DisplaySprite
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - Sonic on the ending	sequence
