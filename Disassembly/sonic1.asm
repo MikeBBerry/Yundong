@@ -12165,12 +12165,6 @@ loc_A1EC:				; XREF: Obj26_Solid
 		beq.w	loc_A25C
 		tst.w	d1
 		bpl.s	loc_A220
-		tst.b	$3A(a1)
-		beq.s	@NotBiting
-		addq.b	#2,$24(a0)
-		bra.s	loc_A25C
-
-@NotBiting:
 		sub.w	d3,$C(a1)
 		bsr.w	loc_74AE
 		move.b	#2,$25(a0)
@@ -12193,6 +12187,23 @@ loc_A230:
 loc_A236:
 		tst.b	$3A(a1)
 		beq.s	@NotBiting
+
+		lea	(Touch_Sizes-2).l,a3
+		move.b	$20(a1),d0
+		andi.w	#$3F,d0
+		add.w	d0,d0
+		lea	(a3,d0.w),a3
+		move.b	(a3)+,d1
+		ext.w	d1
+		move.w	$C(a0),d0
+		move.w	$C(a1),d2
+
+		cmp.w	d2,d0
+		ble.w	@NotBiting
+		add.w	d1,d2
+		cmp.w	d2,d0
+		ble.w	@NotBiting
+
 		addq.b	#2,$24(a0)
 		bra.s	loc_A25C
 
@@ -15821,15 +15832,36 @@ locret_D180:
 ; ===========================================================================
 
 Obj3C_ChkRoll:				; XREF: Obj3C_Solid
+		move.w	$30(a0),d0
+		bpl.s	Obj3C_ChkSpeed
+		neg.w	d0
+
+Obj3C_ChkSpeed:
 		tst.b	$3A(a1)	; is Sonic biting?
-		beq.s	locret_D180	; if not, branch
+		bne.s	@is_biting	; if so, branch
+		cmpi.w	#$480,d0	; is Sonic's speed $480 or higher?
+		bcs.s	locret_D180	; if not, branch
+		move.w	$30(a0),$10(a1)
+		addq.w	#4,8(a1)
+
+@is_biting:
 		lea	(Obj3C_FragSpd1).l,a4 ;	use fragments that move	right
 		move.w	8(a0),d0
 		cmp.w	8(a1),d0	; is Sonic to the right	of the block?
 		bcs.s	Obj3C_Smash	; if yes, branch
+		tst.b	$3A(a1)	; is Sonic biting?
+		bne.s	@is_biting2	; if so, branch
+		subq.w	#8,8(a1)
+
+@is_biting2:
 		lea	(Obj3C_FragSpd2).l,a4 ;	use fragments that move	left
 
 Obj3C_Smash:
+		tst.b	$3A(a1)	; is Sonic biting?
+		bne.s	@is_biting	; if so, branch
+		move.w	$10(a1),$14(a1)
+
+@is_biting:
 		bclr	#5,$22(a0)
 		bclr	#5,$22(a1)
 		moveq	#7,d1		; load 8 fragments
