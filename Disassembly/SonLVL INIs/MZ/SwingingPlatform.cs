@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using SonicRetro.SonLVL.API;
 
-namespace S12005ObjectDefinitions.MZ
+namespace S1ObjectDefinitions.MZ
 {
 	class SwingingPlatform : ObjectDefinition
 	{

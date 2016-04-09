@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using SonicRetro.SonLVL.API;
 
-namespace S12005ObjectDefinitions.SBZ
+namespace S1ObjectDefinitions.SBZ
 {
 	class SwingingSpikeball : ObjectDefinition
 	{

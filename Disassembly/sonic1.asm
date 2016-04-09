@@ -3410,7 +3410,8 @@ LevSel_Ending:				; XREF: LevelSelect
 
 LevSel_Credits:				; XREF: LevelSelect
 		move.b	#$1C,($FFFFF600).w ; set screen	mode to	$1C (Credits)
-		move.b	#$91,d0
+		lea	(MusicList_Credits).l,a1	; load Music Playlist for credits
+		move.b	(a1,d0.w),d0	; get d0-th entry from the playlist
 		bsr.w	PlaySound_Special ; play credits music
 		move.w	#0,($FFFFFFF4).w
 		rts	
@@ -5247,6 +5248,7 @@ End_LoadData:
 		move.b	($FFFFFFFD).w,d0
 		lea	(MusicList_Endings).l,a1 ; load Music Playlist for Endings
 		move.b	(a1,d0.w),d0 ; get d0-th entry from the playlist
+		bsr.w	PlaySound
 		btst	#6,($FFFFF604).w ; is button A pressed?
 		beq.s	End_LoadSonic	; if not, branch
 		move.b	#1,($FFFFFFFA).w ; enable debug	mode
@@ -5305,12 +5307,10 @@ End_MainLoop:
 		cmpi.b	#$18,($FFFFF600).w ; is	scene number $18 (ending)?
 		beq.s	loc_52DA	; if yes, branch
 		move.b	#$1C,($FFFFF600).w ; set scene to $1C (credits)
-		clr.w	d0
 		move.b	($FFFFFFFD).w,d0	; get kind of ending (0 = good, 1 = bad)
 		lea	(MusicList_Credits).l,a1	; load Music Playlist for credits
 		move.b	(a1,d0.w),d0	; get d0-th entry from the playlist
-
-		bsr.w	PlaySound_Special ; play credits music
+		bsr.w	PlaySound	 ; play credits music
 		move.w	#0,($FFFFFFF4).w ; set credits index number to 0
 		rts
 ; ===========================================================================
@@ -5750,7 +5750,7 @@ EndingDemoLoad:				; XREF: Credits
 		move.b	#8,($FFFFF600).w ; set game mode to 08 (demo)
 		move.b	#4,($FFFFFE12).w ; set lives to	3
 		moveq	#0,d0
-		move.b	d0,$FFFFFFFF	; clear Boss flag
+		move.b	d0,($FFFFFFFF).w	; clear Boss flag
 		move.w	d0,($FFFFFE20).w ; clear rings
 		move.l	d0,($FFFFFE22).w ; clear time
 		move.l	d0,($FFFFFE26).w ; clear score
@@ -12166,7 +12166,21 @@ loc_A1EC:				; XREF: Obj26_Solid
 		bsr.w	Obj26_SolidSides
 		beq.w	loc_A25C
 		tst.b	$3A(a1)
-		bne.s	loc_A25C
+		beq.s	@NotBiting
+		move.w	8(a0),d0
+		move.w	8(a1),d2
+		btst	#0,$22(a0)
+		bne.s	@left
+		cmp.w	d0,d2
+		ble.s	@NotBiting
+		bra.s	loc_A25C
+		
+	@left:
+		cmp.w	d0,d2
+		bge.s	@NotBiting
+		bra.s	loc_A25C
+
+@NotBiting:
 		tst.w	d1
 		bpl.s	loc_A220
 		sub.w	d3,$C(a1)
@@ -29698,6 +29712,12 @@ BossEnd:
 ; ===========================================================================
 
 CtrlLevelMusic:
+		cmpi.b	#8,($FFFFF600).w	; Is this demo game mode?
+		bne.s	@notdemo			; If not, branch
+		tst.w	($FFFFFFF0).w		; Is it a credits demo
+		bmi.s	@end				; If so, branch
+
+@notdemo:
 		tst.b	($FFF027).l
 		bne.s	@end
 		tst.b	($FFFFFFBC).w		; Has Sonic drowned?

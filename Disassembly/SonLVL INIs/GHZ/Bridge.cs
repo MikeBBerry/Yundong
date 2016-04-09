@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Drawing;
 using SonicRetro.SonLVL.API;
 
-namespace S12005ObjectDefinitions.GHZ
+namespace S1ObjectDefinitions.GHZ
 {
     class Bridge : ObjectDefinition
     {

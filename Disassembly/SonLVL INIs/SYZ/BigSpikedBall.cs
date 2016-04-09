@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using SonicRetro.SonLVL.API;
 
-namespace S12005ObjectDefinitions.SYZ
+namespace S1ObjectDefinitions.SYZ
 {
 	class BigSpikedBall : ObjectDefinition
 	{
