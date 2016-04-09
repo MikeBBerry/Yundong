@@ -37924,9 +37924,6 @@ SoundD6:	incbin	"sound\SFX\Peelout_Release.bin"
 LoadDPLC:
 		moveq	#0,d0
 		move.b	$1A(a0),d0	; load frame number
-		cmp.b	$30(a0),d0
-		beq.s	DPLC_End
-		move.b	d0,$30(a0)
 		add.w	d0,d0
 		adda.w	(a2,d0.w),a2
 		moveq	#0,d5
