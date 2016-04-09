@@ -3252,7 +3252,6 @@ Title_ClrObjRam2:
 		move.b	#$E,($FFFFD040).w ; load big Sonic object
 
 		move.b	#$E,($FFFFD040).w ; load big Sonic object
-		move.b	#$F,($FFFFD080).w ; load "PRESS	START BUTTON" object
 		move.b	#$F,($FFFFD0C0).w ; load "TM" object
 		move.b	#3,($FFFFD0DA).w
 		move.b	#$F,($FFFFD100).w
