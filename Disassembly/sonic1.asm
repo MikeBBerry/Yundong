@@ -3118,7 +3118,7 @@ Sega_WaitEnd:
 Sega_GotoTitle:
 		move.b	#4,($FFFFF600).w ; go to title screen
 	;	rts	
-		jmp	Owarisoft
+	;	jmp	Owarisoft
 ; ===========================================================================
 
 ; ---------------------------------------------------------------------------
@@ -37977,8 +37977,8 @@ SoundD5:	incbin	"sound\SFX\S3K_Shoot.bin"
 SoundD6:	incbin	"sound\SFX\Peelout_Release.bin"
 		even
 ; ===========================================================================
-	include "screens/#Owarisoft/main.asm"
-	inform 0,""
+;	include "screens/#Owarisoft/main.asm"
+;	inform 0,""
 ; ===========================================================================
 
 LoadDPLC:

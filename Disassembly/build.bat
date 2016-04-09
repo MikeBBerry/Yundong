@@ -5,7 +5,7 @@ copy /B need4speedtemp.bin+sonic.symcmp need4speed.bin /Y
 del need4speedtemp.bin > nul
 del sonic.symcmp > nul
 del sonic.sym > nul
-rem bin\rompad.exe need4speed.bin 255 0
+bin\rompad.exe need4speed.bin 255 0
 bin\fixheadr.exe need4speed.bin
 type errors.txt
 pause
