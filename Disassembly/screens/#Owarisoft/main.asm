@@ -29,9 +29,6 @@ CRAM =	$1
 VSRAM =	$2
 
 ; ===========================================================================
-Owari_ints:	jmp	OwariVBlank
-Owari_ints2:	jmp	OwariVBlank2
-; ===========================================================================
 Owarisoft:
 		jsr	Pal_FadeFrom		; fadeout palette
 		jsr	ClearScreen		; clear screen data
@@ -86,7 +83,7 @@ Owarisoft:
 		moveq 	#$FFFFFF94,d0 ; play music 94
 		jsr	PlaySound			; play music
 
-	loadJumps Owari_ints				; load the HBI and VBI jumps
+		move.l	#OwariVBlank,VBlankJump+2
 		moveq	#0,owsf_PalOff			; clear palette offset
 		moveq	#owsf_FadeDef,owsf_Fades	; set the fades count
 		lea	Owari_txPalette,owsf_txPal
@@ -100,7 +97,7 @@ Owarisoft:
 		bsr	OwariOutFade
 		moveq	#0,owsf_PalOff			; clear palette offset
 
-	loadJumps Owari_ints2				; load the HBI and VBI jumps
+		move.l	#OwariVBlank2,VBlankJump+2
 		sf	$FFFFF604.w			; force start button press
 		lea	Owari_txPalette_end,owsf_txPal
 
@@ -108,7 +105,7 @@ Owarisoft:
 		tst.b	$FFFFF604.w			; get player 1's held buttons
 		bpl.s	.mainloop2			; if start is not pressed, branch
 
-	loadJumps IntMain				; load VBlank and HBlank interrupts
+		move.l	#V_Int,VBlankJump+2
 		rts
 
 ; ===========================================================================
@@ -163,7 +160,7 @@ OwariOutFade:
 ; ===========================================================================
 OwariVBlank2:
 		movem.l	owsf_Fades-owsf_PalOff/owsf_txPal,-(sp)	; store vars
-		jsr	sub_71B4C			; sound driver code
+		jsr	UpdateMusic			; sound driver code
 		lea	VDP_control_port,owsf_VDP	; get vdp port
 		movem.l	(sp)+,owsf_Fades-owsf_PalOff/owsf_txPal	; pop variables
 
@@ -201,7 +198,7 @@ OwariVBlank2:
 OwariVBlank:
 		movem.l	owsf_Fades-owsf_PalOff/owsf_txPal,-(sp)	; store vars
 		jsr	ReadJoypads			; get button presses
-		jsr	sub_71B4C			; sound driver code
+		jsr	UpdateMusic			; sound driver code
 		lea	VDP_control_port,owsf_VDP	; get vdp port
 		movem.l	(sp)+,owsf_Fades-owsf_PalOff/owsf_txPal	; pop variables
 
@@ -251,11 +248,11 @@ OwariVBlank:
 
 .end		rte
 ; ===========================================================================
-Owari_tiles:	incbin "#Owarisoft/art.kos"		; Kosinski compressed tiles
+Owari_tiles:	incbin "screens/#Owarisoft/art.kos"		; Kosinski compressed tiles
 		even
-Owari_mapFG:	incbin "#Owarisoft/fgmap.eni"		; Enigma compressed foreground mappings
+Owari_mapFG:	incbin "screens/#Owarisoft/fgmap.eni"		; Enigma compressed foreground mappings
 		even
-Owari_mapBG:	incbin "#Owarisoft/bgmap.eni"		; Enigma compressed background mappings
+Owari_mapBG:	incbin "screens/#Owarisoft/bgmap.eni"		; Enigma compressed background mappings
 		even
 ; ===========================================================================
 
@@ -301,10 +298,10 @@ Owari_po_0	equ (*-Owari_Palette)/2
     	dc.w $022C, $000A, $0008		; fade to red
 
 Owari_po_1	equ (*-Owari_Palette)/2
-    	incbin	"#Owarisoft/rainbow.bin"	; rainbow effect
+    	incbin	"screens/#Owarisoft/rainbow.bin"	; rainbow effect
 
 Owari_po_2	equ (*-Owari_Palette)/2
-    	incbin	"#Owarisoft/rainbow.bin"	; more rainbow effect for reset counter
+    	incbin	"screens/#Owarisoft/rainbow.bin"	; more rainbow effect for reset counter
 
 Owari_pad	equ Owari_Palette-Owari_PadStart
 	inform 0,"OwariSoft Splash: Padded $\$Owari_pad bytes"
