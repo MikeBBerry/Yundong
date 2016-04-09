@@ -19,11 +19,6 @@ SoundTest:
 		jsr	NemDec
 		
 		;lea	($FF0000).l,a1
-		;lea	(Eni_SegaLogo).l,a0
-		;move.w	#0,d0
-		;jsr	EniDec
-		
-		;lea	($FF0000).l,a1
 		;move.l	#$40000003,d0
 		;moveq	#$27,d1
 		;moveq	#$1B,d2
@@ -209,6 +204,7 @@ DrawHexNumber:
 Txt_Music:
 		dc.b "MUSIC? ",0
 		even
+		
 Txt_SFX:
 		dc.b "SFX? ",0
 		even
