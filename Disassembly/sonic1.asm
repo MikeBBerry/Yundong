@@ -3825,7 +3825,8 @@ Level_ClrVars3:
 		move.l	#$FFFFC800,($FFFFC8FC).w
 		
 		move.b	#0,($FFFFFFBC).w				; Clear sonic drowned flag
-		
+		move.b	#$1E,($FFFFD028).w
+
 		cmpi.b	#1,($FFFFFE10).w ; is level LZ?
 		bne.s	Level_LoadPal	; if not, branch
 		move.w	#$8014,(a6)
@@ -3842,7 +3843,6 @@ Level_ClrVars3:
 		move.b	#1,($FFFFF64C).w ; enable water
 
 Level_LoadPal:
-		move.w	#$1E,($FFFFFE14).w
 		move	#$2300,sr
 		moveq	#3,d0
 		bsr.w	PalLoad2	; load Sonic's Palette line
@@ -5219,7 +5219,6 @@ End_ClrRam3:
 		move.w	#$8720,(a6)
 		move.w	#$8ADF,($FFFFF624).w
 		move.w	($FFFFF624).w,(a6)
-		move.w	#$1E,($FFFFFE14).w
 		move.w	#$600,($FFFFFE10).w ; set level	number to 0600 (extra flowers)
 		move.b	#0,($FFFFFFFD).w	; puts a 0 in this flag
 		cmpi.b	#6,($FFFFFE57).w ; do you have all 6 emeralds?
@@ -22873,7 +22872,7 @@ Obj64_Index:	dc.w Obj64_Main-Obj64_Index
 
 Obj64_Main:				; XREF: Obj64_Index
 		addq.b	#2,$24(a0)
-		move.l	#Map_obj64,4(a0)
+		move.l	#Map_obj0A,4(a0)
 		move.w	#$8348,2(a0)
 		move.b	#$84,1(a0)
 		move.b	#$10,$19(a0)
@@ -22906,8 +22905,6 @@ Obj64_ChkWater:				; XREF: Obj64_Index
 		move.w	($FFFFF646).w,d0
 		cmp.w	$C(a0),d0	; is bubble underwater?
 		bcs.s	Obj64_Wobble	; if yes, branch
-
-Obj64_Burst:				; XREF: Obj64_Wobble
 		move.b	#6,$24(a0)
 		addq.b	#3,$1C(a0)	; run "bursting" animation
 		bra.w	Obj64_Display2
@@ -22925,27 +22922,8 @@ Obj64_Wobble:				; XREF: Obj64_ChkWater
 		tst.b	$2E(a0)
 		beq.s	Obj64_Display
 		bsr.w	Obj64_ChkSonic	; has Sonic touched the	bubble?
-		beq.s	Obj64_Display	; if not, branch
-
-		bsr.w	StopDrowning	; cancel countdown music
-		move.w	#$AD,d0
-		jsr	(PlaySound_Special).l ;	play collecting	bubble sound
-		lea	($FFFFD000).w,a1
-		clr.w	$10(a1)
-		clr.w	$12(a1)
-		clr.w	$14(a1)
-		move.b	#$15,$1C(a1)
-		move.w	#$23,$3E(a1)
-		move.b	#0,$3C(a1)
-		bclr	#5,$22(a1)
-		bclr	#4,$22(a1)
-		btst	#2,$22(a1)
-		beq.w	Obj64_Burst
-		bclr	#2,$22(a1)
-		move.b	#$13,$16(a1)
-		move.b	#9,$17(a1)
-		subq.w	#5,$C(a1)
-		bra.w	Obj64_Burst
+		cmpi.b	#6,$24(a0)
+		beq.s	Obj64_Display2	; if not, branch
 ; ===========================================================================
 
 Obj64_Display:				; XREF: Obj64_Wobble
@@ -23082,16 +23060,16 @@ Obj64_BblTypes:	dc.b 0,	1, 0, 0, 0, 0, 1, 0, 0,	0, 0, 1, 0, 1, 0, 0, 1,	0
 
 Obj64_ChkSonic:				; XREF: Obj64_Wobble
 		tst.b	($FFFFF7C8).w
-		bmi.s	loc_12998
+		bmi.w	loc_12998
 		lea	($FFFFD000).w,a1
 		move.w	8(a1),d0
 		move.w	8(a0),d1
 		subi.w	#$10,d1
 		cmp.w	d0,d1
-		bcc.s	loc_12998
+		bcc.w	loc_12998
 		addi.w	#$20,d1
 		cmp.w	d0,d1
-		bcs.s	loc_12998
+		bcs.w	loc_12998
 		move.w	$C(a1),d0
 		move.w	$C(a0),d1
 		cmp.w	d0,d1
@@ -23099,12 +23077,33 @@ Obj64_ChkSonic:				; XREF: Obj64_Wobble
 		addi.w	#$10,d1
 		cmp.w	d0,d1
 		bcs.s	loc_12998
-		moveq	#1,d0
-		rts	
+		bsr.w	StopDrowning	; cancel countdown music
+		move.w	#$AD,d0
+		jsr	(PlaySound_Special).l ;	play collecting	bubble sound
+		lea	($FFFFD000).w,a1
+		clr.w	$10(a1)
+		clr.w	$12(a1)
+		clr.w	$14(a1)
+		move.b	#$15,$1C(a1)
+		move.w	#$23,$3E(a1)
+		move.b	#0,$3C(a1)
+		bclr	#5,$22(a1)
+		bclr	#4,$22(a1)
+		btst	#2,$22(a1)
+		beq.w	Obj64_Burst
+		bclr	#2,$22(a1)
+		move.b	#$13,$16(a1)
+		move.b	#9,$17(a1)
+		subq.w	#5,$C(a1)
 ; ===========================================================================
 
+Obj64_Burst:
+		cmpi.b	#6,$24(a0)
+		beq.s	loc_12998
+		move.b	#6,$24(a0)
+		addq.b	#3,$1C(a0)
+
 loc_12998:
-		moveq	#0,d0
 		rts	
 ; ===========================================================================
 Ani_obj64:
@@ -23291,6 +23290,7 @@ Obj01_Main:				; XREF: Obj01_Index
 		move.w	#$600,($FFFFF760).w ; Sonic's top speed
 		move.w	#$C,($FFFFF762).w ; Sonic's acceleration
 		move.w	#$80,($FFFFF764).w ; Sonic's deceleration
+		move.b	#$1E,$28(a0)
 		move.b	#5,(Sonic_Dust).w
 
 Obj01_Control:				; XREF: Obj01_Index
@@ -23806,6 +23806,8 @@ loc_130BA:
 		bclr	#0,$22(a0)
 		move.w	#$A4,d0
 		jsr	(PlaySound_Special).l ;	play stopping sound
+		cmpi.b	#$C,$28(a0)
+		blo.s	locret_130E8
 		move.b	#6,(Sonic_Dust+$24).w
 		move.b	#$15,(Sonic_Dust+$1A).w
 
@@ -23857,6 +23859,8 @@ loc_13120:
 		bset	#0,$22(a0)
 		move.w	#$A4,d0
 		jsr	(PlaySound_Special).l ;	play stopping sound
+		cmpi.b	#$C,$28(a0)
+		blo.s	locret_1314E
 		move.b	#6,(Sonic_Dust+$24).w
 		move.b	#$15,(Sonic_Dust+$1A).w
 
@@ -24869,16 +24873,21 @@ Obj0A:					; XREF: Obj_Index
 		move.w	Obj0A_Index(pc,d0.w),d1
 		jmp	Obj0A_Index(pc,d1.w)
 ; ===========================================================================
-Obj0A_Index:	dc.w Obj0A_Main-Obj0A_Index, Obj0A_Animate-Obj0A_Index
-		dc.w Obj0A_ChkWater-Obj0A_Index, Obj0A_Display-Obj0A_Index
-		dc.w Obj0A_Delete2-Obj0A_Index,	Obj0A_Countdown-Obj0A_Index
-		dc.w Obj0A_AirLeft-Obj0A_Index,	Obj0A_Display-Obj0A_Index
+Obj0A_Index:
+		dc.w Obj0A_Init-Obj0A_Index
+		dc.w Obj0A_Animate-Obj0A_Index
+		dc.w Obj0A_ChkWater-Obj0A_Index
+		dc.w Obj0A_Display-Obj0A_Index
+		dc.w Obj0A_Delete2-Obj0A_Index
+		dc.w Obj0A_Countdown-Obj0A_Index
+		dc.w Obj0A_AirLeft-Obj0A_Index
+		dc.w Obj0A_Display-Obj0A_Index
 		dc.w Obj0A_Delete2-Obj0A_Index
 ; ===========================================================================
 
-Obj0A_Main:				; XREF: Obj0A_Index
+Obj0A_Init:				; XREF: Obj0A_Index
 		addq.b	#2,$24(a0)
-		move.l	#Map_obj64,4(a0)
+		move.l	#Map_obj0A,4(a0)
 		move.w	#$8348,2(a0)
 		move.b	#$84,1(a0)
 		move.b	#$10,$19(a0)
@@ -24886,8 +24895,6 @@ Obj0A_Main:				; XREF: Obj0A_Index
 		move.b	$28(a0),d0
 		bpl.s	loc_13D00
 		addq.b	#8,$24(a0)
-		move.l	#Map_obj0A,4(a0)
-		move.w	#$440,2(a0)
 		andi.w	#$7F,d0
 		move.b	d0,$33(a0)
 		bra.w	Obj0A_Countdown
@@ -24910,6 +24917,8 @@ Obj0A_ChkWater:				; XREF: Obj0A_Index
 		addq.b	#7,$1C(a0)
 		cmpi.b	#$D,$1C(a0)
 		beq.s	Obj0A_Display
+		blo.s	Obj0A_Display
+		move.b	#$D,$1C(a0)
 		bra.s	Obj0A_Display
 ; ===========================================================================
 
@@ -24938,6 +24947,11 @@ Obj0A_Delete:
 		jmp	DeleteObject
 ; ===========================================================================
 
+Obj0A_DisplayNumber:
+		lea	($FFFFD000).w,a2
+		cmpi.b	#$C,$28(a2)
+		bhi.s	Obj0A_Delete2
+
 Obj0A_Display:				; XREF: Obj0A_Index
 		bsr.s	Obj0A_ShowNumber
 		lea	(Ani_obj0A).l,a1
@@ -24950,7 +24964,8 @@ Obj0A_Delete2:				; XREF: Obj0A_Index
 ; ===========================================================================
 
 Obj0A_AirLeft:				; XREF: Obj0A_Index
-		cmpi.w	#$C,($FFFFFE14).w ; check air remaining
+		lea	($FFFFD000).w,a2
+		cmpi.b	#$C,$28(a2)		; check air remaining
 		bhi.s	Obj0A_Delete3	; if higher than $C, branch
 		subq.w	#1,$38(a0)
 		bne.s	Obj0A_Display2
@@ -24962,6 +24977,7 @@ Obj0A_AirLeft:				; XREF: Obj0A_Index
 Obj0A_Display2:
 		lea	(Ani_obj0A).l,a1
 		jsr	AnimateSprite
+		bsr.w	Obj0A_LoadCountdownArt
 		tst.b	1(a0)
 		bpl.s	Obj0A_Delete3
 		jmp	DisplaySprite
@@ -24995,32 +25011,56 @@ locret_13E1A:
 		rts	
 ; ===========================================================================
 Obj0A_WobbleData:
-		dc.b 0, 0, 0, 0, 0, 0,	1, 1, 1, 1, 1, 2, 2, 2,	2, 2, 2
-		dc.b 2,	3, 3, 3, 3, 3, 3, 3, 3,	3, 3, 3, 3, 3, 3, 4, 3
-		dc.b 3,	3, 3, 3, 3, 3, 3, 3, 3,	3, 3, 3, 3, 2, 2, 2, 2
-		dc.b 2,	2, 2, 1, 1, 1, 1, 1, 0,	0, 0, 0, 0, 0, -1, -1
-		dc.b -1, -1, -1, -2, -2, -2, -2, -2, -3, -3, -3, -3, -3
-		dc.b -3, -3, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4
-		dc.b -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4
-		dc.b -4, -4, -4, -4, -4, -3, -3, -3, -3, -3, -3, -3, -2
-		dc.b -2, -2, -2, -2, -1, -1, -1, -1, -1
+		dc.b  0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2
+		dc.b  2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3
+		dc.b  3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2
+		dc.b  2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0
+		dc.b  0,-1,-1,-1,-1,-1,-2,-2,-2,-2,-2,-3,-3,-3,-3,-3
+		dc.b -3,-3,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4
+		dc.b -4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-3
+		dc.b -3,-3,-3,-3,-3,-3,-2,-2,-2,-2,-2,-1,-1,-1,-1,-1
+; ===========================================================================
+
+Obj0A_LoadCountdownArt:
+		moveq	#0,d1
+		move.b	$1A(a0),d1
+		cmpi.b	#8,d1
+		blo.s	return_1D604
+		cmpi.b	#$E,d1
+		bhs.s	return_1D604
+		cmp.b	$2E(a0),d1
+		beq.s	return_1D604
+		move.b	d1,$2E(a0)
+		subq.w	#8,d1
+		move.w	d1,d0
+		add.w	d1,d1
+		add.w	d0,d1
+		lsl.w	#6,d1
+		addi.l	#ArtUnc_Countdown,d1
+		move.w	#$F400,d2
+		move.w	#$60,d3
+		jsr	(QueueDMATransfer).l
+
+return_1D604:
+	rts
 ; ===========================================================================
 
 Obj0A_Countdown:			; XREF: Obj0A_Index
+		lea	($FFFFD000).w,a2
 		tst.w	$2C(a0)
 		bne.w	loc_13F86
-		cmpi.b	#6,($FFFFD024).w
+		cmpi.b	#6,$24(a2)
 		bcc.w	locret_1408C
-		btst	#6,($FFFFD022).w
+		btst	#6,$22(a2)
 		beq.w	locret_1408C
 		subq.w	#1,$38(a0)
 		bpl.w	loc_13FAC
-		move.w	#59,$38(a0)
+		move.w	#$3B,$38(a0)
 		move.w	#1,$36(a0)
 		jsr	(RandomNumber).l
 		andi.w	#1,d0
 		move.b	d0,$34(a0)
-		move.w	($FFFFFE14).w,d0 ; check air remaining
+		move.b	$28(a2),d0 ; check air remaining
 		cmpi.w	#$19,d0
 		beq.s	Obj0A_WarnSound	; play sound if	air is $19
 		cmpi.w	#$14,d0
@@ -25041,7 +25081,7 @@ Obj0A_WarnSound:			; XREF: Obj0A_Countdown
 		jsr	(PlaySound_Special).l ;	play "ding-ding" warning sound
 
 Obj0A_ReduceAir:
-		subq.w	#1,($FFFFFE14).w ; subtract 1 from air remaining
+		subq.b	#1,$28(a2) ; subtract 1 from air remaining
 		bcc.w	Obj0A_GoMakeItem ; if air is above 0, branch
 		bsr.w	StopDrowning
 		move.b	#$81,($FFFFF7C8).w ; lock controls
@@ -25087,26 +25127,27 @@ loc_13FAC:
 Obj0A_MakeItem:
 		jsr	(RandomNumber).l
 		andi.w	#$F,d0
+		addq.w	#8,d0
 		move.w	d0,$3A(a0)
 		jsr	SingleObjLoad
 		bne.w	locret_1408C
-		move.b	#$A,0(a1)	; load object
-		move.w	($FFFFD008).w,8(a1) ; match X position to Sonic
+		move.b	0(a0),0(a1)	; load object
+		move.w	8(a2),8(a1) ; match X position to Sonic
 		moveq	#6,d0
-		btst	#0,($FFFFD022).w
+		btst	#0,$22(a2)
 		beq.s	loc_13FF2
 		neg.w	d0
 		move.b	#$40,$26(a1)
 
 loc_13FF2:
 		add.w	d0,8(a1)
-		move.w	($FFFFD00C).w,$C(a1)
+		move.w	$C(a2),$C(a1)
 		move.b	#6,$28(a1)
 		tst.w	$2C(a0)
 		beq.w	loc_1403E
 		andi.w	#7,$3A(a0)
 		addi.w	#0,$3A(a0)
-		move.w	($FFFFD00C).w,d0
+		move.w	$C(a2),d0
 		subi.w	#$C,d0
 		move.w	d0,$C(a1)
 		jsr	(RandomNumber).l
@@ -25121,7 +25162,10 @@ loc_13FF2:
 loc_1403E:
 		btst	#7,$36(a0)
 		beq.s	loc_14082
-		move.w	($FFFFFE14).w,d2
+		moveq	#0,d2
+		move.b	$28(a2),d2
+		cmpi.b	#$C,d2
+		bhs.s	loc_14082
 		lsr.w	#1,d2
 		jsr	(RandomNumber).l
 		andi.w	#3,d0
@@ -25155,7 +25199,7 @@ locret_1408C:
 
 
 StopDrowning:				; XREF: Obj64_Wobble; Sonic_Water; Obj0A_ReduceAir
-		move.w	#$1E,($FFFFFE14).w
+		move.b	#$1E,($FFFFD028).w
 		clr.b	($FFFFD372).w
 		rts	
 ; End of function StopDrowning
@@ -29740,7 +29784,7 @@ CtrlLevelMusic:
 		move.b	(a1,d1.w),d0		; Set music ID
 		
 @chk_drowning:
-		cmpi.w	#$C,($FFFFFE14).w	; Check air remaining
+		cmpi.b	#$C,($FFFFD028).w	; Check air remaining
 		bcc.s	@chk_value			; If air is above $C, branch
 		move.b	#$92,d0				; Drowning music
 		
@@ -36729,7 +36773,7 @@ PLC_GHZ2:	dc.w 5
 ; Pattern load cues - Labyrinth
 ; ---------------------------------------------------------------------------
 PLC_LZ:		
-		dc.w $A
+		dc.w $B
 		dc.l Nem_LZ			; LZ main patterns
 		dc.w 0
 		dc.l Nem_Bomb		; bomb enemy
@@ -36750,17 +36794,17 @@ PLC_LZ:
 		dc.w $A660
 		dc.l Nem_Water		; water	surface
 		dc.w $6000
-		dc.l Nem_Bubbles	; bubbles and numbers
+		dc.l Nem_BigBubbles	; bubbles and numbers
 		dc.w $6900
-PLC_LZ2:	dc.w 5
+		dc.l Nem_Bubbles	; bubbles and numbers
+		dc.w $7AA0
+PLC_LZ2:	dc.w 3
 		dc.l Nem_Seesaw		; seesaw
 		dc.w $6E80
 		dc.l Nem_Fan		; fan
 		dc.w $7400
-		dc.l Nem_Splash		; waterfalls and splash
-		dc.w $7980
-		dc.l Nem_SlzSwing	; swinging platform
-		dc.w $7B80
+		;dc.l Nem_SlzSwing	; swinging platform
+		;dc.w $7B80
 		dc.l Nem_SlzCannon	; fireball launcher
 		dc.w $9B00
 		dc.l Nem_SlzSpike	; spikeball
@@ -37175,7 +37219,9 @@ Nem_LzSpikeBall:incbin	art/nemesis/lzspball.bin	; LZ spiked ball on chain
 		even
 Nem_FlapDoor:	incbin	art/nemesis/lzflapdo.bin	; LZ flapping door
 		even
-Nem_Bubbles:	incbin	art/nemesis/lzbubble.bin	; LZ bubbles and countdown numbers
+Nem_BigBubbles:	incbin	art/nemesis/lzbubble.bin	; LZ bubbles
+		even
+Nem_Bubbles:	incbin	art/nemesis/lzbubble2.bin	; LZ bubbles
 		even
 Nem_LzBlock3:	incbin	art/nemesis/lzblock3.bin	; LZ 32x16 block
 		even
@@ -37967,6 +38013,10 @@ DPLC_End:
 Art_Dust:
 		incbin	"art/uncompressed/spindust.bin"
 		incbin	"art/uncompressed/Skid smoke.bin"
+		even
+; ===========================================================================
+ArtUnc_Countdown:
+		incbin	"art/uncompressed/Numbers for drowning countdown.bin"
 		even
 ; ===========================================================================
 Nem_TitleCard_Tutorial:	incbin "art/nemesis/Title Cards/Tutorial.bin"

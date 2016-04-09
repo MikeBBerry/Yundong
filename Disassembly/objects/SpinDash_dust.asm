@@ -62,8 +62,11 @@ loc_1DE06:
 		tst.w	2(a2)
 		bpl.s	Obj05_Display
 		ori.w	#$8000,2(a0)
+		bra.s	Obj05_Display
 ; ===========================================================================
 Obj05_MdSkidDust:
+		cmpi.b	#$C,$28(a2)
+		blo.s	Obj05_ResetDisplayMode
 ; ===========================================================================
 Obj05_Display:
 		lea	(Ani_obj05).l,a1
