@@ -1,46 +1,9 @@
 ; ===========================================================================
 ; YUNDONG
 ; ===========================================================================
-align macro
-	cnop 0,\1
-	endm
+; lets clean up a little and put all macros and commandline options here!
+	include "bin/macro.asm"
 ; ===========================================================================
-stopZ80		macro
-		move.w    #$100,($A11100).l
-		nop
-		nop
-		nop
-
-@wait\@:    btst    #0,($A11100).l
-		bne.s    @wait\@
-		endm
-; ===========================================================================
-startZ80    macro
-		move.w    #0,($A11100).l    ; start the Z80
-		endm
-; ===========================================================================
-waitYM macro
-		nop
-		nop
-		nop
-@wait\@:
-		tst.b	(a0)
-		bmi.s	@wait\@
-		endm
-; ===========================================================================
-VBlankJump	equ $FFFFFFC4
-HBlankJump	equ VBlankJump+6
-; ===========================================================================
-loadJumps	macro fromloc
-
-		lea	VBlankJump,a0
-		lea	fromloc,a1
-	rept 3
-		move.l	(a1)+,(a0)+
-	endr
-    endm
-; ===========================================================================
-	
 StartOfRom:
 Vectors:	dc.l $FFFE00, EntryPoint
 ErrorTrap:	bra.w	*
@@ -60,25 +23,24 @@ ErrorTrap:	bra.w	*
 		dc.l ErrorTrap,	ErrorTrap, ErrorTrap, ErrorTrap
 		dc.l ErrorTrap,	ErrorTrap, ErrorTrap, ErrorTrap, ErrorTrap
 ; ===========================================================================
-IntMain:	jmp	V_Int
-			jmp	H_Int
+		align $100
 ; ===========================================================================
-Console:		dc.b 'SEGA IS TERRIBLE' ; Hardware system ID
-Date:			dc.b 'OWARI   2016.NOV' ; Release date
+Console:	dc.b 'SEGA IS TERRIBLE' ; Hardware system ID
+Date:		dc.b 'OWARI   2016.NOV' ; Release date
 Title_Local:	dc.b 'Yundong Zixingche                               ' ; Domestic name
-Title_Int:		dc.b 'Yundong Zixingche                               ' ; International name
-Serial:			dc.b 'GM 13131313-13'   ; Serial/version number
-Checksum:		dc.w 0
-				dc.b 'J               ' ; I/O support
+Title_Int:	dc.b 'Yundong Zixingche                               ' ; International name
+Serial:		dc.b 'GM 13131313-13'   ; Serial/version number
+Checksum:	dc.w 0
+		dc.b 'J               ' ; I/O support
 RomStartLoc:	dc.l StartOfRom			; ROM start
-RomEndLoc:		dc.l EndOfRom-1			; ROM end
+RomEndLoc:	dc.l EndOfRom-1			; ROM end
 RamStartLoc:	dc.l $FF0000			; RAM start
-RamEndLoc:		dc.l $FFFFFF			; RAM end
+RamEndLoc:	dc.l $FFFFFF			; RAM end
 SRAMSupport:	dc.l $20202020			; change to $5241E020 to create	SRAM
-				dc.l $20202020			; SRAM start
-				dc.l $20202020			; SRAM end
-Notes:			dc.b '                                                    '
-Region:			dc.b 'JUE             ' ; Region
+		dc.l $20202020			; SRAM start
+		dc.l $20202020			; SRAM end
+Notes:		dc.b '                                                    '
+Region:		dc.b 'JUE             ' ; Region
 ; ===========================================================================
 
 EntryPoint:
@@ -199,8 +161,12 @@ GameClrRAM:
 		andi.b	#$C0,d0
 		move.b	d0,($FFFFFFF8).w
 
-		loadJumps IntMain
-		
+		move.w	#$4EF9,d0
+		move.w	d0,HBlankJump
+		move.w	d0,VBlankJump
+		move.l	#V_Int,VBlankJump+2
+		move.l	#H_Int,HBlankJump+2
+
 		bsr.w	VDPSetupGame
 		bsr.w	InitMegaPCM
 		bsr.w	JoypadInit
@@ -236,9 +202,12 @@ Art_Text:	incbin	art/uncompressed/menutext.bin	; text used in level select and d
 
 V_Int:				; XREF: Vectors
 		movem.l	d0-a6,-(sp)
+		lea	$C00004,a6		; control port
+		lea	-4(a6),a5		; data port
+
 		tst.b	($FFFFF62A).w
 		beq.s	loc_B88
-		move.w	($C00004).l,d0
+		move.w	(a6),d0
 		move.l	#$40000010,($C00004).l
 		move.l	($FFFFF616).w,($C00000).l
 		btst	#6,($FFFFFFF8).w
@@ -262,7 +231,7 @@ loc_B5E:				; XREF: loc_B88
 loc_B64:				; XREF: loc_D50
 		addq.l	#1,($FFFFFE0C).w
 		movem.l	(sp)+,d0-a6
-		rte	
+		rte
 ; ===========================================================================
 off_B6E:	dc.w loc_B88-off_B6E, loc_C32-off_B6E
 		dc.w loc_C44-off_B6E, loc_C5E-off_B6E
@@ -282,7 +251,7 @@ loc_B88:				; XREF: V_Int; off_B6E
 loc_B9A:
 		cmpi.b	#1,($FFFFFE10).w ; is level LZ ?
 		bne.w	loc_B5E		; if not, branch
-		move.w	($C00004).l,d0
+		move.w	(a6),d0
 		btst	#6,($FFFFFFF8).w
 		beq.s	loc_BBA
 		move.w	#$700,d0
@@ -294,27 +263,15 @@ loc_BBA:
 		move.w	#1,($FFFFF644).w
 		tst.b	($FFFFF64E).w
 		bne.s	loc_BFE
-		lea	($C00004).l,a5
-		move.l	#$94009340,(a5)
-		move.l	#$96FD9580,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$C000,(a5)
-		move.w	#$80,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
+	dma68kToVDP $FFFFFB00,0,$80,CRAM
 		bra.s	loc_C22
 ; ===========================================================================
 
-loc_BFE:				; XREF: loc_BC8
-		lea	($C00004).l,a5
-		move.l	#$94009340,(a5)
-		move.l	#$96FD9540,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$C000,(a5)
-		move.w	#$80,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
+loc_BFE:
+	dma68kToVDP $FFFFFA80,0,$80,CRAM
 
 loc_C22:				; XREF: loc_BC8
-		move.w	($FFFFF624).w,(a5)
+		move.w	($FFFFF624).w,(a6)
 		bra.w	loc_B5E
 ; ===========================================================================
 
@@ -327,7 +284,7 @@ loc_C36:				; XREF: off_B6E
 		subq.w	#1,($FFFFF614).w
 
 locret_C42:
-		rts	
+		rts
 ; ===========================================================================
 
 loc_C44:				; XREF: off_B6E
@@ -339,12 +296,12 @@ loc_C44:				; XREF: off_B6E
 		subq.w	#1,($FFFFF614).w
 
 locret_C5C:
-		rts	
+		rts
 ; ===========================================================================
 
 loc_C5E:				; XREF: off_B6E
 		bsr.w	sub_106E
-		rts	
+		rts
 ; ===========================================================================
 
 loc_C64:				; XREF: off_B6E
@@ -355,42 +312,18 @@ loc_C6E:				; XREF: off_B6E
 		bsr.w	ReadJoypads
 		tst.b	($FFFFF64E).w
 		bne.s	loc_CB0
-		lea	($C00004).l,a5
-		move.l	#$94009340,(a5)
-		move.l	#$96FD9580,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$C000,(a5)
-		move.w	#$80,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
+	dma68kToVDP $FFFFFB00,0,$80,CRAM	; normal pal
 		bra.s	loc_CD4
 ; ===========================================================================
 
-loc_CB0:				; XREF: loc_C76
-		lea	($C00004).l,a5
-		move.l	#$94009340,(a5)
-		move.l	#$96FD9540,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$C000,(a5)
-		move.w	#$80,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
+loc_CB0:
+	dma68kToVDP $FFFFFA80,0,$80,CRAM	; underwater pal
 
-loc_CD4:				; XREF: loc_C76
-		move.w	($FFFFF624).w,(a5)
-		lea	($C00004).l,a5
-		move.l	#$940193C0,(a5)
-		move.l	#$96E69500,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$7C00,(a5)
-		move.w	#$83,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
-		lea	($C00004).l,a5
-		move.l	#$94019340,(a5)
-		move.l	#$96FC9500,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$7800,(a5)
-		move.w	#$83,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
-		jsr	(ProcessDMAQueue).l
+loc_CD4:
+		move.w	($FFFFF624).w,(a6)
+	dma68kToVDP $FFFFF800,$F800,$280,VRAM	; sprite table
+	dma68kToVDP $FFFFCC00,$FC00,$380,VRAM	; horiz buffer
+		jsr	ProcessDMAQueue
 
 loc_D50:
 		movem.l	($FFFFF700).w,d0-d7
@@ -420,35 +353,17 @@ Demo_Time:				; XREF: loc_D50; H_Int
 		subq.w	#1,($FFFFF614).w ; subtract 1 from time	left
 
 Demo_TimeEnd:
-		rts	
+		rts
 ; End of function Demo_Time
 
 ; ===========================================================================
 
 loc_DA6:				; XREF: off_B6E
 		bsr.w	ReadJoypads
-		lea	($C00004).l,a5
-		move.l	#$94009340,(a5)
-		move.l	#$96FD9580,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$C000,(a5)
-		move.w	#$80,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
-		lea	($C00004).l,a5
-		move.l	#$94019340,(a5)
-		move.l	#$96FC9500,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$7800,(a5)
-		move.w	#$83,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
-		lea	($C00004).l,a5
-		move.l	#$940193C0,(a5)
-		move.l	#$96E69500,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$7C00,(a5)
-		move.w	#$83,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
-		jsr	(ProcessDMAQueue).l
+	dma68kToVDP $FFFFFB00,0,$80,CRAM	; normal pal
+	dma68kToVDP $FFFFF800,$F800,$280,VRAM	; sprite table
+	dma68kToVDP $FFFFCC00,$FC00,$380,VRAM	; horiz buffer
+		jsr	ProcessDMAQueue
 
 loc_E64:
 		tst.w	($FFFFF614).w
@@ -456,51 +371,24 @@ loc_E64:
 		subq.w	#1,($FFFFF614).w
 
 locret_E70:
-		rts	
+		rts
 ; ===========================================================================
 
 loc_E72:				; XREF: off_B6E
 		bsr.w	ReadJoypads
 		tst.b	($FFFFF64E).w
 		bne.s	loc_EB4
-		lea	($C00004).l,a5
-		move.l	#$94009340,(a5)
-		move.l	#$96FD9580,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$C000,(a5)
-		move.w	#$80,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
+	dma68kToVDP $FFFFFB00,0,$80,CRAM	; normal pal
 		bra.s	loc_ED8
 ; ===========================================================================
 
 loc_EB4:				; XREF: loc_E7A
-		lea	($C00004).l,a5
-		move.l	#$94009340,(a5)
-		move.l	#$96FD9540,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$C000,(a5)
-		move.w	#$80,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
+	dma68kToVDP $FFFFFA80,0,$80,CRAM	; underwater pal
 
-loc_ED8:				; XREF: loc_E7A
-		move.w	($FFFFF624).w,(a5)
-		lea	($C00004).l,a5
-		move.l	#$940193C0,(a5)
-		move.l	#$96E69500,(a5)
-
-loc_EEE:
-		move.w	#$977F,(a5)
-		move.w	#$7C00,(a5)
-		move.w	#$83,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
-		lea	($C00004).l,a5
-		move.l	#$94019340,(a5)
-		move.l	#$96FC9500,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$7800,(a5)
-		move.w	#$83,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
-		jsr	(ProcessDMAQueue).l
+loc_ED8:
+	dma68kToVDP $FFFFF800,$F800,$280,VRAM	; sprite table
+	dma68kToVDP $FFFFCC00,$FC00,$380,VRAM	; horiz buffer
+		jsr	ProcessDMAQueue
 		movem.l	($FFFFF700).w,d0-d7
 		movem.l	d0-d7,($FFFFFF10).w
 		movem.l	($FFFFF754).w,d0-d1
@@ -509,46 +397,28 @@ loc_EEE:
 		jsr	AniArt_Load
 		jsr	HudUpdate
 		bsr.w	sub_1642
-		rts	
+		rts
 ; ===========================================================================
 
 loc_F8A:				; XREF: off_B6E
 		bsr.w	sub_106E
 		addq.b	#1,($FFFFF628).w
 		move.b	#$E,($FFFFF62A).w
-		rts	
+		rts
 ; ===========================================================================
 
 loc_F9A:				; XREF: off_B6E
 		bsr.w	sub_106E
-		move.w	($FFFFF624).w,(a5)
+		move.w	($FFFFF624).w,(a6)
 		bra.w	sub_1642
 ; ===========================================================================
 
 loc_FA6:				; XREF: off_B6E
 		bsr.w	ReadJoypads
-		lea	($C00004).l,a5
-		move.l	#$94009340,(a5)
-		move.l	#$96FD9580,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$C000,(a5)
-		move.w	#$80,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
-		lea	($C00004).l,a5
-		move.l	#$94019340,(a5)
-		move.l	#$96FC9500,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$7800,(a5)
-		move.w	#$83,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
-		lea	($C00004).l,a5
-		move.l	#$940193C0,(a5)
-		move.l	#$96E69500,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$7C00,(a5)
-		move.w	#$83,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
-		jsr	(ProcessDMAQueue).l
+	dma68kToVDP $FFFFFB00,0,$80,CRAM	; normal pal
+	dma68kToVDP $FFFFF800,$F800,$280,VRAM	; sprite table
+	dma68kToVDP $FFFFCC00,$FC00,$380,VRAM	; horiz buffer
+		jsr	ProcessDMAQueue
 
 loc_1060:
 		tst.w	($FFFFF614).w
@@ -556,7 +426,7 @@ loc_1060:
 		subq.w	#1,($FFFFF614).w
 
 locret_106C:
-		rts	
+		rts
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
@@ -565,42 +435,24 @@ sub_106E:				; XREF: loc_C32; et al
 		bsr.w	ReadJoypads
 		tst.b	($FFFFF64E).w
 		bne.s	loc_10B0
-		lea	($C00004).l,a5
-		move.l	#$94009340,(a5)
-		move.l	#$96FD9580,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$C000,(a5)
-		move.w	#$80,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
+	dma68kToVDP $FFFFFB00,0,$80,CRAM	; normal pal
 		bra.s	loc_10D4
 ; ===========================================================================
 
-loc_10B0:				; XREF: sub_106E
-		lea	($C00004).l,a5
-		move.l	#$94009340,(a5)
-		move.l	#$96FD9540,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$C000,(a5)
-		move.w	#$80,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
+loc_10B0:
+	dma68kToVDP $FFFFFA80,0,$80,CRAM	; underwater pal
 
-loc_10D4:				; XREF: sub_106E
-		lea	($C00004).l,a5
-		move.l	#$94019340,(a5)
-		move.l	#$96FC9500,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$7800,(a5)
-		move.w	#$83,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
-		lea	($C00004).l,a5
-		move.l	#$940193C0,(a5)
-		move.l	#$96E69500,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$7C00,(a5)
-		move.w	#$83,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
-		rts	
+loc_10D4:
+	dma68kToVDP $FFFFF800,$F800,$280,VRAM	; sprite table
+	dma68kToVDP $FFFFCC00,$FC00,$380,VRAM	; horiz buffer
+		rts
 ; End of function sub_106E
+
+WriteToVDP200:
+	rept $200/4
+		move.l	(a4)+,(a5)
+	endr
+		rts
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	move Palettes from the RAM to CRAM
@@ -1047,20 +899,19 @@ DMA_Buffer_End		equ $FFFFC8FC	; the end address of DMA buffer for uncompressed a
 
 ; sub_14AC: CopyToVRAM: IssueVDPCommands: Process_DMA: Process_DMA_Queue:
 ProcessDMAQueue:
-		lea	VDP_Control_Port,a5
 		lea	DMA_Buffer_Start.w,a1
 ; loc_14B6:
 ProcessDMAQueue_Loop:
 		move.w	(a1)+,d0
 		beq.s	ProcessDMAQueue_Done ; branch if we reached a stop token
 		; issue a set of VDP commands...
-		move.w	d0,(a5)		; transfer length
-		move.w	(a1)+,(a5)	; transfer length
-		move.w	(a1)+,(a5)	; source address
-		move.w	(a1)+,(a5)	; source address
-		move.w	(a1)+,(a5)	; source address
-		move.w	(a1)+,(a5)	; destination
-		move.w	(a1)+,(a5)	; destination
+		move.w	d0,(a6)		; transfer length
+		move.w	(a1)+,(a6)	; transfer length
+		move.w	(a1)+,(a6)	; source address
+		move.w	(a1)+,(a6)	; source address
+		move.w	(a1)+,(a6)	; source address
+		move.w	(a1)+,(a6)	; destination
+		move.w	(a1)+,(a6)	; destination
 		cmpa.w	#DMA_Buffer_End-$FFFF0000,a1
 		bne.s	ProcessDMAQueue_Loop ; loop if we haven't reached the end of the buffer
 ; loc_14CE:
@@ -3118,7 +2969,7 @@ Sega_WaitEnd:
 Sega_GotoTitle:
 		move.b	#4,($FFFFF600).w ; go to title screen
 	;	rts	
-	;	jmp	Owarisoft
+		jmp	Owarisoft
 ; ===========================================================================
 
 ; ---------------------------------------------------------------------------
@@ -16147,6 +15998,39 @@ loc_D646:
 		rts	
 ; End of function DeleteObject
 
+
+LoadDPLC:
+		moveq	#0,d0
+		move.b	$1A(a0),d0	; load frame number
+		add.w	d0,d0
+		adda.w	(a2,d0.w),a2
+		moveq	#0,d5
+		move.b	(a2)+,d5
+		subq.w	#1,d5
+		bmi.s	DPLC_End
+
+DPLC_ReadEntry:
+		moveq	#0,d1
+		move.b	(a2)+,d1
+		lsl.w	#8,d1
+		move.b	(a2)+,d1
+		move.w	d1,d3
+		lsr.w	#8,d3
+		andi.w	#$F0,d3
+		addi.w	#$10,d3
+		andi.w	#$FFF,d1
+		lsl.l	#5,d1
+		add.l	d6,d1
+		move.w	d4,d2
+		add.w	d3,d4
+		add.w	d3,d4
+		jsr	(QueueDMATransfer).l
+		dbf	d5,DPLC_ReadEntry	; repeat for number of entries
+
+DPLC_End:
+		rts
+; End of function LoadDPLC
+; ===========================================================================
 ; ===========================================================================
 BldSpr_ScrPos:	dc.l 0			; blank
 		dc.l $FFF700		; main screen x-position
@@ -37977,41 +37861,8 @@ SoundD5:	incbin	"sound\SFX\S3K_Shoot.bin"
 SoundD6:	incbin	"sound\SFX\Peelout_Release.bin"
 		even
 ; ===========================================================================
-;	include "screens/#Owarisoft/main.asm"
+	include "screens/#Owarisoft/main.asm"
 ;	inform 0,""
-; ===========================================================================
-
-LoadDPLC:
-		moveq	#0,d0
-		move.b	$1A(a0),d0	; load frame number
-		add.w	d0,d0
-		adda.w	(a2,d0.w),a2
-		moveq	#0,d5
-		move.b	(a2)+,d5
-		subq.w	#1,d5
-		bmi.s	DPLC_End
-
-DPLC_ReadEntry:
-		moveq	#0,d1
-		move.b	(a2)+,d1
-		lsl.w	#8,d1
-		move.b	(a2)+,d1
-		move.w	d1,d3
-		lsr.w	#8,d3
-		andi.w	#$F0,d3
-		addi.w	#$10,d3
-		andi.w	#$FFF,d1
-		lsl.l	#5,d1
-		add.l	d6,d1
-		move.w	d4,d2
-		add.w	d3,d4
-		add.w	d3,d4
-		jsr	(QueueDMATransfer).l
-		dbf	d5,DPLC_ReadEntry	; repeat for number of entries
-
-DPLC_End:
-		rts	
-; End of function LoadDPLC
 ; ===========================================================================
 Art_Dust:
 		incbin	"art/uncompressed/spindust.bin"
@@ -38046,62 +37897,62 @@ Nem_LoverWentRight:		incbin "art/nemesis/Title Cards/LoverWentRight.bin"
 ; ---------------------------------------------------------------
 ; Error handling module
 ; ---------------------------------------------------------------
- 
+
 BusError:   jsr ErrorHandler(pc)
         dc.b    "BUS ERROR",0           ; text
         dc.b    1               ; extended stack frame
         even
- 
+
 AddressError:   jsr ErrorHandler(pc)
         dc.b    "ADDRESS ERROR",0       ; text
         dc.b    1               ; extended stack frame
         even
- 
+
 IllegalInstr:   jsr ErrorHandler(pc)
         dc.b    "ILLEGAL INSTRUCTION",0     ; text
         dc.b    0               ; extended stack frame
         even
- 
+
 ZeroDivide: jsr ErrorHandler(pc)
         dc.b    "ZERO DIVIDE",0         ; text
         dc.b    0               ; extended stack frame
         even
- 
+
 ChkInstr:   jsr ErrorHandler(pc)
         dc.b    "CHK INSTRUCTION",0         ; text
         dc.b    0               ; extended stack frame
         even
- 
+
 TrapvInstr: jsr ErrorHandler(pc)
         dc.b    "TRAPV INSTRUCTION",0       ; text
         dc.b    0               ; extended stack frame
         even
- 
+
 PrivilegeViol:  jsr ErrorHandler(pc)
         dc.b    "PRIVILEGE VIOLATION",0     ; text
         dc.b    0               ; extended stack frame
         even
- 
+
 Trace:      jsr ErrorHandler(pc)
         dc.b    "TRACE",0           ; text
         dc.b    0               ; extended stack frame
         even
- 
+
 Line1010Emu:    jsr ErrorHandler(pc)
         dc.b    "LINE 1010 EMULATOR",0      ; text
         dc.b    0               ; extended stack frame
         even
- 
+
 Line1111Emu:    jsr ErrorHandler(pc)
         dc.b    "LINE 1111 EMULATOR",0      ; text
         dc.b    0               ; extended stack frame
         even
- 
+
 ErrorExcept:    jsr ErrorHandler(pc)
         dc.b    "ERROR EXCEPTION",0         ; text
         dc.b    0               ; extended stack frame
         even
- 
+
 ErrorHandler:   incbin  "data/error/ErrorHandler.bin"
 		even
 ; ===========================================================================
