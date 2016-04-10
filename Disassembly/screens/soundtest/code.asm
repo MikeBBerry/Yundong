@@ -8,7 +8,7 @@ SndTest_Settings:
 		dc.b $16				; Maximum ID
 		dc.b $81				; ID modifier (is added to ID)
 		dc.l Txt_Music			; Sound type text address
-		dc.l $411A0003			; VDP value to draw the text and ID number
+		dc.l $42A00003			; VDP value to draw the text and ID number
 		dc.b 1					; "Stop" flag (if 1, then it allows for an option to stop)
 		dc.b 0					; Sound type (0 = Music, 1 = SFX, 2 = PCM)
 		
@@ -16,7 +16,7 @@ SndTest_Settings:
 		dc.b $2F
 		dc.b $A0
 		dc.l Txt_SFX
-		dc.l $421E0003
+		dc.l $43A00003
 		dc.b 0
 		dc.b 1
 		
@@ -24,7 +24,7 @@ SndTest_Settings:
 		dc.b $16
 		dc.b $81
 		dc.l Txt_PCM
-		dc.l $431E0003
+		dc.l $44A00003
 		dc.b 1
 		dc.b 2
 ; ===========================================================================
@@ -69,22 +69,37 @@ SoundTest:
 		
 		jsr	ClearScreen					; Clear screen
 		
+		move.l	#$50000000,($C00004).l	; Load BG art
+		lea	(Nem_SndTestBG).l,a0
+		jsr	NemDec
+		
 		move.l	#$46600000,($C00004).l	; Load font
 		lea	(Nem_SndTestFont).l,a0
 		jsr	NemDec
 		
-		;lea	($FF0000).l,a1			; Load BG mappings
-		;move.l	#$60000003,d0
-		;moveq	#$27,d1
-		;moveq	#$1B,d2
-		;jsr	ShowVDPGraphics
+		lea	($FF0000).l,a1				; Decompress BG mappings
+		lea	(Eni_SndTestBG).l,a0 
+		move.w	#$80,d0
+		jsr	EniDec
+		
+		lea	($FF0000).l,a1				; Load BG mappings
+		move.l	#$60000003,d0
+		moveq	#$27,d1
+		moveq	#$1B,d2
+		jsr	ShowVDPGraphics
 		
 		moveq	#$15,d0					; Load palette
 		jsr	PalLoad1
 		
 		move.l	#0,($FFFFFFB0).w		; Clear variables
 		move.b	#1,($FFFFFFB4).w		; Make it so that when the music is stopped in the sound test, PCM isn't affected
-
+		move.b	#0,($FFFFFFB5).w		; Clear the music playing flag
+		
+		move.l	#$41200003,($C00004).l	; Draw "SOUND TEST"
+		lea	(Txt_SoundTest).l,a0
+		move.w	#$2000,d1
+		bsr.w	DrawText
+		
 		bsr.w	DrawSndTestText			; Draw text
 
 		move.w	($FFFFF60C).w,d0		; Enable screen
@@ -189,6 +204,8 @@ SndTest_MainLoop:
 ; Stop music
 ; ===========================================================================
 SndTest_StopMusic:
+		tst.b	($FFFFFFB5).w			; Is music playing?
+		beq.s	SndTest_Null			; If not, skip
 		move.b	#$E4,d0					; Stop sound
 		jmp	PlaySound_Special
 ; ===========================================================================
@@ -200,12 +217,16 @@ SndTest_Null:
 ; Stop PCM
 ; ===========================================================================
 SndTest_StopPCM:
+		tst.b	($FFFFFFB5).w			; Is music playing?
+		bne.s	@End					; If so, skip
 		stopZ80							; Stop PCM
 		move.b	#$80,($A01FFF).l
 		startZ80
 		nop
 		nop
 		nop
+		
+@End:
 		rts
 ; ===========================================================================
 ; Subroutines for playing sound
@@ -223,6 +244,8 @@ SndTest_PlayMusic:
 		moveq	#0,d0					; Get the current ID and apply the modifier
 		move.b	(a6),d0
 		add.b	id_mod(a5),d0
+		
+		move.b	#1,($FFFFFFB5).w		; Set the music playing flag
 
 		jmp	PlaySound					; Play the music
 ; ===========================================================================
@@ -244,6 +267,8 @@ SndTest_PlayPCM:
 		moveq	#0,d0					; Get the current ID and apply the modifier
 		move.b	(a6),d0
 		add.b	id_mod(a5),d0
+		
+		move.b	#0,($FFFFFFB5).w		; Clear the music playing flag
 
 		jmp	PlaySample					; Play the PCM
 ; ===========================================================================
@@ -346,31 +371,49 @@ DrawHexNumber:
 ; Music text
 ; ===========================================================================
 Txt_Music:
-		dc.b "MUSIC? ",0
+		dc.b "MUSIC?  ",0
 		even
 ; ===========================================================================
 ; SFX text
 ; ===========================================================================
 Txt_SFX:
-		dc.b "SFX? ",0
+		dc.b "SFX?    ",0
 		even
 ; ===========================================================================
 ; PCM text
 ; ===========================================================================
 Txt_PCM:
-		dc.b "PCM? ",0
+		dc.b "PCM?    ",0
 		even
 ; ===========================================================================
 ; Stop text
 ; ===========================================================================
 Txt_Stop:
-		dc.b "STOP",0
+		dc.b "XX",0
+		even
+; ===========================================================================
+; Sound test text
+; ===========================================================================
+Txt_SoundTest:
+		dc.b "SOUND TEST",0
 		even
 ; ===========================================================================
 ; Font art
 ; ===========================================================================
 Nem_SndTestFont:
 		incbin "art/nemesis/font.bin"
+		even
+; ===========================================================================
+; Sound test BG art
+; ===========================================================================
+Nem_SndTestBG:
+		incbin "art/nemesis/sndtest.bin"
+		even
+; ===========================================================================
+; Sound test BG mappings
+; ===========================================================================
+Eni_SndTestBG:
+		incbin "mappings/plane/enigma/sndtest.bin"
 		even
 ; ===========================================================================
 ; Sound test palette

@@ -2948,9 +2948,6 @@ Sega_WaitPalette:
 		bsr.w	PalCycle_Sega
 		bne.s	Sega_WaitPalette
 
-		;move.b	#$E1,d0
-		;bsr.w	PlaySound_Special ; play "SEGA"	sound
-		
 		moveq	#$FFFFFF8C,d0
 		jsr	PlaySample
 		
@@ -2967,8 +2964,13 @@ Sega_WaitEnd:
 		beq.s	Sega_WaitEnd	; if not, branch
 
 Sega_GotoTitle:
+		stopZ80					; Stop PCM
+		move.b	#$80,($A01FFF).l
+		startZ80
+		nop
+		nop
+		nop
 		move.b	#4,($FFFFF600).w ; go to title screen
-	;	rts	
 		jmp	Owarisoft
 ; ===========================================================================
 
