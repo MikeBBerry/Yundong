@@ -3216,6 +3216,7 @@ Title_ClrVram:
 		;jmp	SoundTest
 
 StartLvlSelect:
+		move.b	#0,($FFFFFFB4).w
 		move.b	#$E4,d0
 		bsr.w	PlaySound_Special
 		bsr.w	ClearPLC

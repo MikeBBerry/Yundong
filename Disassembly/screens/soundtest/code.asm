@@ -29,8 +29,9 @@ SoundTest:
 		moveq	#$15,d0
 		jsr	PalLoad1
 		
-		move.l	#0,($FFFFFFB0).w
-		
+		move.l	#$00010001,($FFFFFFB0).w
+		move.b	#1,($FFFFFFB4).w
+
 		move.w	($FFFFF60C).w,d0
 		ori.b	#$40,d0
 		move.w	d0,($C00004).l
@@ -61,7 +62,8 @@ SndTest_MainLoop:
 		add.w	d0,d0
 		move.w	d0,d2
 		add.w	d0,d0
-		movea.l	SndTest_Addresses(pc,d0.w),a0
+		lea	(SndTest_Addresses).l,a0
+		movea.l	(a0,d0.w),a0
 
 		btst	#2,($FFFFF605).w
 		beq.s	@NotLeft
@@ -70,14 +72,16 @@ SndTest_MainLoop:
 		bra.s	@NotLeft
 		
 @Neg:
-		move.w	SndTest_Maxes(pc,d2.w),d1
+		lea	(SndTest_Maxes).l,a2
+		move.w	(a2,d2.w),d1
 		move.b	d1,(a0)
 		
 @NotLeft:
 		btst	#3,($FFFFF605).w
 		beq.s	@NotRight
 		addq.b	#1,(a0)
-		move.w	SndTest_Maxes(pc,d2.w),d0
+		lea	(SndTest_Maxes).l,a2
+		move.w	(a2,d2.w),d0
 		move.b	(a0),d1
 		cmp.b	d0,d1
 		ble.s	@NotRight
@@ -85,15 +89,51 @@ SndTest_MainLoop:
 
 @NotRight:
 		btst	#6,($FFFFF605).w
-		beq.s	@NotA
+		beq.w	@NotA
+
 		moveq	#0,d0
 		move.w	d2,d0
 		add.w	d0,d0
-		movea.l	SndTest_Addresses(pc,d0.w),a0
-		movea.l	SndTest_Subroutines(pc,d0.w),a1
+		lea	(SndTest_Addresses).l,a0
+		lea	(SndTest_Subroutines).l,a1
+		movea.l	(a0,d0.w),a0
+		movea.l	(a1,d0.w),a1
 		moveq	#0,d0
 		move.b	(a0),d0
+
+		cmpi.b	#1,($FFFFFFB0).w
+		beq.s	@Skip
+		tst.b	d0
+		bne.s	@Skip
+
+		cmpi.b	#2,($FFFFFFB0).w
+		beq.s	@Skip
+		move.w	#$64,d0
+
+@Skip:
+		tst.b	($FFFFFFB0).w
+		bne.s	@Skip2
+		stopZ80
+		move.b	#$80,($A01FFF).l
+		startZ80
+		nop
+		nop
+		nop
+		bra.s	@Skip3		
+
+@Skip2:
+		cmpi.b	#2,($FFFFFFB0).w
+		bne.s	@Skip3
+		tst.b	d0
+		beq.s	@Skip3
+		move.l	d0,-(sp)
+		move.b	#$E4,d0
+		jsr	PlaySound_Special
+		move.l	(sp)+,d0
+
+@Skip3:
 		add.w	SndTest_Add(pc,d2.w),d0
+		andi.w	#$FF,d0
 		jsr	(a1)
 		
 @NotA:
@@ -111,12 +151,12 @@ SndTest_Addresses:
 		dc.l $FFFFFFB3
 ; ===========================================================================
 SndTest_Maxes:
-		dc.w $16
+		dc.w $17
 		dc.w $2F
-		dc.w $16
+		dc.w $17
 ; ===========================================================================
 SndTest_Add:
-		dc.w $81, $A0, $81
+		dc.w $80, $A0, $80
 ; ===========================================================================
 SndTest_Subroutines:
 		dc.l PlaySound
@@ -125,11 +165,11 @@ SndTest_Subroutines:
 ; ===========================================================================
 SndTest_Text:
 		dc.l Txt_Music
-		dc.l $41200003
+		dc.l $411E0003
 		dc.l Txt_SFX
-		dc.l $42A20003
+		dc.l $42A00003
 		dc.l Txt_PCM
-		dc.l $44220003
+		dc.l $44200003
 ; ===========================================================================
 DrawSndTestText:
 		moveq	#2,d5
@@ -159,12 +199,28 @@ DrawSndTestText:
 		add.w	d6,d6
 		movea.l	SndTest_Addresses(pc,d6.w),a0
 		move.b	(a0),d0
+		cmpa.w	#$FFB2,a0
+		beq.s	@Number
+		tst.b	d0
+		bne.s	@Number
+		lea	(Txt_Stop).l,a0
+		bsr.w	DrawText
+		bra.s	@Loop
+
+@Number:
+		cmpa.w	#$FFB2,a0
+		beq.s	@SFX
+		subq.b	#1,d0
+
+@SFX:
 		move.b	d0,d2
 		lsr.b	#4,d0
 		bsr.s	DrawHexNumber
 		move.b	d2,d0
 		bsr.s	DrawHexNumber
+		move.l	#0,($C00000).l
 
+@Loop:
 		dbf	d5,@Draw
 		rts
 ; ===========================================================================
@@ -208,8 +264,13 @@ Txt_Music:
 Txt_SFX:
 		dc.b "SFX? ",0
 		even
+
 Txt_PCM:
 		dc.b "PCM? ",0
+		even
+
+Txt_Stop:
+		dc.b "STOP",0
 		even
 ; ===========================================================================
 Nem_SndTestFont:
