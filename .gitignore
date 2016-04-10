@@ -5,5 +5,6 @@ sh.exe.stackdump
 sonic.lst
 sonic.sym
 sonic.symcmp
+output.txt
 /.project
 Disassembly/.lst
