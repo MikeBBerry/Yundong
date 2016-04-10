@@ -1328,13 +1328,10 @@ loc_725B6:
 		move.b	#$80,9(a6)	; set music to $80 (silence)
 		jsr	FMSilenceAll(pc)
 
-		tst.b	($FFFFFFB4).w
-		bne.s	@NoStopDAC
 		stopZ80
 		move.b	#$80,($A01FFF).l ; stop DAC playback
 		startZ80
 
-@NoStopDAC:
 		bra.w	PSGSilenceAll
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||

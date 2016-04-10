@@ -1,6 +1,26 @@
 ; ===========================================================================
 ; Sound test screen
 ; ===========================================================================
+SndTest_Settings:
+		dc.l $FFFFFFB1			; RAM address for sound ID (0)
+		dc.w $17				; Maximum ID (4)
+		dc.w $80				; ID modifier (is added to ID) (6)
+		dc.l PlaySound			; Subroutine for the value to be processed through (8)
+		dc.l Txt_Music			; Sound type text address ($C)
+		dc.l $411A0003			; VDP value to draw the text and ID number ($10)
+		dc.b 1					; "Stop" flag (if 1, then it allows for an option to stop) ($14)
+		dc.b 0					; Sound type (0 = Music, 1 = SFX, 2 = PCM)
+; ===========================================================================
+ram_addr			= 0
+max_id				= 4
+id_mod				= 6
+subroutine			= 8
+snd_text_addr		= $C
+text_vdp_addr		= $10
+stop_flag			= $14
+snd_type			= $15
+snd_setting_size	= $16
+; ===========================================================================
 SoundTest:
 		move.b	#$E4,d0
 		jsr	PlaySound_Special
@@ -9,9 +29,11 @@ SoundTest:
 		jsr	Pal_FadeFrom
 
 		move	#$2700,sr
+
 		move.w	($FFFFF60C).w,d0
 		andi.b	#$BF,d0
 		move.w	d0,($C00004).l
+
 		jsr	ClearScreen
 		
 		move.l	#$46600000,($C00004).l
@@ -24,25 +46,22 @@ SoundTest:
 		;moveq	#$1B,d2
 		;jsr	ShowVDPGraphics
 		
-		bsr.w	DrawSndTestText
-		
 		moveq	#$15,d0
 		jsr	PalLoad1
 		
-		move.l	#$00010001,($FFFFFFB0).w
-		move.b	#1,($FFFFFFB4).w
+		move.l	#0,($FFFFFFB0).w
+		move.b	#1,($FFFFFFB4).w				; If this flag is set, then when the music stop ID is played, then the PCM 
 
 		move.w	($FFFFF60C).w,d0
 		ori.b	#$40,d0
 		move.w	d0,($C00004).l
-		
-		jsr	DrawSndTestText
 		
 		jsr	Pal_FadeTo
 
 SndTest_MainLoop:
 		move.b	#2,($FFFFF62A).w
 		jsr	DelayProgram
+
 		btst	#0,($FFFFF605).w
 		beq.s	@NotUp
 		tst.b	($FFFFFFB0).w
@@ -59,83 +78,101 @@ SndTest_MainLoop:
 @NotDown:
 		moveq	#0,d0
 		move.b	($FFFFFFB0).w,d0
-		add.w	d0,d0
-		move.w	d0,d2
-		add.w	d0,d0
+		mulu.w	#snd_setting_size,d0
 		lea	(SndTest_Addresses).l,a0
-		movea.l	(a0,d0.w),a0
+		movea.l	(a0,d0.w),a0					; a0 = Address for settings
+		movea.l	ram_addr(a0),a1					; a1 = RAM address for sound ID
 
 		btst	#2,($FFFFF605).w
 		beq.s	@NotLeft
-		subq.b	#1,(a0)
-		bmi.s	@Neg
-		bra.s	@NotLeft
+
+		move.b	#0,d0
+		tst.b	stop_flag(a0)
+		beq.s	@NoStopFlag
+		move.b	#$FF,d0
+
+@NoStopFlag:
+		subq.b	#1,(a1)
+		move.b	(a1),d1
+		cmp.b	d1,d0
+		bmi.s	@NotMin
+		move.b	max_id(a0),(a1)
 		
-@Neg:
-		lea	(SndTest_Maxes).l,a2
-		move.w	(a2,d2.w),d1
-		move.b	d1,(a0)
-		
+@NotMin:
 @NotLeft:
 		btst	#3,($FFFFF605).w
 		beq.s	@NotRight
-		addq.b	#1,(a0)
-		lea	(SndTest_Maxes).l,a2
-		move.w	(a2,d2.w),d0
-		move.b	(a0),d1
+		addq.b	#1,(a1)
+		move.b	max_id(a0),d0
+		move.b	(a1),d1
 		cmp.b	d0,d1
-		ble.s	@NotRight
-		move.b	#0,(a0)
+		beq.s	@NotMax
+		move.b	#0,d0
+		tst.b	stop_flag(a0)
+		beq.s	@NoStopFlag2
+		move.b	#$FF,d0
 
+@NoStopFlag2:
+		move.b	d0,(a1)
+
+@NotMax:
 @NotRight:
 		btst	#6,($FFFFF605).w
 		beq.w	@NotA
 
-		moveq	#0,d0
-		move.w	d2,d0
-		add.w	d0,d0
-		lea	(SndTest_Addresses).l,a0
-		lea	(SndTest_Subroutines).l,a1
-		movea.l	(a0,d0.w),a0
-		movea.l	(a1,d0.w),a1
-		moveq	#0,d0
-		move.b	(a0),d0
+		move.b	(a1),d0
 
-		cmpi.b	#1,($FFFFFFB0).w
-		beq.s	@Skip
-		tst.b	d0
-		bne.s	@Skip
+		tst.b	stop_flag(a0)
+		beq.s	@NoStopFlag3
 
-		cmpi.b	#2,($FFFFFFB0).w
-		beq.s	@Skip
-		move.w	#$64,d0
+		cmpi.b	#$FF,d0
+		bne.s	@NoStopFlag3
 
-@Skip:
-		tst.b	($FFFFFFB0).w
-		bne.s	@Skip2
+		cmpi.b	#2,snd_type(a0)
+		bne.s	@NotDAC
+
 		stopZ80
 		move.b	#$80,($A01FFF).l
 		startZ80
 		nop
 		nop
 		nop
-		bra.s	@Skip3		
+		bra.s	@Continue
 
-@Skip2:
-		cmpi.b	#2,($FFFFFFB0).w
-		bne.s	@Skip3
-		tst.b	d0
-		beq.s	@Skip3
-		move.l	d0,-(sp)
+@NotDAC:
 		move.b	#$E4,d0
 		jsr	PlaySound_Special
-		move.l	(sp)+,d0
 
-@Skip3:
-		add.w	SndTest_Add(pc,d2.w),d0
-		andi.w	#$FF,d0
-		jsr	(a1)
+		bra.s	@Continue
+
+@NoStopFlag3:
+		cmpi.b	#2,snd_type(a0)
+		beq.s	@IsDAC
+
+		tst.b	snd_type(a0)
+		bne.s	@Play
+
+		stopZ80									; Before playing music, stop PCM
+		move.b	#$80,($A01FFF).l
+		startZ80
+		nop
+		nop
+		nop
+
+		bra.s	@Play
+
+@IsDAC:
+		move.b	#$E4,d0							; Before playing PCM, stop music
+		jsr	PlaySound_Special
 		
+@Play:
+		moveq	#0,d0
+		move.b	(a1),d0
+		add.w	id_mod(a0),d0
+
+		jsr	subroutine(a0)
+	
+@Continue:	
 @NotA:
 		btst	#4,($FFFFF605).w
 		beq.s	@NotB
@@ -144,32 +181,6 @@ SndTest_MainLoop:
 @NotB:
 		jsr	DrawSndTestText
 		bra.w	SndTest_MainLoop
-; ===========================================================================
-SndTest_Addresses:
-		dc.l $FFFFFFB1
-		dc.l $FFFFFFB2
-		dc.l $FFFFFFB3
-; ===========================================================================
-SndTest_Maxes:
-		dc.w $17
-		dc.w $2F
-		dc.w $17
-; ===========================================================================
-SndTest_Add:
-		dc.w $80, $A0, $80
-; ===========================================================================
-SndTest_Subroutines:
-		dc.l PlaySound
-		dc.l PlaySound_Special
-		dc.l PlaySample
-; ===========================================================================
-SndTest_Text:
-		dc.l Txt_Music
-		dc.l $411A0003
-		dc.l Txt_SFX
-		dc.l $429E0003
-		dc.l Txt_PCM
-		dc.l $441E0003
 ; ===========================================================================
 DrawSndTestText:
 		moveq	#2,d5
