@@ -12220,7 +12220,7 @@ loc_A236:
 		beq.s	@NotBiting
 
 		lea	(Touch_Sizes-2).l,a3
-		move.b	$20(a1),d0
+		move.b	$20(a0),d0
 		andi.w	#$3F,d0
 		add.w	d0,d0
 		lea	(a3,d0.w),a3
@@ -12230,10 +12230,10 @@ loc_A236:
 		move.w	$C(a1),d2
 
 		cmp.w	d2,d0
-		ble.w	@NotBiting
+		blt.w	@NotBiting
 		add.w	d1,d2
 		cmp.w	d2,d0
-		ble.w	@NotBiting
+		bgt.w	@NotBiting
 
 		addq.b	#2,$24(a0)
 		bra.s	loc_A25C
