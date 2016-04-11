@@ -12204,38 +12204,33 @@ loc_A1EC:				; XREF: Obj26_Solid
 ; ===========================================================================
 
 loc_A220:
-		tst.w	d0
-		bmi.w	loc_A246
-		
-		tst.b	$3A(a1)
-		bne.s	@Biting
-		tst.w	d0
-		beq.s	loc_A230
-		bra.s	@NotBiting
-		
-@Biting:
 		tst.b	$3A(a1)
 		beq.s	@NotBiting
+		move.w	8(a0),d2
+		move.w	8(a1),d3
+		cmp.w	d3,d2
+		bge.s	@Right
+		btst	#0,$22(a1)
+		beq.s	@NotBiting
+		addq.b	#2,$24(a0)
+		bra.s	loc_A25C
+		
+@Right:
 		btst	#0,$22(a1)
 		bne.s	@NotBiting
 		addq.b	#2,$24(a0)
 		bra.s	loc_A25C
 
 @NotBiting:
+		tst.w	d0
+		bmi.w	loc_A230
+		beq.s	loc_A246
 		tst.w	$10(a1)
 		bmi.s	loc_A246
 		bra.s	loc_A236
 ; ===========================================================================
 
 loc_A230:
-		tst.b	$3A(a1)
-		beq.s	@NotBiting
-		btst	#0,$22(a1)
-		beq.s	@NotBiting
-		addq.b	#2,$24(a0)
-		bra.s	loc_A25C
-
-@NotBiting:
 		tst.w	$10(a1)
 		bpl.s	loc_A246
 
