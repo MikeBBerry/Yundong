@@ -7,4 +7,5 @@ sonic.sym
 sonic.symcmp
 output.txt
 /.project
-Disassembly/.lst
+colorgen.py
+*~
