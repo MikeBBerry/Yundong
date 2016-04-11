@@ -24178,8 +24178,6 @@ loc_1341C:
 		move.b	#9,$17(a0)
 		btst	#2,$22(a0)
 		bne.s	loc_13490
-		move.b	#$E,$16(a0)
-		move.b	#7,$17(a0)
 		move.b	#$1F,$1C(a0)	; use "jumping"	animation
 		bset	#2,$22(a0)
 
