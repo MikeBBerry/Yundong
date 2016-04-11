@@ -200,16 +200,68 @@ Art_Text:	incbin	art/uncompressed/menutext.bin	; text used in level select and d
 
 ; ===========================================================================
 
+V_Int_ResetEffects:
+		cmpi.l	#H_Int_SegaScreen,HBlankJump+2
+		bne.w	@NotSega
+		cmpi.w	#$200,($FFFFFFB0).w
+		blt.s	@NoReset
+		move.w	#0,($FFFFFFB0).w
+		
+@NoReset:
+		lea	(Sine_Data).l,a2
+		adda.w	($FFFFFFB0).w,a2
+		move.l	a2,($FFFFFFB2).w
+		move.w	#$20,d2
+		move.w	($FFFFFFB8).w,d1
+		add.w	d1,d1
+		sub.w	d1,d2
+		add.w	d2,($FFFFFFB0).w
+		
+		move.l	($FFFFFE0C).w,d0
+		andi.b	#3,d0
+		bne.s	@Skip
+		
+		cmpi.l	#$EEE0EEE,($FFFFFFBC).w
+		beq.s	@Skip
+		moveq	#0,d0
+		move.w	($FFFFFFBC).w,d0
+		lsl.w	#1,d0
+		ori.w	#$222,d0
+		andi.w	#$EEE,d0
+		move.w	d0,($FFFFFFBC).w
+		move.w	($FFFFFFBC).w,($FFFFFFBE).w
+
+@Skip:
+		move.l	($FFFFFE0C).w,d0
+		andi.w	#3,d0
+		bne.s	@Skip2
+		addq.w	#2,($FFFFFFF6).w
+		cmpi.w	#$E0*2,($FFFFFFF6).w
+		blt.s	@Skip2
+		move.w	#0,($FFFFFFF6).w
+		
+@Skip2:
+		move.w	($FFFFFFF6).w,($FFFFFFBA).w
+		
+@NotSega:
+		rts
+; ===========================================================================
+
 V_Int:				; XREF: Vectors
 		movem.l	d0-a6,-(sp)
 		lea	$C00004,a6		; control port
 		lea	-4(a6),a5		; data port
 
 		tst.b	($FFFFF62A).w
-		beq.s	loc_B88
+		beq.w	loc_B88
 		move.w	(a6),d0
+		
+		cmpi.l	#H_Int_SegaScreen,HBlankJump+2
+		beq.s	@Sega
 		move.l	#$40000010,($C00004).l
 		move.l	($FFFFF616).w,($C00000).l
+		
+@Sega:
 		btst	#6,($FFFFFFF8).w
 		beq.s	loc_B42
 		move.w	#$700,d0
@@ -229,6 +281,7 @@ loc_B5E:				; XREF: loc_B88
 		jsr	UpdateMusic
 
 loc_B64:				; XREF: loc_D50
+		bsr.w	V_Int_ResetEffects
 		addq.l	#1,($FFFFFE0C).w
 		movem.l	(sp)+,d0-a6
 		rte
@@ -519,7 +572,40 @@ loc_119E:				; XREF: H_Int
 		movem.l	(sp)+,d0-a6
 		rte	
 ; End of function H_Int
+; ===========================================================================
 
+H_Int_SegaScreen:
+		move	#$2700,sr
+		movem.l	d0/a0,-(sp)
+		
+		move.l #$C0000000,($C00004).l
+		lea	(H_Int_Sega_Colors).l,a0
+		adda.w	($FFFFFFBA).w,a0
+		move.l	(a0),d0
+		and.l	($FFFFFFBC).w,d0
+		move.l	d0,($C00000).l
+		addq.w	#2,($FFFFFFBA).w
+		
+		movea.l	($FFFFFFB2).w,a0
+		moveq	#0,d0
+		move.w	(a0)+,d0
+		lsr.w	#2,d0
+		move.l	a0,($FFFFFFB2).w
+		
+		move.l	#$40000010,($C00004).l
+		move.w	d0,($C00000).l
+		
+@Skip:
+		move.w	#$8ADF,($FFFFF624).w
+		
+		movem.l	(sp)+,d0/a0
+		rte
+		
+H_Int_Sega_Colors:
+		rept $C
+		include "data/colors.asm"
+		endr
+; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Subroutine to	initialise joypads
 ; ---------------------------------------------------------------------------
@@ -2907,8 +2993,10 @@ SegaScreen:				; XREF: GameModeArray
 		move.w	#$8004,(a6)
 		move.w	#$8230,(a6)
 		move.w	#$8407,(a6)
-		move.w	#$8700,(a6)
-		move.w	#$8B00,(a6)
+		move.w	#$9001,(a6)
+		move.w	#$9200,(a6)
+		move.w	#$8B03,(a6)
+		move.w	#$8720,(a6)
 		clr.b	($FFFFF64E).w
 		move	#$2700,sr
 		move.w	($FFFFF60C).w,d0
@@ -2938,6 +3026,13 @@ SegaScreen:				; XREF: GameModeArray
 		move.w	#0,($FFFFF634).w
 		move.w	#0,($FFFFF662).w
 		move.w	#0,($FFFFF660).w
+		
+		move.l	#0,($FFFFFFB0).w
+		move.l	#0,($FFFFFFB4).w
+		move.l	#0,($FFFFFFB8).w
+		move.l	#0,($FFFFFFBC).w
+		move.w	#0,($FFFFFFF6).w
+		
 		move.w	($FFFFF60C).w,d0
 		ori.b	#$40,d0
 		move.w	d0,($C00004).l
@@ -2950,20 +3045,79 @@ Sega_WaitPalette:
 
 		moveq	#$FFFFFF8C,d0
 		jsr	PlaySample
-		
-		move.b	#$14,($FFFFF62A).w
-		bsr.w	DelayProgram
-		move.w	#$E0,($FFFFF614).w
+		move.w	#$40,($FFFFF614).w
 
 Sega_WaitEnd:
 		move.b	#2,($FFFFF62A).w
 		bsr.w	DelayProgram
 		tst.w	($FFFFF614).w
-		beq.s	Sega_GotoTitle
+		beq.s	Sega_DoTrickery
 		andi.b	#$80,($FFFFF605).w ; is	Start button pressed?
 		beq.s	Sega_WaitEnd	; if not, branch
+		bra.s	Sega_GotoTitle
+
+Sega_DoTrickery:
+		move.l	#H_Int_SegaScreen,HBlankJump+2
+		lea	($C00004).l,a6
+		move.w	#$8A00,($FFFFF624).w
+		move.w	($FFFFF624).w,(a6)
+		move.w	#$8014,(a6)
+		
+		lea	(Pal_Sega2+$24).l,a0
+		lea	($FFFFFB04).w,a1
+		move.l	(a0)+,(a1)+
+		move.l	(a0)+,(a1)+
+		move.w	(a0)+,(a1)+
+		moveq	#0,d0
+		moveq	#$80-$E,d1
+
+@LoadPal:
+		move.w	(a0),(a1)+
+		dbf	d1,@LoadPal
+		
+		move.w	#8,($FFFFFFB8).w
+		move.w	#$A0,($FFFFF614).w
+		
+Sega_WaitEnd2:
+		move.b	#2,($FFFFF62A).w
+		bsr.w	DelayProgram
+		bsr.w	Deform_Sega
+		move.w	($FFFFF614).w,d0
+		andi.w	#3,d0
+		bne.s	@Finished
+		cmpi.w	#2,($FFFFFFB8).w
+		beq.s	@Finished
+		subq.w	#1,($FFFFFFB8).w
+		
+@Finished:
+		tst.w	($FFFFF614).w
+		beq.s	Sega_GotoTitle
+		andi.b	#$80,($FFFFF605).w ; is	Start button pressed?
+		beq.s	Sega_WaitEnd2	; if not, branch
 
 Sega_GotoTitle:
+		move.l	#H_Int,HBlankJump+2
+		lea	($C00004).l,a6
+		move.w	#$8ADF,($FFFFF624).w
+		move.w	($FFFFF624).w,(a6)
+		move.w	#$8004,(a6)
+		
+		lea	($FFFFCC00).l,a1
+		move.w	#$DF,d1
+		
+@Clear:
+		move.l	#0,(a1)+
+		dbf	d1,@Clear
+		
+		move.l	#$40000010,($C00004).l
+		move.l	#0,($C00000).l
+		
+		move.l	#0,($FFFFFFB0).w
+		move.l	#0,($FFFFFFB4).w
+		move.l	#0,($FFFFFFB8).w
+		move.l	#0,($FFFFFFBC).w
+		move.w	#0,($FFFFFFF6).w
+
 		stopZ80					; Stop PCM
 		move.b	#$80,($A01FFF).l
 		startZ80
@@ -2972,6 +3126,37 @@ Sega_GotoTitle:
 		nop
 		move.b	#4,($FFFFF600).w ; go to title screen
 		jmp	Owarisoft
+; ===========================================================================
+
+Deform_Sega:
+		lea	(Sine_Data).l,a0
+		lea	($FFFFCC00).l,a1
+		move.w	($FFFFFFB6).w,d0
+		move.w	#$DF,d1
+		cmpi.w	#$200,d0
+		blt.s	@Cont
+		moveq	#0,d0
+		move.w	d0,($FFFFFFB6).w
+		
+@Cont:
+		adda.w	d0,a0
+		
+@Deform:
+		move.w	(a0)+,d0
+		move.w	($FFFFFFB8).w,d2
+		lsr.w	d2,d0
+		andi.l	#$FFFF,d0
+		move.w	d0,(a1)+
+		move.w	#0,(a1)+
+		addq.w	#2,($FFFFFFB6).w
+		cmpa.w	#(Sine_Data+$200),a0
+		blt.s	@Cont2
+		move.w	#0,($FFFFFFB6).w
+		lea	(Sine_Data).l,a0
+		
+@Cont2:
+		dbf	d1,@Deform
+		rts
 ; ===========================================================================
 
 ; ---------------------------------------------------------------------------
@@ -23996,7 +24181,6 @@ loc_1341C:
 		move.b	#7,$17(a0)
 		move.b	#$1F,$1C(a0)	; use "jumping"	animation
 		bset	#2,$22(a0)
-		addq.w	#5,$C(a0)
 
 locret_1348E:
 		rts	
@@ -24393,7 +24577,6 @@ loc_137AE:
 		move.b	#$13,$16(a0)
 		move.b	#9,$17(a0)
 		move.b	#0,$1C(a0)	; use running/walking animation
-		subq.w	#5,$C(a0)
 
 loc_137E4:
 		move.b	#0,$3C(a0)
