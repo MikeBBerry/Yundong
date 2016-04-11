@@ -12219,23 +12219,6 @@ loc_A230:
 loc_A236:
 		tst.b	$3A(a1)
 		beq.s	@NotBiting
-
-		lea	(Touch_Sizes-2).l,a3
-		move.b	$20(a0),d0
-		andi.w	#$3F,d0
-		add.w	d0,d0
-		lea	(a3,d0.w),a3
-		move.b	(a3)+,d1
-		ext.w	d1
-		move.w	$C(a0),d0
-		move.w	$C(a1),d2
-
-		cmp.w	d2,d0
-		blt.w	@NotBiting
-		add.w	d1,d2
-		cmp.w	d2,d0
-		bgt.w	@NotBiting
-
 		addq.b	#2,$24(a0)
 		bra.s	loc_A25C
 
