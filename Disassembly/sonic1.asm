@@ -12352,14 +12352,14 @@ Obj2E_ChkEggman:    ; XREF: Obj2E_Move
         addq.b    #2,$24(a0)
         move.w    #29,$1E(a0)
         move.b    $1C(a0),d0
-        cmpi.b    #1,d0; does monitor contain Eggman?
-        bne.s    Obj2E_ChkSonic ; if not, go and check for the next monitor type (1-up icon)
-        move.l    a0,a1 ; move a0 to a1, because Touch_ChkHurt wants the damaging object to be in a1
-        move.l    a0,-(sp) ; push a0 on the stack, and decrement stack pointer
-        lea    ($FFFFD000).w,a0 ; put Sonic's ram address in a0, because Touch_ChkHurt wants the damaged object to be in a0
-        jsr    Touch_ChkHurt ; run the Touch_ChkHurt routine
-        move.l    (sp)+,a0 ; pop the previous value of a0 from the stack, and increment stack pointer
-        rts ; The Eggman monitor now does something!
+        cmpi.b    #1,d0				; does monitor contain Eggman?
+        bne.s    Obj2E_ChkSonic 	; if not, go and check for the next monitor type (1-up icon)
+        move.l    a0,a1 			; move a0 to a1, because Touch_ChkHurt wants the damaging object to be in a1
+        move.l    a0,-(sp) 			; push a0 on the stack, and decrement stack pointer
+        lea    ($FFFFD000).w,a0 	; put Sonic's ram address in a0, because Touch_ChkHurt wants the damaged object to be in a0
+        jsr    Touch_ChkHurt 		; run the Touch_ChkHurt routine
+        move.l    (sp)+,a0 			; pop the previous value of a0 from the stack, and increment stack pointer
+        rts 						; The Eggman monitor now does something!
 ; ===========================================================================
 
 Obj2E_ChkSonic:
@@ -12381,6 +12381,9 @@ Obj2E_ChkShoes:
 		tst.b	($FFFFFE2E).w	; am I already speed shoe'd?
 		bne.s	Obj2E_NoShoes	; if so, branch
 		move.b	#1,($FFFFFE2E).w ; speed up the	BG music
+		
+		move.b	#$E2,d0
+		jmp	PlaySound_Special
 		
 Obj2E_NoShoes:
 		rts
@@ -23488,6 +23491,8 @@ Obj01_ChkShoes:
 		move.w	#$C,($FFFFF762).w ; restore Sonic's acceleration
 		move.w	#$80,($FFFFF764).w ; restore Sonic's deceleration
 		move.b	#0,($FFFFFE2E).w ; cancel speed	shoes
+		move.b	#$E3,d0
+		jmp	PlaySound_Special
 ; ===========================================================================
 
 Obj01_ExitChk:
@@ -29855,14 +29860,6 @@ CtrlLevelMusic:
 		move.b	#$87,d0				; Invincibility music
 		
 @chk_spdshoes:
-		tst.b	($FFFFFE2E).w		; Does he have speed shoes?
-		beq.s	@chk_boss			; If not, check if there is a boss
-		move.b	#$95,d0				; Speed shoes music
-		tst.b	($FFFFFE2D).w		; Is Sonic invincible?
-		beq.s	@chk_boss			; If not, check if there is a boss
-		move.b	#$96,d0				; Speed shoes + invincibility music
-		
-@chk_boss:
 		tst.b	($FFFFFFFF).w		; Is there a boss?
 		beq.s	@chk_drowning		; If not, check if Sonic is drowning
 		moveq	#0,d1				; Clear d1
