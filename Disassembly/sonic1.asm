@@ -12205,24 +12205,41 @@ loc_A1EC:				; XREF: Obj26_Solid
 
 loc_A220:
 		tst.w	d0
-		beq.w	loc_A246
-		bmi.s	loc_A230
+		bmi.w	loc_A246
+		
+		tst.b	$3A(a1)
+		bne.s	@Biting
+		tst.w	d0
+		beq.s	loc_A230
+		bra.s	@NotBiting
+		
+@Biting:
+		tst.b	$3A(a1)
+		beq.s	@NotBiting
+		btst	#0,$22(a1)
+		bne.s	@NotBiting
+		addq.b	#2,$24(a0)
+		bra.s	loc_A25C
+
+@NotBiting:
 		tst.w	$10(a1)
 		bmi.s	loc_A246
 		bra.s	loc_A236
 ; ===========================================================================
 
 loc_A230:
-		tst.w	$10(a1)
-		bpl.s	loc_A246
-
-loc_A236:
 		tst.b	$3A(a1)
+		beq.s	@NotBiting
+		btst	#0,$22(a1)
 		beq.s	@NotBiting
 		addq.b	#2,$24(a0)
 		bra.s	loc_A25C
 
 @NotBiting:
+		tst.w	$10(a1)
+		bpl.s	loc_A246
+
+loc_A236:
 		sub.w	d0,8(a1)
 		move.w	#0,$14(a1)
 		move.w	#0,$10(a1)
@@ -34366,40 +34383,6 @@ locret_1AEF2:
 ; ===========================================================================
 
 Touch_Monitor:
-		tst.w	$12(a0)		; is Sonic moving upwards?
-		bpl.s	loc_1AF1E	; if not, branch
-		move.w	$C(a0),d0
-		subi.w	#$10,d0
-		cmp.w	$C(a1),d0
-		bcs.s	locret_1AF2E
-		neg.w	$12(a0)		; reverse Sonic's y-motion
-		move.w	#-$180,$12(a1)
-		tst.b	$25(a1)
-		bne.s	locret_1AF2E
-		addq.b	#4,$25(a1)	; advance the monitor's routine counter
-		rts
-; ===========================================================================
-
-loc_1AF1E:
-		tst.b	biting(a0)
-		beq.w	locret_1AF2E
-		move.w	8(a1),d0
-		move.w	8(a0),d1
-		btst	#0,$22(a0)
-		bne.s	@left
-		cmp.w	d0,d1
-		ble.s	@do
-		rts
-		
-	@left:
-		cmp.w	d0,d1
-		bge.s	@do
-		rts
-		
-	@do:
-		addq.b	#2,$24(a1)	; advance the monitor's routine counter
-
-locret_1AF2E:
 		rts	
 ; ===========================================================================
 
