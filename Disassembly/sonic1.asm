@@ -24732,7 +24732,7 @@ Sonic_Animate:				; XREF: Obj01_Control; et al
 		beq.s	SAnim_Do	; if not, branch
 		move.b	d0,$1D(a0)	; set to "no restart"
 		move.b	#0,$1B(a0)	; reset	animation
-		move.b	#0,$1E(a0)	; reset	frame duration
+		move.b	#0,$1E(a0)	; reset	frame durations
 
 SAnim_Do:
 		add.w	d0,d0
@@ -24795,6 +24795,11 @@ SAnim_WalkRun:				; XREF: SAnim_Do
 		bne.w	SAnim_RollJump	; if not, branch
 		moveq	#0,d1
 		move.b	$26(a0),d0	; get Sonic's angle
+		bmi.s	@ZeroOrNeg
+		beq.s	@ZeroOrNeg
+		subq.b	#1,d0
+		
+@ZeroOrNeg:
 		move.b	$22(a0),d2
 		andi.b	#1,d2		; is Sonic mirrored horizontally?
 		bne.s	loc_13A70	; if yes, branch
