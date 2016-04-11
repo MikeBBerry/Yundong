@@ -595,7 +595,6 @@ H_Int_SegaScreen:
 		move.l	#$40000010,($C00004).l
 		move.w	d0,($C00000).l
 		
-@Skip:
 		move.w	#$8ADF,($FFFFF624).w
 		
 		movem.l	(sp)+,d0/a0
@@ -808,8 +807,9 @@ InitMegaPCM:			; XREF: GameClrRAM; TitleScreen
 
 PlaySample:
 	move.w	#$100,($A11100).l	; stop the Z80
-@0	btst	#0,($A11100).l
-	bne.s	@0
+@Wait:
+	btst	#0,($A11100).l
+	bne.s	@Wait
 	move.b	d0,$A01FFF
 	move.w	#0,($A11100).l
 	rts
