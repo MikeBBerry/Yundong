@@ -188,7 +188,7 @@ GameModeArray:
 		dc.l	TitleScreen		; Title	Screen ($04)
 		dc.l	Level			; Demo Mode ($08)
 		dc.l	Level			; Normal Level ($0C)
-		dc.l	SpecialStage	; Special Stage	($10)
+		dc.l	FlickySS		; Special Stage	($10)
 		dc.l	ContinueScreen	; Continue Screen ($14)
 		dc.l	EndingSequence	; End of game sequence ($18)
 		dc.l	Credits			; Credits ($1C)
@@ -587,7 +587,6 @@ H_Int_SegaScreen:
 		addq.w	#2,($FFFFFFBA).w
 		
 		movea.l	($FFFFFFB2).w,a0
-		moveq	#0,d0
 		move.w	(a0)+,d0
 		lsr.w	#2,d0
 		move.l	a0,($FFFFFFB2).w
@@ -976,9 +975,6 @@ loc_1432:
 vdp_data_port:		equ $C00000
 vdp_control_port:	equ $C00004
 vdp_counter:		equ $C00008
-; Buffer Size Natsumi Credits
-;DMA_Buffer_Start	equ $FFFFA512-2	; the start address of DMA buffer for uncompressed art
-;DMA_Buffer_End		equ $FFFFA912-4	; the end address of DMA buffer for uncompressed art
 ; Buffer Size S1 Default
 DMA_Buffer_Start	equ $FFFFC800	; the start address of DMA buffer for uncompressed art
 DMA_Buffer_End		equ $FFFFC8FC	; the end address of DMA buffer for uncompressed art
@@ -16079,6 +16075,7 @@ Obj_Index:
 	dc.l Obj81, Obj82, Obj83, Obj84
 	dc.l Obj85, Obj86, Obj87, Obj88
 	dc.l Obj89, Obj8A, Obj8B, Obj8C
+	dc.l ObjFlicky, ObjCat, ObjChick, ObjDoor
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	make an	object fall downwards, increasingly fast
@@ -16185,7 +16182,7 @@ loc_D646:
 		rts	
 ; End of function DeleteObject
 
-
+; ===========================================================================
 LoadDPLC:
 		moveq	#0,d0
 		move.b	$1A(a0),d0	; load frame number
@@ -16218,7 +16215,6 @@ DPLC_End:
 		rts
 ; End of function LoadDPLC
 ; ===========================================================================
-; ===========================================================================
 BldSpr_ScrPos:	dc.l 0			; blank
 		dc.l $FFF700		; main screen x-position
 		dc.l $FFF708		; background x-position	1
@@ -16248,6 +16244,8 @@ loc_D672:
 		bclr	#7,1(a0)
 		move.b	1(a0),d0
 		move.b	d0,d4
+		cmpi.b	#$10,($FFFFF600).w
+		beq.s	BuildSprites_Flicky
 		andi.w	#$C,d0
 		beq.s	loc_D6DE
 		movea.l	BldSpr_ScrPos(pc,d0.w),a1
@@ -16261,7 +16259,7 @@ loc_D672:
 		move.w	d3,d1
 		sub.w	d0,d1
 		cmpi.w	#$140,d1
-		bge.s	loc_D726
+		bge.w	loc_D726
 		addi.w	#$80,d3
 		btst	#4,d4
 		beq.s	loc_D6E8
@@ -16283,6 +16281,17 @@ loc_D672:
 loc_D6DE:
 		move.w	$A(a0),d2
 		move.w	8(a0),d3
+		bra.s	loc_D700
+; ===========================================================================
+
+BuildSprites_Flicky:
+		move.w	$C(a0),d2
+		addi.w	#$80,d2
+		sub.w	($FFFFF704).w,d2
+		move.w	8(a0),d3
+		sub.w	($FFFFF700).w,d3
+		andi.w	#$FF,d3
+		addi.w	#$80,d3
 		bra.s	loc_D700
 ; ===========================================================================
 
@@ -24195,13 +24204,13 @@ loc_13490:
 
 
 Sonic_JumpAnimate:
-		move.b #$20,d0 ;animation down
-		tst.w $12(a0)
-		bpl.s @positive
-		move.b #$1F,d0 ;animation up
+		move.b	#$20,d0 ;animation down
+		tst.w	$12(a0)
+		bpl.s	@positive
+		move.b	#$1F,d0 ;animation up
 
 @positive:
-		move.b d0,$1C(a0)
+		move.b	d0,$1C(a0)
 		rts
 
 Sonic_JumpHeight:			; XREF: Obj01_MdAir; Obj01_MdJump
@@ -38039,6 +38048,7 @@ Nem_LoverWentRight:		incbin "art/nemesis/Title Cards/LoverWentRight.bin"
 		even
 ; ===========================================================================
 		include "screens/soundtest/code.asm"
+		include "screens/flicky/code.asm"
 ; ===========================================================================
 ; MUST BE AT THE END OF THE ROM
 ; ===========================================================================

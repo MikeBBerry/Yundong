@@ -49,7 +49,6 @@ vdpComm		macro ins,addr,type,rwd,end,end2
 		\ins (((\type&\rwd)&3)<<30)|((\addr&$3FFF)<<16)|(((\type&\rwd)&$FC)<<2)|((\addr&$C000)>>14)
 	endif
     endm
-
 ; ===========================================================================
 ; values for the type argument
 VRAM =  %100001
@@ -60,7 +59,6 @@ VSRAM = %100101
 READ =  %001100
 WRITE = %000111
 DMA =   %100111
-
 ; ===========================================================================
 ; tells the VDP to copy a region of 68k memory to VRAM or CRAM or VSRAM
 dma68kToVDP macro source,dest,length,type
