@@ -805,13 +805,13 @@ InitMegaPCM:			; XREF: GameClrRAM; TitleScreen
 ; ---------------------------------------------------------------------------
 
 PlaySample:
-	move.w	#$100,($A11100).l	; stop the Z80
+		move.w	#$100,($A11100).l	; stop the Z80
 @Wait:
-	btst	#0,($A11100).l
-	bne.s	@Wait
-	move.b	d0,$A01FFF
-	move.w	#0,($A11100).l
-	rts
+		btst	#0,($A11100).l
+		bne.s	@Wait
+		move.b	d0,($A01FFF).l
+		move.w	#0,($A11100).l
+		rts
 ; ===========================================================================
 
 PlayMusic:

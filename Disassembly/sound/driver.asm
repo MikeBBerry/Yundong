@@ -90,6 +90,11 @@ SoundPriorities:
 
 
 UpdateMusic:				; XREF: loc_B10; PalToCRAM
+		cmpi.b	#$10,($FFFFF600).w
+		bne.s	@NotSS
+		rts
+		
+@NotSS:
 		lea	($FFF000).l,a6
 		clr.b	$E(a6)
 		tst.b	3(a6)		; is music paused?

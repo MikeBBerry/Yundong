@@ -8,6 +8,8 @@ FlickySS:
 		jsr	ClearPLC					; Clear PLCS
 		jsr	Pal_FadeFrom				; Fade palette
 		
+		bsr.w	Flicky_LoadSoundDriver
+		
 		move	#$2700,sr				; Stop interrupts
 		
 		move.w	($FFFFF60C).w,d0		; Disable screen
@@ -70,6 +72,9 @@ FlickySS:
 		
 		move.w	#0,($FFFFF710).w
 		
+		move.w	#$83,d0
+		bsr.w	Flicky_PlaySound
+		
 		move.w	($FFFFF60C).w,d0		; Enable screen
 		ori.b	#$40,d0
 		move.w	d0,($C00004).l
@@ -85,7 +90,6 @@ FlickySS:
 		move.b	#0,($FFFFF722).w
 		
 @ChickFollow:
-		
 		jsr	ObjectsLoad					; Run objects
 		jsr	BuildSprites				; Render sprites
 		
@@ -109,6 +113,9 @@ FlickySS:
 		move.w	#$9001,(a6)
 		move.w	#$8B03,(a6)
 		move.w	#$8C81,(a6)
+		
+		bsr.w	ClearZ80RAM
+		jsr	InitMegaPCM
 		
 		rts
 ; ===========================================================================
@@ -317,6 +324,8 @@ ObjChick_Unfollow:
 		jmp	DisplaySprite
 ; ===========================================================================
 ObjChick_Delete:
+		move.w	#$94,d0
+		bsr.w	Flicky_PlaySound
 		jmp	DeleteObject
 ; ===========================================================================
 ; Cat object
@@ -498,6 +507,10 @@ ObjFlicky_Jump:
 		move.b	($FFFFF605).w,d0
 		andi.b	#$70,d0
 		beq.w	@NoJump
+		
+		move.w	#$91,d0
+		bsr.w	Flicky_PlaySound
+		
 		move.w	#-$2A0,$12(a0)
 		move.b	#1,$2D(a0)
 		
@@ -790,4 +803,69 @@ Col_FlickyLevel1:
 		dc.b 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 		dc.b 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 		even
+; ===========================================================================
+; Flicky sound driver
+; ===========================================================================
+Flicky_LoadSoundDriver:
+		bsr.w	ClearZ80RAM
+		
+		nop
+		move.w	#$100,d0
+		move.w	d0,($A11100).l
+		move.w	d0,($A11200).l
+
+		lea	($A00000).l,a0
+		lea	(Z80_FlickySndDrv).l,a1
+		move.w	#(Z80_FlickySndDrv_End-Z80_FlickySndDrv)-1,d1
+		
+@Load:
+		move.b	(a1)+,(a0)+
+		dbf	d1,@Load
+		
+		lea	($A01C00).l,a0
+		lea	(Z80_FlickyCode).l,a1
+		move.w	#(Z80_FlickyCode_End-Z80_FlickyCode)-1,d1
+		
+@Load2:
+		move.b	(a1)+,(a0)+
+		dbf	d1,@Load2
+		
+		moveq	#0,d1
+		move.w	d1,($A11200).l
+		nop
+		nop
+		nop
+		nop
+		move.w	d0,($A11200).l
+		move.w	d1,($A11100).l
+		rts
+; ===========================================================================
+; Play a sound via the Flicky sound driver
+; ===========================================================================	
+Flicky_PlaySound:
+		stopZ80
+		move.b	d0,($A01C09).l
+		startZ80
+		rts
+; ===========================================================================
+; Clear Z80 RAM
+; ===========================================================================
+ClearZ80RAM:
+		stopZ80
+		lea	($A00000).l,a0
+		move.w	#$1FFF,d1
+		
+@Clear:
+		move.b	#0,(a0)+
+		dbf	d1,@Clear
+		startZ80
+		rts
+; ===========================================================================
+Z80_FlickySndDrv:
+		incbin "sound/z80_flicky.bin"
+Z80_FlickySndDrv_End:
+		even
+Z80_FlickyCode:
+		dc.b 0, $80, 0, $12, $B4, 0, $E6, $80, $20, 0
+Z80_FlickyCode_End:
 ; ===========================================================================
