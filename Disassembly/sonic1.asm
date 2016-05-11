@@ -37892,7 +37892,7 @@ Music8F:	incbin	"sound\Music\music8F.bin"
 		even
 Music90:	incbin	"sound\Music\Life Or Death.bin"
 		even
-Music91:	incbin	"sound\Music\music91.bin"
+Music91:	incbin	"sound\Music\Flicky Redux Title.bin"
 		even
 Music92:	incbin	"sound\Music\I Cannot Breathe.bin"
 		even
@@ -37900,7 +37900,7 @@ Music93:	incbin	"sound\Music\music93.bin"
 		even
 Music94:	incbin	"sound\Music\owarisoft logo.bin"
 		even
-Music95:	incbin	"sound\Music\SpeedShoes.bin"
+Music95:	incbin	"sound\Music\Spoony's Hangover.bin"
 		even
 Music96:	incbin	"sound\Music\Joe The Ho.bin"
 		even

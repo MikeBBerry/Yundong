@@ -479,75 +479,75 @@ SndTest_Deform:
 ; Song names
 ; ===========================================================================
 SndTest_SongNames:
-		dc.b "                 MUSIC 81               ",0,0		; 81
-		dc.b "                 ARTIST                 ",0,0
-		dc.b "                 SOURCE                 ",0,0
-		dc.b "                 MUSIC 82               ",0,0		; 82
-		dc.b "                 ARTIST                 ",0,0
-		dc.b "                 SOURCE                 ",0,0
-		dc.b "                 MUSIC 83               ",0,0		; 83
-		dc.b "                 ARTIST                 ",0,0
-		dc.b "                 SOURCE                 ",0,0
-		dc.b "                 MUSIC 84               ",0,0		; 84
-		dc.b "                 ARTIST                 ",0,0
-		dc.b "                 SOURCE                 ",0,0
-		dc.b "                 MUSIC 85               ",0,0		; 85
-		dc.b "                 ARTIST                 ",0,0
-		dc.b "                 SOURCE                 ",0,0
-		dc.b "                 MUSIC 86               ",0,0		; 86
-		dc.b "                 ARTIST                 ",0,0
-		dc.b "                 SOURCE                 ",0,0
-		dc.b "          FASTER JEOPARDY THEME         ",0,0		; 87
+		dc.b "        MIND IN THE GUTTER PART I       ",0,0		; 81
+		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
+		dc.b "            YUNDONG ZIXINGCHE           ",0,0
+		dc.b "            I DIED ON JEOPARDY          ",0,0		; 82
+		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
+		dc.b "            YUNDONG ZIXINGCHE           ",0,0
+		dc.b "          TUTORIAL WITH ATTITUDE        ",0,0		; 83
+		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
+		dc.b "            YUNDONG ZIXINGCHE           ",0,0
+		dc.b "  THIS SONG HAS NO TITLE AND IS UNUSED  ",0,0		; 84
+		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
+		dc.b "                BAKASONIC               ",0,0
+		dc.b "         IM AN EDGY MOTHERFUCKER        ",0,0		; 85
+		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
+		dc.b "            YUNDONG ZIXINGCHE           ",0,0
+		dc.b "            GET THAT ELEPHANT           ",0,0		; 86
+		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
+		dc.b "            YUNDONG ZIXINGCHE           ",0,0
+		dc.b "      INVINCIBILITY JEOPARDY THEME      ",0,0		; 87
 		dc.b "               MERV GRIFFIN             ",0,0
 		dc.b "                 JEOPARDY               ",0,0
 		dc.b "                 MUSIC 88               ",0,0		; 88
 		dc.b "                 ARTIST                 ",0,0
 		dc.b "                 SOURCE                 ",0,0
-		dc.b "                 MUSIC 89               ",0,0		; 89
-		dc.b "                 ARTIST                 ",0,0
-		dc.b "                 SOURCE                 ",0,0
+		dc.b "             AURORA NUMERIQUE           ",0,0		; 89
+		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
+		dc.b "            YUNDONG ZIXINGCHE           ",0,0
 		dc.b "              JEOPARDY THEME            ",0,0		; 8A
 		dc.b "               MERV GRIFFIN             ",0,0
 		dc.b "                 JEOPARDY               ",0,0
-		dc.b "                 MUSIC 8B               ",0,0		; 8B
-		dc.b "                 ARTIST                 ",0,0
-		dc.b "                 SOURCE                 ",0,0
-		dc.b "                 MUSIC 8C               ",0,0		; 8C
-		dc.b "                 ARTIST                 ",0,0
-		dc.b "                 SOURCE                 ",0,0
-		dc.b "                 MUSIC 8D               ",0,0		; 8D
-		dc.b "                 ARTIST                 ",0,0
-		dc.b "                 SOURCE                 ",0,0
-		dc.b "                 MUSIC 8E               ",0,0		; 8E
-		dc.b "                 ARTIST                 ",0,0
-		dc.b "                 SOURCE                 ",0,0
+		dc.b "          PICK AN OPTION ALREADY        ",0,0		; 8B
+		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
+		dc.b "            YUNDONG ZIXINGCHE           ",0,0
+		dc.b "               DEATH MARCH              ",0,0		; 8C
+		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
+		dc.b "            YUNDONG ZIXINGCHE           ",0,0
+		dc.b "           CRANK THE DIAL TO 11         ",0,0		; 8D
+		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
+		dc.b "            YUNDONG ZIXINGCHE           ",0,0
+		dc.b "             LOVER WENT RIGHT           ",0,0		; 8E
+		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
+		dc.b "            YUNDONG ZIXINGCHE           ",0,0
 		dc.b "              DEATH SEGMENT             ",0,0		; 8F
 		dc.b "               SEIJI MOMOI              ",0,0
 		dc.b "            DAIKAIJUU DEBURAS           ",0,0
-		dc.b "                 MUSIC 90               ",0,0		; 90
-		dc.b "                 ARTIST                 ",0,0
-		dc.b "                 SOURCE                 ",0,0
-		dc.b "                 MUSIC 91               ",0,0		; 91
-		dc.b "                 ARTIST                 ",0,0
-		dc.b "                 SOURCE                 ",0,0
-		dc.b "                 MUSIC 92               ",0,0		; 92
-		dc.b "                 ARTIST                 ",0,0
-		dc.b "                 SOURCE                 ",0,0
+		dc.b "           WILT THOU CONTINUE           ",0,0		; 90
+		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
+		dc.b "                BAKASONIC               ",0,0
+		dc.b "     FLICKY TITLE (BAKAYOTE ARGMT.)     ",0,0		; 91
+		dc.b "                TS MUSIC                ",0,0
+		dc.b "                 FLICKY                 ",0,0
+		dc.b "            I CANNOT BREATHE            ",0,0		; 92
+		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
+		dc.b "                BAKASONIC               ",0,0
 		dc.b "                 MUSIC 93               ",0,0		; 93
 		dc.b "                 ARTIST                 ",0,0
 		dc.b "                 SOURCE                 ",0,0
-		dc.b "                 MUSIC 94               ",0,0		; 94
-		dc.b "                 ARTIST                 ",0,0
-		dc.b "                 SOURCE                 ",0,0
-		dc.b "                 MUSIC 95               ",0,0		; 95
-		dc.b "                 ARTIST                 ",0,0
-		dc.b "                 SOURCE                 ",0,0
-		dc.b "                 MUSIC 96               ",0,0		; 96
-		dc.b "                 ARTIST                 ",0,0
-		dc.b "                 SOURCE                 ",0,0
-		dc.b "                 MUSIC 97               ",0,0		; 97
-		dc.b "                 ARTIST                 ",0,0
-		dc.b "                 SOURCE                 ",0,0
+		dc.b "            OWARISOFT JINGLE            ",0,0		; 94
+		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
+		dc.b "                OWARISOFT               ",0,0
+		dc.b "            SPOONYS HANGOVER            ",0,0		; 95
+		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
+		dc.b "            YUNDONG ZIXINGCHE           ",0,0
+		dc.b "    JOE THE HOE PART 2  FT VADAPEGA     ",0,0		; 96
+		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
+		dc.b "            YUNDONG ZIXINGCHE           ",0,0
+		dc.b "        MIND IN THE GUTTER PART II      ",0,0		; 97
+		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
+		dc.b "            YUNDONG ZIXINGCHE           ",0,0
 		even
 ; ===========================================================================
 SndTest_SongNothing:
