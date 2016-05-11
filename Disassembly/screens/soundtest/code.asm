@@ -77,20 +77,17 @@ SoundTest:
 		lea	(Nem_SndTestFont).l,a0
 		jsr	NemDec
 		
-		lea	($FF0000).l,a1				; Decompress BG mappings
-		lea	(Eni_SndTestBG).l,a0 
-		move.w	#$80,d0
-		jsr	EniDec
-		
-		lea	($FF0000).l,a1				; Load BG mappings
+		lea	(Map_SndTestBG).l,a1		; Load BG mappings
 		move.l	#$60000003,d0
-		moveq	#$27,d1
+		moveq	#$3F,d1
 		moveq	#$1B,d2
-		jsr	ShowVDPGraphics
+		move.w	#$80,d5
+		jsr	ShowVDPGraphics2
 		
 		moveq	#$15,d0					; Load palette
 		jsr	PalLoad1
 		
+		move.l	#0,($FFFFFFA0).w		; Clear scroll variables
 		move.l	#0,($FFFFFFB0).w		; Clear variables
 		move.b	#1,($FFFFFFB4).w		; Make it so that when the music is stopped in the sound test, PCM isn't affected
 		move.b	#0,($FFFFFFB5).w		; Clear the music playing flag
@@ -112,6 +109,15 @@ SndTest_MainLoop:
 		move.b	#2,($FFFFF62A).w		; V-INT routine #2
 		jsr	DelayProgram				; Wait for that to run...
 
+		bsr.w	SndTest_Deform
+		tst.w	($FFFFFFA2).w
+		beq.s	@NoCap
+		addq.w	#1,($FFFFFFA0).w
+		cmpi.w	#53,($FFFFFFA0).w
+		ble.s	@NoCap
+		move.w	#0,($FFFFFFA0).w
+
+@NoCap:
 		btst	#0,($FFFFF605).w		; Is the up button pressed?
 		beq.s	@NotUp					; If not, branch
 		tst.b	($FFFFFFB0).w			; Is the sound test selection 0?
@@ -206,6 +212,7 @@ SndTest_MainLoop:
 SndTest_StopMusic:
 		tst.b	($FFFFFFB5).w			; Is music playing?
 		beq.s	SndTest_Null			; If not, skip
+		move.w	#0,($FFFFFFA2).w
 		move.b	#$E4,d0					; Stop sound
 		jmp	PlaySound_Special
 ; ===========================================================================
@@ -246,6 +253,7 @@ SndTest_PlayMusic:
 		add.b	id_mod(a5),d0
 		
 		move.b	#1,($FFFFFFB5).w		; Set the music playing flag
+		move.w	#1,($FFFFFFA2).w
 
 		jmp	PlaySound					; Play the music
 ; ===========================================================================
@@ -368,6 +376,29 @@ DrawHexNumber:
 		move.w	d0,($C00000).l			; Draw that
 		rts								; Return
 ; ===========================================================================
+; Do deform
+; ===========================================================================
+SndTest_Deform:
+		lea	($FFFFCC00).w,a0
+		move.w	#1,d4
+		move.w	#31,d5
+		move.w	#6,d6
+		
+@Deform:
+		move.w	($FFFFFFA0).w,d0
+		muls.w	d4,d0
+		bmi.s	@Pos
+		subi.w	#54,d0
+		
+@Pos:
+		move.w	#0,(a0)+
+		move.w	d0,(a0)+
+		dbf	d5,@Deform
+		neg.w	d4
+		move.w	#31,d5
+		dbf	d6,@Deform
+		rts
+; ===========================================================================
 ; Music text
 ; ===========================================================================
 Txt_Music:
@@ -412,8 +443,8 @@ Nem_SndTestBG:
 ; ===========================================================================
 ; Sound test BG mappings
 ; ===========================================================================
-Eni_SndTestBG:
-		incbin "mappings/plane/enigma/sndtest.bin"
+Map_SndTestBG:
+		incbin "mappings/plane/uncompressed/sndtest.bin"
 		even
 ; ===========================================================================
 ; Sound test palette

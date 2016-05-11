@@ -955,6 +955,31 @@ loc_1432:
 ; End of function ShowVDPGraphics
 
 ; ---------------------------------------------------------------------------
+; Subroutine to	display	patterns via the VDP
+; ---------------------------------------------------------------------------
+
+; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
+
+
+ShowVDPGraphics2:			; XREF: SegaScreen; TitleScreen; SS_BGLoad
+		lea	($C00000).l,a6
+		move.l	#$800000,d4
+
+loc2_142C:
+		move.l	d0,4(a6)
+		move.w	d1,d3
+
+loc2_1432:
+		move.w	(a1)+,d6
+		add.w	d5,d6
+		move.w	d6,(a6)
+		dbf	d3,loc2_1432
+		add.l	d4,d0
+		dbf	d2,loc2_142C
+		rts	
+; End of function ShowVDPGraphics
+
+; ---------------------------------------------------------------------------
 ; Subroutine for queueing VDP commands (seems to only queue transfers to VRAM),
 ; to be issued the next time ProcessDMAQueue is called.
 ; Can be called a maximum of 18 times before the buffer needs to be cleared
