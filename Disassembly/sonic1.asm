@@ -2825,6 +2825,7 @@ PalPointers:
 ; ---------------------------------------------------------------------------
 Pal_SegaBG:	incbin	Palette\sega_bg.bin
 Pal_Title:	incbin	Palette\title.bin
+			even
 Pal_LevelSel:	incbin	Palette\levelsel.bin
 Pal_Sonic:	incbin	Palette\sonic.bin
 Pal_GHZ:	incbin	Palette\ghz.bin
@@ -3242,11 +3243,8 @@ Title_ClrPalette:
 		move.l	#$40000001,($C00004).l
 		lea	(Nem_TitleFg).l,a0 ; load title	screen patterns
 		bsr.w	NemDec
-		move.l	#$60000001,($C00004).l
+		move.l	#$7A200001,($C00004).l
 		lea	(Nem_TitleSonic).l,a0 ;	load Sonic title screen	patterns
-		bsr.w	NemDec
-		move.l	#$62000002,($C00004).l
-		lea	(Nem_TitleTM).l,a0 ; load "TM" patterns
 		bsr.w	NemDec
 		lea	($C00000).l,a6
 		move.l	#$50000003,4(a6)
@@ -3256,32 +3254,28 @@ Title_ClrPalette:
 Title_LoadText:
 		move.w	(a5)+,(a6)
 		dbf	d1,Title_LoadText ; load uncompressed text patterns
-
+		
 		move.b	#0,($FFFFFE30).w ; clear lamppost counter
 		move.w	#0,($FFFFFE08).w ; disable debug item placement	mode
 		move.w	#0,($FFFFFFF0).w ; disable debug mode
 		move.w	#0,($FFFFFFEA).w
 		move.w	#0,($FFFFFE10).w ; set level to	GHZ (00)
 		move.w	#0,($FFFFF634).w ; disable Palette cycling
-		bsr.w	LevelSizeLoad
-		bsr.w	DeformBgLayer
-		lea	($FFFFB000).w,a1
-		lea	(Blk16_TS).l,a0 ; load	TS 16x16 mappings
-		move.w	#0,d0
-		bsr.w	EniDec
-		lea	(Blk256_TS).l,a0 ; load TS 256x256 mappings
-		lea	($FF0000).l,a1
-		bsr.w	KosDec
-		bsr.w	LevelLayoutLoad
 		bsr.w	Pal_FadeFrom
 		move	#$2700,sr
 		bsr.w	ClearScreen
-		lea	($C00004).l,a5
-		lea	($C00000).l,a6
-		lea	($FFFFF708).w,a3
-		movea.l	($FFFFA404).w,a4			; MJ: Load address of layout BG
-		move.w	#$6000,d2
-		bsr.w	LoadTilesFromStart2
+		
+		lea	(Map_TitleBG).l,a1
+		move.l	#$60000003,d0
+		moveq	#$3F,d1
+		moveq	#$1B,d2
+		move.w	#$4001,d5
+		bsr.w	ShowVDPGraphics2
+		
+		move.l	#$40200000,($C00004).l
+		lea	(Nem_TitleBG).l,a0
+		bsr.w	NemDec
+		
 		lea	($FF0000).l,a1
 		lea	(Eni_Title).l,a0 ; load	title screen mappings
 		move.w	#0,d0
@@ -3291,9 +3285,6 @@ Title_LoadText:
 		moveq	#$21,d1
 		moveq	#$15,d2
 		bsr.w	ShowVDPGraphics
-		move.l	#$40000000,($C00004).l
-		lea	(Nem_TIT_1st).l,a0 ; load TZ patterns
-		bsr.w	NemDec
 		moveq	#1,d0		; load title screen Palette
 		bsr.w	PalLoad1
 		move.b	#$8A,d0		; play title screen music
@@ -3308,18 +3299,15 @@ Title_ClrObjRam2:
 		move.l	d0,(a1)+
 		dbf	d1,Title_ClrObjRam2
 
-		move.b	#$E,($FFFFD040).w ; load big Sonic object
+		moveq	#0,d0
+		bsr.w	LoadPLC2
 
 		move.b	#$E,($FFFFD040).w ; load big Sonic object
-		move.b	#$F,($FFFFD0C0).w ; load "TM" object
-		move.b	#3,($FFFFD0DA).w
+		move.b	#$F,($FFFFD080).w
 		move.b	#$F,($FFFFD100).w
 		move.b	#2,($FFFFD11A).w
 		jsr	ObjectsLoad
-		bsr.w	DeformBgLayer
 		jsr	BuildSprites
-		moveq	#0,d0
-		bsr.w	LoadPLC2
 		move.w	#0,($FFFFFFE4).w
 		move.w	#0,($FFFFFFE6).w
 		move.w	($FFFFF60C).w,d0
@@ -3331,13 +3319,24 @@ loc_317C:
 		move.b	#4,($FFFFF62A).w
 		bsr.w	DelayProgram
 		jsr	ObjectsLoad
-		bsr.w	DeformBgLayer
 		jsr	BuildSprites
 		bsr.w	PalCycle_Title
 		bsr.w	RunPLC_RAM
 		move.w	($FFFFD008).w,d0
 		addq.w	#2,d0
 		move.w	d0,($FFFFD008).w ; move	Sonic to the right
+		
+		lea	($FFFFCC00).w,a1
+		move.w	#$DF,d1
+		
+@Scrl:
+		move.w	#0,(a1)+
+		move.w	($FFFFD008).w,d2
+		lsr.w	#1,d2
+		neg.w	d2
+		move.w	d2,(a1)+
+		dbf	d1,@Scrl
+		
 		cmpi.w	#$1C00,d0	; has Sonic object passed x-position $1C00?
 		bcs.s	Title_ChkRegion	; if not, branch
 		move.b	#$20,($FFFFF600).w ; go to Sega screen
@@ -3793,16 +3792,21 @@ Level:					; XREF: GameModeArray
 		bsr.w	PlaySound_Special ; fade out music
 
 loc_37B6:
-		bsr.w	ClearPLC
 		bsr.w	Pal_FadeFrom
+		bsr.w	ClearPLC
 		tst.w	($FFFFFFF0).w
-		bmi.s	Level_ClrRam
+		bmi.w	Level_ClrRam
 		move	#$2700,sr
+		
+		move.l	#$6E000002,($C00004).l
+		lea	(Nem_Points).l,a0 ; load title card patterns
+		bsr.w	NemDec
+		
 		move.l	#$70000002,($C00004).l
 		lea	(Nem_TitleCard).l,a0 ; load title card patterns
 		bsr.w	NemDec
-		move.l	#$75A00002,($C00004).l
 		
+		move.l	#$75A00002,($C00004).l
 		lea	(Nem_TitleCard_Hell).l,a0
 		cmpi.w	#$103,($FFFFFE10).w
 		beq.s	@IsSBZ3Final
@@ -3819,6 +3823,7 @@ loc_37B6:
 	@IsSBZ3Final:
 		bsr.w	NemDec
 		move	#$2300,sr
+		
 		moveq	#0,d0
 		move.b	($FFFFFE10).w,d0
 		lsl.w	#4,d0
@@ -12574,7 +12579,7 @@ Obj0E_Main:				; XREF: Obj0E_Index
 		move.w	#$F0,8(a0)
 		move.w	#$DE,$A(a0)
 		move.l	#Map_obj0E,4(a0)
-		move.w	#$2300,2(a0)
+		move.w	#$23D1,2(a0)
 		move.b	#1,$18(a0)
 		move.b	#29,$1F(a0)	; set time delay to 0.5	seconds
 		lea	(Ani_obj0E).l,a1
@@ -36768,7 +36773,7 @@ ArtLoadCues:
 ; ---------------------------------------------------------------------------
 ; Pattern load cues - standard block 1
 ; ---------------------------------------------------------------------------
-PLC_Main:	dc.w 5
+PLC_Main:	dc.w 4
 		dc.l Nem_Lamp		; lamppost
 		dc.w $D800
 		dc.l Nem_Hud		; HUD
@@ -36779,8 +36784,6 @@ PLC_Main:	dc.w 5
 		dc.w $F380
 		dc.l Nem_Ring		; rings
 		dc.w $F640
-		dc.l Nem_Points		; points from enemy
-		dc.w $570*$20
 ; ---------------------------------------------------------------------------
 ; Pattern load cues - standard block 2
 ; ---------------------------------------------------------------------------
@@ -38070,6 +38073,14 @@ Nem_TitleCard_Hell:	incbin "art/nemesis/Title Cards/YoureInHellNow.bin"
 Nem_TitleCard_Final:	incbin "art/nemesis/Title Cards/Final.bin"
 		even
 Nem_LoverWentRight:		incbin "art/nemesis/Title Cards/LoverWentRight.bin"
+		even
+; ===========================================================================
+Nem_TitleBG:
+		incbin "art/nemesis/titlebg.bin"
+		even
+
+Map_TitleBG:
+		incbin "mappings/plane/uncompressed/title.bin"
 		even
 ; ===========================================================================
 		include "screens/soundtest/code.asm"
