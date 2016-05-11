@@ -277,6 +277,7 @@ SndTest_PlayPCM:
 		add.b	id_mod(a5),d0
 		
 		move.b	#0,($FFFFFFB5).w		; Clear the music playing flag
+		move.w	#0,($FFFFFFA2).w
 
 		jmp	PlaySample					; Play the PCM
 ; ===========================================================================
