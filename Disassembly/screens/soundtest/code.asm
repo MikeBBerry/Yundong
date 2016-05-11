@@ -68,7 +68,7 @@ SoundTest:
 		move.w	d0,($C00004).l
 		
 		jsr	ClearScreen					; Clear screen
-		
+
 		move.l	#$50000000,($C00004).l	; Load BG art
 		lea	(Nem_SndTestBG).l,a0
 		jsr	NemDec
@@ -98,6 +98,30 @@ SoundTest:
 		bsr.w	DrawText
 		
 		bsr.w	DrawSndTestText			; Draw text
+
+		move.w	#$2000,d1
+		move.l	#$469C0003,($C00004).l	; Apply VDP command
+		lea	(Txt_SongPlaying).l,a0		; Set the text address
+		bsr.w	DrawText
+		move.w	#$2000,d1
+		move.l	#$489A0003,($C00004).l	; Apply VDP command
+		lea	(Txt_Artist).l,a0			; Set the text address
+		bsr.w	DrawText
+		move.w	#$2000,d1
+		move.l	#$4A9A0003,($C00004).l	; Apply VDP command
+		lea	(Txt_Source).l,a0			; Set the text address
+		bsr.w	DrawText
+
+		move.w	#$4000,d1
+		move.l	#$47800003,($C00004).l	; Apply VDP command
+		lea	(SndTest_SongNothing).l,a0	; Set the text address
+		bsr.w	DrawText
+		move.l	#$49800003,($C00004).l	; Apply VDP command
+		lea	(SndTest_SongNothing).l,a0	; Set the text address
+		bsr.w	DrawText
+		move.l	#$4B800003,($C00004).l	; Apply VDP command
+		lea	(SndTest_SongNothing).l,a0	; Set the text address
+		bsr.w	DrawText
 
 		move.w	($FFFFF60C).w,d0		; Enable screen
 		ori.b	#$40,d0
@@ -213,6 +237,18 @@ SndTest_StopMusic:
 		tst.b	($FFFFFFB5).w			; Is music playing?
 		beq.s	SndTest_Null			; If not, skip
 		move.w	#0,($FFFFFFA2).w
+
+		move.w	#$4000,d1
+		move.l	#$47800003,($C00004).l	; Apply VDP command
+		lea	(SndTest_SongNothing).l,a0	; Set the text address
+		bsr.w	DrawText
+		move.l	#$49800003,($C00004).l	; Apply VDP command
+		lea	(SndTest_SongNothing).l,a0	; Set the text address
+		bsr.w	DrawText
+		move.l	#$4B800003,($C00004).l	; Apply VDP command
+		lea	(SndTest_SongNothing).l,a0	; Set the text address
+		bsr.w	DrawText
+
 		move.b	#$E4,d0					; Stop sound
 		jmp	PlaySound_Special
 ; ===========================================================================
@@ -248,12 +284,32 @@ SndTest_PlayMusic:
 		nop
 		nop
 
+		move.b	#1,($FFFFFFB5).w		; Set the music playing flag
+		move.w	#1,($FFFFFFA2).w
+
+		move.w	#$4000,d1
+		move.l	#$47800003,($C00004).l	; Apply VDP command
+		lea	(SndTest_SongNames).l,a0	; Set the text address
+		moveq	#0,d0
+		move.b	(a6),d0
+		mulu.w	#(42*3),d0
+		adda.l	d0,a0
+		move.l	a0,a4
+		bsr.w	DrawText				; Draw the text
+
+		move.l	a4,a0
+		adda.w	#42,a0
+		move.l	#$49800003,($C00004).l	; Apply VDP command
+		bsr.w	DrawText				; Draw the text
+
+		move.l	a4,a0
+		adda.w	#(42*2),a0
+		move.l	#$4B800003,($C00004).l	; Apply VDP command
+		bsr.w	DrawText				; Draw the text
+
 		moveq	#0,d0					; Get the current ID and apply the modifier
 		move.b	(a6),d0
 		add.b	id_mod(a5),d0
-		
-		move.b	#1,($FFFFFFB5).w		; Set the music playing flag
-		move.w	#1,($FFFFFFA2).w
 
 		jmp	PlaySound					; Play the music
 ; ===========================================================================
@@ -272,6 +328,17 @@ SndTest_PlayPCM:
 		move.b	#$E4,d0
 		jsr	PlaySound_Special
 		
+		move.w	#$4000,d1
+		move.l	#$47800003,($C00004).l	; Apply VDP command
+		lea	(SndTest_SongNothing).l,a0	; Set the text address
+		bsr.w	DrawText
+		move.l	#$49800003,($C00004).l	; Apply VDP command
+		lea	(SndTest_SongNothing).l,a0	; Set the text address
+		bsr.w	DrawText
+		move.l	#$4B800003,($C00004).l	; Apply VDP command
+		lea	(SndTest_SongNothing).l,a0	; Set the text address
+		bsr.w	DrawText
+
 		moveq	#0,d0					; Get the current ID and apply the modifier
 		move.b	(a6),d0
 		add.b	id_mod(a5),d0
@@ -323,6 +390,7 @@ DrawSndTestText:
 		bra.s	@Loop					; Draw the next line
 
 @Number:
+		addq.b	#1,d0
 		move.b	d0,d2					; Save ID into d2
 		lsr.b	#4,d0					; Get high nibble
 		bsr.s	DrawHexNumber			; Draw that
@@ -344,6 +412,14 @@ DrawText:
 		move.b	(a0)+,d0				; Get the current character
 		cmpi.b	#$20,d0					; Is it a space?
 		beq.s	@DrawSpace				; If so, draw a blank tile
+		cmpi.b	#$30,d0
+		blt.s	@Chk
+		cmpi.b	#$39,d0
+		bgt.s	@Chk
+		addq.b	#3,d0
+		bra.s	@Draw
+
+@Chk:
 		tst.b	d0						; Is it the terminate character?
 		beq.s	@End					; If so, stop drawing text
 		
@@ -400,6 +476,84 @@ SndTest_Deform:
 		dbf	d6,@Deform
 		rts
 ; ===========================================================================
+; Song names
+; ===========================================================================
+SndTest_SongNames:
+		dc.b "                 MUSIC 81               ",0,0		; 81
+		dc.b "                 ARTIST                 ",0,0
+		dc.b "                 SOURCE                 ",0,0
+		dc.b "                 MUSIC 82               ",0,0		; 82
+		dc.b "                 ARTIST                 ",0,0
+		dc.b "                 SOURCE                 ",0,0
+		dc.b "                 MUSIC 83               ",0,0		; 83
+		dc.b "                 ARTIST                 ",0,0
+		dc.b "                 SOURCE                 ",0,0
+		dc.b "                 MUSIC 84               ",0,0		; 84
+		dc.b "                 ARTIST                 ",0,0
+		dc.b "                 SOURCE                 ",0,0
+		dc.b "                 MUSIC 85               ",0,0		; 85
+		dc.b "                 ARTIST                 ",0,0
+		dc.b "                 SOURCE                 ",0,0
+		dc.b "                 MUSIC 86               ",0,0		; 86
+		dc.b "                 ARTIST                 ",0,0
+		dc.b "                 SOURCE                 ",0,0
+		dc.b "          FASTER JEOPARDY THEME         ",0,0		; 87
+		dc.b "               MERV GRIFFIN             ",0,0
+		dc.b "                 JEOPARDY               ",0,0
+		dc.b "                 MUSIC 88               ",0,0		; 88
+		dc.b "                 ARTIST                 ",0,0
+		dc.b "                 SOURCE                 ",0,0
+		dc.b "                 MUSIC 89               ",0,0		; 89
+		dc.b "                 ARTIST                 ",0,0
+		dc.b "                 SOURCE                 ",0,0
+		dc.b "              JEOPARDY THEME            ",0,0		; 8A
+		dc.b "               MERV GRIFFIN             ",0,0
+		dc.b "                 JEOPARDY               ",0,0
+		dc.b "                 MUSIC 8B               ",0,0		; 8B
+		dc.b "                 ARTIST                 ",0,0
+		dc.b "                 SOURCE                 ",0,0
+		dc.b "                 MUSIC 8C               ",0,0		; 8C
+		dc.b "                 ARTIST                 ",0,0
+		dc.b "                 SOURCE                 ",0,0
+		dc.b "                 MUSIC 8D               ",0,0		; 8D
+		dc.b "                 ARTIST                 ",0,0
+		dc.b "                 SOURCE                 ",0,0
+		dc.b "                 MUSIC 8E               ",0,0		; 8E
+		dc.b "                 ARTIST                 ",0,0
+		dc.b "                 SOURCE                 ",0,0
+		dc.b "              DEATH SEGMENT             ",0,0		; 8F
+		dc.b "               SEIJI MOMOI              ",0,0
+		dc.b "            DAIKAIJUU DEBURAS           ",0,0
+		dc.b "                 MUSIC 90               ",0,0		; 90
+		dc.b "                 ARTIST                 ",0,0
+		dc.b "                 SOURCE                 ",0,0
+		dc.b "                 MUSIC 91               ",0,0		; 91
+		dc.b "                 ARTIST                 ",0,0
+		dc.b "                 SOURCE                 ",0,0
+		dc.b "                 MUSIC 92               ",0,0		; 92
+		dc.b "                 ARTIST                 ",0,0
+		dc.b "                 SOURCE                 ",0,0
+		dc.b "                 MUSIC 93               ",0,0		; 93
+		dc.b "                 ARTIST                 ",0,0
+		dc.b "                 SOURCE                 ",0,0
+		dc.b "                 MUSIC 94               ",0,0		; 94
+		dc.b "                 ARTIST                 ",0,0
+		dc.b "                 SOURCE                 ",0,0
+		dc.b "                 MUSIC 95               ",0,0		; 95
+		dc.b "                 ARTIST                 ",0,0
+		dc.b "                 SOURCE                 ",0,0
+		dc.b "                 MUSIC 96               ",0,0		; 96
+		dc.b "                 ARTIST                 ",0,0
+		dc.b "                 SOURCE                 ",0,0
+		dc.b "                 MUSIC 97               ",0,0		; 97
+		dc.b "                 ARTIST                 ",0,0
+		dc.b "                 SOURCE                 ",0,0
+		even
+; ===========================================================================
+SndTest_SongNothing:
+		dc.b "                 NOTHING                ",0
+		even
+; ===========================================================================
 ; Music text
 ; ===========================================================================
 Txt_Music:
@@ -428,6 +582,24 @@ Txt_Stop:
 ; ===========================================================================
 Txt_SoundTest:
 		dc.b "SOUND TEST",0
+		even
+; ===========================================================================
+; Song playing text
+; ===========================================================================
+Txt_SongPlaying:
+		dc.b "SONG PLAYING?",0
+		even
+; ===========================================================================
+; Artist text
+; ===========================================================================
+Txt_Artist:
+		dc.b "ORIGINAL ARTIST?",0
+		even
+; ===========================================================================
+; Source text
+; ===========================================================================
+Txt_Source:
+		dc.b "ORIGINAL SOURCE?",0
 		even
 ; ===========================================================================
 ; Font art
