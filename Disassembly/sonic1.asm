@@ -3299,9 +3299,6 @@ Title_ClrObjRam2:
 		move.l	d0,(a1)+
 		dbf	d1,Title_ClrObjRam2
 
-		moveq	#0,d0
-		bsr.w	LoadPLC2
-
 		move.b	#$E,($FFFFD040).w ; load big Sonic object
 		move.b	#$F,($FFFFD080).w
 		move.b	#$F,($FFFFD100).w
@@ -3426,6 +3423,8 @@ StartLvlSelect:
 		bsr.w	Pal_FadeFrom
 		move	#$2700,sr
 		bsr.w	ClearScreen
+		lea	($C00004).l,a6
+		move.w	#$8B03,(a6)
 		moveq	#$15,d0
 		jsr	PalLoad1
 		move.w	#$8B,d0
@@ -3793,9 +3792,8 @@ loc_37B6:
 		bmi.w	Level_ClrRam
 		move	#$2700,sr
 		
-		move.l	#$6E000002,($C00004).l
-		lea	(Nem_Points).l,a0 ; load title card patterns
-		bsr.w	NemDec
+		moveq	#0,d0
+		bsr.w	RunPLC_ROM
 		
 		move.l	#$70000002,($C00004).l
 		lea	(Nem_TitleCard).l,a0 ; load title card patterns
@@ -36768,7 +36766,7 @@ ArtLoadCues:
 ; ---------------------------------------------------------------------------
 ; Pattern load cues - standard block 1
 ; ---------------------------------------------------------------------------
-PLC_Main:	dc.w 4
+PLC_Main:	dc.w 5
 		dc.l Nem_Lamp		; lamppost
 		dc.w $D800
 		dc.l Nem_Hud		; HUD
@@ -36779,6 +36777,8 @@ PLC_Main:	dc.w 4
 		dc.w $F380
 		dc.l Nem_Ring		; rings
 		dc.w $F640
+		dc.l Nem_Points
+		dc.w $AE00
 ; ---------------------------------------------------------------------------
 ; Pattern load cues - standard block 2
 ; ---------------------------------------------------------------------------
