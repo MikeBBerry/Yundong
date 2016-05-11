@@ -3198,7 +3198,7 @@ TitleScreen:				; XREF: GameModeArray
 		move.w	#$8407,(a6)
 		move.w	#$9001,(a6)
 		move.w	#$9200,(a6)
-		move.w	#$8B03,(a6)
+		move.w	#$8B00,(a6)
 		move.w	#$8720,(a6)
 		clr.b	($FFFFF64E).w
 		bsr.w	ClearScreen
@@ -3316,7 +3316,7 @@ Title_ClrObjRam2:
 		bsr.w	Pal_FadeTo
 
 loc_317C:
-		move.b	#4,($FFFFF62A).w
+		move.b	#2,($FFFFF62A).w
 		bsr.w	DelayProgram
 		jsr	ObjectsLoad
 		jsr	BuildSprites
@@ -3327,15 +3327,11 @@ loc_317C:
 		move.w	d0,($FFFFD008).w ; move	Sonic to the right
 		
 		lea	($FFFFCC00).w,a1
-		move.w	#$DF,d1
-		
-@Scrl:
 		move.w	#0,(a1)+
 		move.w	($FFFFD008).w,d2
-		lsr.w	#1,d2
+		lsl.w	#1,d2
 		neg.w	d2
-		move.w	d2,(a1)+
-		dbf	d1,@Scrl
+		move.w	d2,(a1)
 		
 		cmpi.w	#$1C00,d0	; has Sonic object passed x-position $1C00?
 		bcs.s	Title_ChkRegion	; if not, branch
@@ -3540,9 +3536,8 @@ Demo:					; XREF: TitleScreen
 		move.w	#$1E,($FFFFF614).w
 
 loc_33B6:				; XREF: loc_33E4
-		move.b	#4,($FFFFF62A).w
+		move.b	#2,($FFFFF62A).w
 		bsr.w	DelayProgram
-		bsr.w	DeformBgLayer
 		bsr.w	PalCycle_Load
 		bsr.w	RunPLC_RAM
 		move.w	($FFFFD008).w,d0
