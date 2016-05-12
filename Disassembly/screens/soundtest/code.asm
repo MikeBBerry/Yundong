@@ -500,9 +500,9 @@ SndTest_SongNames:
 		dc.b "      INVINCIBILITY JEOPARDY THEME      ",0,0		; 87
 		dc.b "               MERV GRIFFIN             ",0,0
 		dc.b "                 JEOPARDY               ",0,0
-		dc.b "                 MUSIC 88               ",0,0		; 88
-		dc.b "                 ARTIST                 ",0,0
-		dc.b "                 SOURCE                 ",0,0
+		dc.b "             RAT TATA TAT TAT           ",0,0		; 88
+		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
+		dc.b "            YUNDONG ZIXINGCHE           ",0,0
 		dc.b "             AURORA NUMERIQUE           ",0,0		; 89
 		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
 		dc.b "            YUNDONG ZIXINGCHE           ",0,0

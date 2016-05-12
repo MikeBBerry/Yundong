@@ -37874,7 +37874,7 @@ Music86:	incbin	"sound\Music\Get That Elephant.bin"
 		even
 Music87:	incbin	"sound\Music\Jeopardyinv.bin"
 		even
-Music88:	incbin	"sound\Music\music88.bin"
+Music88:	incbin	"sound\Music\Yundong 1UP.bin"
 		even
 Music89:	incbin	"sound\Music\Aurora Numerique.bin"
 		even
