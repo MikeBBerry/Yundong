@@ -3497,7 +3497,7 @@ PlayLevel:				; XREF: ROM:00003246j ...
 ; Level	select - level pointers
 ; ---------------------------------------------------------------------------
 LSelectPointers:
-		dc.w $0002
+		dc.w $0000
 		dc.w $8000
 		dc.w $8000
 		dc.w $0200
