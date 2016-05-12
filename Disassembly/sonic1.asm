@@ -3673,7 +3673,7 @@ LevSelTextLoad:				; XREF: TitleScreen
 		lea	(LevelMenuText).l,a1
 		lea	($C00000).l,a6
 		move.l	#$62100003,d4	; screen position (text)
-		move.w	#$E650,d3	; VRAM setting
+		move.w	#$A650,d3	; VRAM setting
 		moveq	#$14,d1		; number of lines of text
 
 loc_34FE:				; XREF: LevSelTextLoad+26j

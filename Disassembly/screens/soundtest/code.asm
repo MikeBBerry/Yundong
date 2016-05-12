@@ -8,7 +8,7 @@ SndTest_Settings:
 		dc.b $16				; Maximum ID
 		dc.b $81				; ID modifier (is added to ID)
 		dc.l Txt_Music			; Sound type text address
-		dc.l $42A00003			; VDP value to draw the text and ID number
+		dc.l $429E0003			; VDP value to draw the text and ID number
 		dc.b 1					; "Stop" flag (if 1, then it allows for an option to stop)
 		dc.b 0					; Sound type (0 = Music, 1 = SFX, 2 = PCM)
 		
@@ -16,7 +16,7 @@ SndTest_Settings:
 		dc.b $2F
 		dc.b $A0
 		dc.l Txt_SFX
-		dc.l $43A00003
+		dc.l $439E0003
 		dc.b 0
 		dc.b 1
 		
@@ -24,7 +24,7 @@ SndTest_Settings:
 		dc.b $16
 		dc.b $81
 		dc.l Txt_PCM
-		dc.l $44A00003
+		dc.l $449E0003
 		dc.b 1
 		dc.b 2
 ; ===========================================================================
@@ -73,7 +73,7 @@ SoundTest:
 		lea	(Nem_SndTestBG).l,a0
 		jsr	NemDec
 		
-		move.l	#$46600000,($C00004).l	; Load font
+		move.l	#$44200000,($C00004).l	; Load font
 		lea	(Nem_SndTestFont).l,a0
 		jsr	NemDec
 		
@@ -92,7 +92,7 @@ SoundTest:
 		move.b	#1,($FFFFFFB4).w		; Make it so that when the music is stopped in the sound test, PCM isn't affected
 		move.b	#0,($FFFFFFB5).w		; Clear the music playing flag
 		
-		move.l	#$41200003,($C00004).l	; Draw "SOUND TEST"
+		move.l	#$411E0003,($C00004).l	; Draw "SOUND TEST"
 		lea	(Txt_SoundTest).l,a0
 		move.w	#$2000,d1
 		bsr.w	DrawText
@@ -112,16 +112,7 @@ SoundTest:
 		lea	(Txt_Source).l,a0			; Set the text address
 		bsr.w	DrawText
 
-		move.w	#$4000,d1
-		move.l	#$47800003,($C00004).l	; Apply VDP command
-		lea	(SndTest_SongNothing).l,a0	; Set the text address
-		bsr.w	DrawText
-		move.l	#$49800003,($C00004).l	; Apply VDP command
-		lea	(SndTest_SongNothing).l,a0	; Set the text address
-		bsr.w	DrawText
-		move.l	#$4B800003,($C00004).l	; Apply VDP command
-		lea	(SndTest_SongNothing).l,a0	; Set the text address
-		bsr.w	DrawText
+		bsr.w	SndTest_InfoNothing
 
 		move.w	($FFFFF60C).w,d0		; Enable screen
 		ori.b	#$40,d0
@@ -238,16 +229,7 @@ SndTest_StopMusic:
 		beq.s	SndTest_Null			; If not, skip
 		move.w	#0,($FFFFFFA2).w
 
-		move.w	#$4000,d1
-		move.l	#$47800003,($C00004).l	; Apply VDP command
-		lea	(SndTest_SongNothing).l,a0	; Set the text address
-		bsr.w	DrawText
-		move.l	#$49800003,($C00004).l	; Apply VDP command
-		lea	(SndTest_SongNothing).l,a0	; Set the text address
-		bsr.w	DrawText
-		move.l	#$4B800003,($C00004).l	; Apply VDP command
-		lea	(SndTest_SongNothing).l,a0	; Set the text address
-		bsr.w	DrawText
+		bsr.w	SndTest_InfoNothing
 
 		move.b	#$E4,d0					; Stop sound
 		jmp	PlaySound_Special
@@ -328,16 +310,7 @@ SndTest_PlayPCM:
 		move.b	#$E4,d0
 		jsr	PlaySound_Special
 		
-		move.w	#$4000,d1
-		move.l	#$47800003,($C00004).l	; Apply VDP command
-		lea	(SndTest_SongNothing).l,a0	; Set the text address
-		bsr.w	DrawText
-		move.l	#$49800003,($C00004).l	; Apply VDP command
-		lea	(SndTest_SongNothing).l,a0	; Set the text address
-		bsr.w	DrawText
-		move.l	#$4B800003,($C00004).l	; Apply VDP command
-		lea	(SndTest_SongNothing).l,a0	; Set the text address
-		bsr.w	DrawText
+		bsr.w	SndTest_InfoNothing
 
 		moveq	#0,d0					; Get the current ID and apply the modifier
 		move.b	(a6),d0
@@ -412,20 +385,12 @@ DrawText:
 		move.b	(a0)+,d0				; Get the current character
 		cmpi.b	#$20,d0					; Is it a space?
 		beq.s	@DrawSpace				; If so, draw a blank tile
-		cmpi.b	#$30,d0
-		blt.s	@Chk
-		cmpi.b	#$39,d0
-		bgt.s	@Chk
-		addq.b	#3,d0
-		bra.s	@Draw
-
-@Chk:
 		tst.b	d0						; Is it the terminate character?
 		beq.s	@End					; If so, stop drawing text
 		
 @Draw:
 		ext.w	d0						; Extend d0 into a word
-		or.w	d1,d0					; Apply any modifiers to d0
+		add.w	d1,d0					; Apply any modifiers to d0
 		move.w	d0,($C00000).l			; Draw that
 		bra.s	DrawText				; Loop until the current character is the terminate character
 		
@@ -445,10 +410,10 @@ DrawHexNumber:
 		andi.w	#$F,d0					; Only get lower nibble
 		cmpi.w	#$A,d0					; Is it greater or equal to $A?
 		bcs.s	@NotAtoF				; If not, branch
-		addi.w	#4,d0					; Modify the value to draw A, B, C, D, E, or F
+		addi.w	#$10,d0					; Modify the value to draw A, B, C, D, E, or F
 
 @NotAtoF:
-		addi.w	#$33,d0					; Modify it to use the correct tiles
+		addi.w	#$30,d0					; Modify it to use the correct tiles
 		or.w	d1,d0					; Apply any modifiers to d0
 		move.w	d0,($C00000).l			; Draw that
 		rts								; Return
@@ -475,6 +440,20 @@ SndTest_Deform:
 		move.w	#31,d5
 		dbf	d6,@Deform
 		rts
+; ===========================================================================
+; Replace song info with "Nothing"
+; ===========================================================================
+SndTest_InfoNothing:
+		move.w	#$4000,d1
+		move.l	#$47800003,($C00004).l	; Apply VDP command
+		lea	(SndTest_SongNothing).l,a0	; Set the text address
+		bsr.w	DrawText
+		move.l	#$49800003,($C00004).l	; Apply VDP command
+		lea	(SndTest_SongNothing).l,a0	; Set the text address
+		bsr.w	DrawText
+		move.l	#$4B800003,($C00004).l	; Apply VDP command
+		lea	(SndTest_SongNothing).l,a0	; Set the text address
+		bra.w	DrawText
 ; ===========================================================================
 ; Song names
 ; ===========================================================================
@@ -533,9 +512,9 @@ SndTest_SongNames:
 		dc.b "            I CANNOT BREATHE            ",0,0		; 92
 		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
 		dc.b "                BAKASONIC               ",0,0
-		dc.b "                 MUSIC 93               ",0,0		; 93
-		dc.b "                 ARTIST                 ",0,0
-		dc.b "                 SOURCE                 ",0,0
+		dc.b "              CHAOS EMERALD             ",0,0		; 93
+		dc.b "             MASATO NAKAMURA            ",0,0
+		dc.b "           SONIC THE HEDGEHOG           ",0,0
 		dc.b "            OWARISOFT JINGLE            ",0,0		; 94
 		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
 		dc.b "                OWARISOFT               ",0,0
@@ -557,19 +536,19 @@ SndTest_SongNothing:
 ; Music text
 ; ===========================================================================
 Txt_Music:
-		dc.b "MUSIC?  ",0
+		dc.b "MUSIC:  ",0
 		even
 ; ===========================================================================
 ; SFX text
 ; ===========================================================================
 Txt_SFX:
-		dc.b "SFX?    ",0
+		dc.b "SFX:    ",0
 		even
 ; ===========================================================================
 ; PCM text
 ; ===========================================================================
 Txt_PCM:
-		dc.b "PCM?    ",0
+		dc.b "PCM:    ",0
 		even
 ; ===========================================================================
 ; Stop text
@@ -587,19 +566,19 @@ Txt_SoundTest:
 ; Song playing text
 ; ===========================================================================
 Txt_SongPlaying:
-		dc.b "SONG PLAYING?",0
+		dc.b "SONG PLAYING:",0
 		even
 ; ===========================================================================
 ; Artist text
 ; ===========================================================================
 Txt_Artist:
-		dc.b "ORIGINAL ARTIST?",0
+		dc.b "ORIGINAL ARTIST:",0
 		even
 ; ===========================================================================
 ; Source text
 ; ===========================================================================
 Txt_Source:
-		dc.b "ORIGINAL SOURCE?",0
+		dc.b "ORIGINAL SOURCE:",0
 		even
 ; ===========================================================================
 ; Font art
