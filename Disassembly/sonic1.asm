@@ -3497,7 +3497,7 @@ PlayLevel:				; XREF: ROM:00003246j ...
 ; Level	select - level pointers
 ; ---------------------------------------------------------------------------
 LSelectPointers:
-		dc.w $0000
+		dc.w $0002
 		dc.w $8000
 		dc.w $8000
 		dc.w $0200
@@ -3876,6 +3876,8 @@ Level_ClrVars3:
 		move.w	#$8720,(a6)
 		move.w	#$8ADF,($FFFFF624).w
 		move.w	($FFFFF624).w,(a6)
+		
+		move.b	#0,($FFFFFFA8).w
 		
 		clr.w	($FFFFC800).w
 		move.l	#$FFFFC800,($FFFFC8FC).w
@@ -24149,13 +24151,16 @@ loc_13336:
 
 Boundary_Bottom:
 		cmpi.w	#$501,($FFFFFE10).w ; is level SBZ2 ?
-		bne.w	KillSonic	; if not, kill Sonic
+		bne.w	JmpTo_KillSonic	; if not, kill Sonic
 		cmpi.w	#$2000,($FFFFD008).w
-		bcs.w	KillSonic
+		bcs.w	JmpTo_KillSonic
 		clr.b	($FFFFFE30).w	; clear	lamppost counter
 		move.w	#1,($FFFFFE02).w ; restart the level
 		move.w	#$103,($FFFFFE10).w ; set level	to SBZ3	(LZ4)
 		rts	
+		
+JmpTo_KillSonic:
+		jmp	KillSonic
 ; ===========================================================================
 
 Boundary_Sides:
@@ -29663,6 +29668,20 @@ loc_17916:
 ; ===========================================================================
 
 Obj3D_ShipMove:				; XREF: Obj3D_ShipIndex
+		tst.b	($FFFFFFA8).w
+		beq.s	@Do
+		jsr	ObjectFall
+		jsr	ObjHitFloor
+		tst.w	d1
+		bpl.s	@Skip
+		add.w	d1,$C(a0)	; match	object's position with the floor
+		move.w	#0,$12(a0)
+		addq.b	#4,$25(a0)
+		
+@Skip:
+		rts
+		
+@Do:
 		subq.w	#1,$3C(a0)
 		bpl.s	Obj3D_Reverse
 		addq.b	#2,$25(a0)
@@ -29706,17 +29725,15 @@ loc_1797A:				; XREF: Obj3D_ShipIndex
 ; ===========================================================================
 
 loc_17984:
-		bset	#0,$22(a0)
-		bclr	#7,$22(a0)
-		clr.w	$10(a0)
-		addq.b	#2,$25(a0)
-		move.w	#-$26,$3C(a0)
 		tst.b	($FFFFF7A7).w
 		bne.s	locret_179AA
 		move.b	#1,($FFFFF7A7).w
 
 locret_179AA:
-		rts	
+		move.w	#$2AC0,($FFFFF72A).w
+		bsr.w	BossEnd
+		move.b	#2,($FFFFFFA8).w
+		jmp	DeleteObject
 ; ===========================================================================
 
 loc_179AC:				; XREF: Obj3D_ShipIndex
@@ -29780,6 +29797,8 @@ Obj3D_ShipDel:
 ; ===========================================================================
 
 Obj3D_FaceMain:				; XREF: Obj3D_Index
+		cmpi.b	#2,($FFFFFFA8).w
+		beq.s	Obj3D_FaceDel
 		moveq	#0,d0
 		moveq	#1,d1
 		movea.l	$34(a0),a1
@@ -29826,6 +29845,8 @@ Obj3D_FaceDel:
 ; ===========================================================================
 
 Obj3D_FlameMain:			; XREF: Obj3D_Index
+		cmpi.b	#2,($FFFFFFA8).w
+		beq.s	Obj3D_FlameDel
 		move.b	#7,$1C(a0)
 		movea.l	$34(a0),a1
 		cmpi.b	#$C,$25(a1)
@@ -29980,6 +30001,20 @@ Obj48_PosData:	dc.b 0,	$10, $20, $30, $40, $60	; y-position data for links and	g
 ; ===========================================================================
 
 Obj48_Base:				; XREF: Obj48_Index
+		tst.b	($FFFFFFA8).w
+		beq.s	@Skip
+		jsr	ObjectFall
+		jsr	ObjHitFloor
+		tst.w	d1
+		bpl.w	Obj48_Display5
+		add.w	d1,$C(a0)	; match	object's position with the floor
+		move.w	#0,$12(a0)
+		move.b	#$3F,(a0)
+		move.b	#0,$24(a0)
+		move.b	#0,$1C(a0)
+		rts
+		
+@Skip:
 		lea	(Obj48_PosData).l,a3
 		lea	$28(a0),a2
 		moveq	#0,d6
@@ -30001,6 +30036,7 @@ loc_17BE0:
 
 		cmp.b	$3C(a1),d0
 		bne.s	loc_17BFA
+		move.b	#1,($FFFFFFA8).w
 		movea.l	$34(a0),a1
 		cmpi.b	#6,$25(a1)
 		bne.s	loc_17BFA
@@ -30015,6 +30051,8 @@ Obj48_Display:
 		bsr.w	sub_17C2A
 		move.b	$26(a0),d0
 		jsr	(Obj15_Move2).l
+		
+Obj48_Display5:
 		jmp	DisplaySprite
 ; ===========================================================================
 
@@ -30027,6 +30065,24 @@ Obj48_Display2:				; XREF: Obj48_Index
 
 
 sub_17C2A:				; XREF: Obj48_Display; Obj48_Display2
+		tst.b	($FFFFFFA8).w
+		beq.s	@Skip
+		jsr	ObjectFall
+		jsr	ObjHitFloor
+		tst.w	d1
+		bpl.w	@End
+		add.w	d1,$C(a0)	; match	object's position with the floor
+		move.w	#0,$12(a0)
+		move.b	#$3F,(a0)
+		move.b	#0,$24(a0)
+		move.b	#0,$1C(a0)
+		rts
+
+@End:
+		addq.l	#4,sp
+		jmp	DisplaySprite
+		
+@Skip:
 		movea.l	$34(a0),a1
 		addi.b	#$20,$1B(a0)
 		bcc.s	loc_17C3C
@@ -30050,6 +30106,20 @@ locret_17C66:
 ; ===========================================================================
 
 loc_17C68:				; XREF: Obj48_Index
+		tst.b	($FFFFFFA8).w
+		beq.s	@Skip
+		jsr	ObjectFall
+		jsr	ObjHitFloor
+		tst.w	d1
+		bpl.w	Obj48_Display3
+		add.w	d1,$C(a0)	; match	object's position with the floor
+		move.w	#0,$12(a0)
+		move.b	#$3F,(a0)
+		move.b	#0,$24(a0)
+		move.b	#0,$1C(a0)
+		rts
+		
+@Skip:
 		movea.l	$34(a0),a1
 		tst.b	$22(a1)
 		bpl.s	Obj48_Display3
@@ -30061,6 +30131,20 @@ Obj48_Display3:
 ; ===========================================================================
 
 Obj48_ChkVanish:			; XREF: Obj48_Index
+		tst.b	($FFFFFFA8).w
+		beq.s	@Skip
+		jsr	ObjectFall
+		jsr	ObjHitFloor
+		tst.w	d1
+		bpl.w	Obj48_Display4
+		add.w	d1,$C(a0)	; match	object's position with the floor
+		move.w	#0,$12(a0)
+		move.b	#$3F,(a0)
+		move.b	#0,$24(a0)
+		move.b	#0,$1C(a0)
+		rts
+		
+@Skip:
 		moveq	#0,d0
 		tst.b	$1A(a0)
 		bne.s	Obj48_Vanish
