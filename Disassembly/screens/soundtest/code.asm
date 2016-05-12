@@ -410,7 +410,7 @@ DrawHexNumber:
 		andi.w	#$F,d0					; Only get lower nibble
 		cmpi.w	#$A,d0					; Is it greater or equal to $A?
 		bcs.s	@NotAtoF				; If not, branch
-		addi.w	#$10,d0					; Modify the value to draw A, B, C, D, E, or F
+		addi.w	#7,d0					; Modify the value to draw A, B, C, D, E, or F
 
 @NotAtoF:
 		addi.w	#$30,d0					; Modify it to use the correct tiles

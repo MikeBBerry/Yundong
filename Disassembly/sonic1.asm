@@ -14936,7 +14936,7 @@ Obj39_Main:
 loc_C4EC:
 		move.w	#$F0,$A(a0)
 		move.l	#Map_obj39,4(a0)
-		move.w	#$855E,2(a0)
+		move.w	#$8541,2(a0)
 		move.b	#0,1(a0)
 		move.b	#0,$18(a0)
 
@@ -24685,6 +24685,7 @@ GameOver:				; XREF: Obj01_Death
 		bpl.w	locret_13900
 		move.w	#-$38,$12(a0)
 		addq.b	#2,$24(a0)
+		move.w	#0,($FFFFFE2C).w
 		clr.b	($FFFFFE1E).w	; stop time counter
 		addq.b	#1,($FFFFFE1C).w ; update lives	counter
 		subq.b	#1,($FFFFFE12).w ; subtract 1 from number of lives
@@ -24694,8 +24695,6 @@ GameOver:				; XREF: Obj01_Death
 		move.b	#$39,($FFFFD0C0).w ; load OVER object
 		move.b	#1,($FFFFD0DA).w ; set OVER object to correct frame
 		clr.b	($FFFFFE1A).w
-
-loc_138C2:
 		move.w	#$8F,d0
 		jsr	(PlaySound).l	; play game over music
 		moveq	#3,d0
@@ -24711,7 +24710,10 @@ loc_138D4:
 		move.b	#$39,($FFFFD0C0).w ; load OVER object
 		move.b	#2,($FFFFD09A).w
 		move.b	#3,($FFFFD0DA).w
-		bra.s	loc_138C2
+		move.w	#$8F,d0
+		jsr	(PlaySound).l	; play game over music
+		moveq	#$20,d0
+		jmp	(LoadPLC).l	; load game over patterns
 ; ===========================================================================
 
 locret_13900:
@@ -36763,6 +36765,7 @@ ArtLoadCues:
 	dc.w PLC_SBZAnimals-ArtLoadCues, PLC_SpeStResult-ArtLoadCues
 	dc.w PLC_Ending-ArtLoadCues, PLC_TryAgain-ArtLoadCues
 	dc.w PLC_EggmanSBZ2-ArtLoadCues, PLC_FZBoss-ArtLoadCues
+	dc.w PLC_TimeOver-ArtLoadCues
 ; ---------------------------------------------------------------------------
 ; Pattern load cues - standard block 1
 ; ---------------------------------------------------------------------------
@@ -36796,7 +36799,13 @@ PLC_Explode:	dc.w 0
 ; ---------------------------------------------------------------------------
 PLC_GameOver:	dc.w 0
 		dc.l Nem_GameOver	; game/time over
-		dc.w $ABC0
+		dc.w $541*$20
+; ---------------------------------------------------------------------------
+; Pattern load cues - game/time	over
+; ---------------------------------------------------------------------------
+PLC_TimeOver:	dc.w 0
+		dc.l Nem_TimeOver	; game/time over
+		dc.w $541*$20
 ; ---------------------------------------------------------------------------
 ; Pattern load cues - Green Hill
 ; ---------------------------------------------------------------------------
@@ -37447,6 +37456,8 @@ Nem_Explode:	incbin	art/nemesis/explosio.bin	; explosion
 Nem_Points:	incbin	art/nemesis/points.bin	; points from destroyed enemy or object
 		even
 Nem_GameOver:	incbin	art/nemesis/gameover.bin	; game over / time over
+		even
+Nem_TimeOver:	incbin	art/nemesis/timeover.bin	; game over / time over
 		even
 Nem_HSpring:	incbin	art/nemesis/springh.bin	; horizontal spring
 		even
