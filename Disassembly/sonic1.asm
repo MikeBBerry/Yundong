@@ -3497,7 +3497,7 @@ PlayLevel:				; XREF: ROM:00003246j ...
 ; Level	select - level pointers
 ; ---------------------------------------------------------------------------
 LSelectPointers:
-		dc.w $0000
+		dc.w $0002
 		dc.w $8000
 		dc.w $8000
 		dc.w $0200
@@ -3877,7 +3877,8 @@ Level_ClrVars3:
 		move.w	#$8ADF,($FFFFF624).w
 		move.w	($FFFFF624).w,(a6)
 		
-		move.b	#0,($FFFFFFA8).w
+		move.w	#0,($FFFFFFA8).w
+		move.b	#0,($FFFFFFFF).w
 		
 		clr.w	($FFFFC800).w
 		move.l	#$FFFFC800,($FFFFC8FC).w
@@ -29496,6 +29497,11 @@ Obj3D_Loop:
 
 Obj3D_LoadBoss:				; XREF: Obj3D_Main
 		move.b	(a2)+,$24(a1)
+		cmpi.b	#2,$24(a1)
+		bne.s	@Skip
+		move.b	#24,$16(a1)
+		
+@Skip:
 		move.b	#$3D,0(a1)
 		move.w	8(a0),8(a1)
 		move.w	$C(a0),$C(a1)
@@ -29534,14 +29540,16 @@ Obj3D_ShipIndex:dc.w Obj3D_ShipStart-Obj3D_ShipIndex
 		dc.w loc_1797A-Obj3D_ShipIndex
 		dc.w loc_179AC-Obj3D_ShipIndex
 		dc.w loc_179F6-Obj3D_ShipIndex
+		dc.w Obj3D_Dead-Obj3D_ShipIndex
 ; ===========================================================================
 
 Obj3D_ShipStart:			; XREF: Obj3D_ShipIndex
 		move.w	#$100,$12(a0)	; move ship down
 		bsr.w	BossMove
-		cmpi.w	#$338,$38(a0)
+		cmpi.w	#$328,$38(a0)
 		bne.s	loc_177E6
 		move.w	#0,$12(a0)	; stop ship
+		move.w	#0,$2E(a0)
 		addq.b	#2,$25(a0)	; goto next routine
 
 loc_177E6:
@@ -29549,6 +29557,7 @@ loc_177E6:
 		jsr	(CalcSine).l
 		asr.w	#6,d0
 		add.w	$38(a0),d0
+		add.w	$2E(a0),d0
 		move.w	d0,$C(a0)
 		move.w	$30(a0),8(a0)
 		addq.b	#2,$3F(a0)
@@ -29668,25 +29677,46 @@ loc_17916:
 ; ===========================================================================
 
 Obj3D_ShipMove:				; XREF: Obj3D_ShipIndex
+		move.b	#1,($FFFFFFA9).w
+		move.b	($FFFFFE0F).w,d0
+		move.b	d0,d1
+		andi.b	#4,d0
+		bne.s	@ChkGoUp
+		addi.w	#1,$2E(a0)
+		
+@ChkGoUp:
+		andi.b	#7,d1
+		bne.s	@DoChks
+		subi.w	#2,$2E(a0)
+		
+@DoChks:
 		tst.b	($FFFFFFA8).w
-		beq.s	@Do
+		beq.s	@Normal
+		cmpi.b	#2,($FFFFFFA9).w
+		beq.s	@Fall
+		move.b	#2,($FFFFFFA9).w
+		moveq	#$FFFFFF98,d0
+		jsr	PlaySample
+		
+@Fall:
 		jsr	ObjectFall
 		jsr	ObjHitFloor
 		tst.w	d1
-		bpl.s	@Skip
+		bpl.s	@NoExplode
 		add.w	d1,$C(a0)	; match	object's position with the floor
 		move.w	#0,$12(a0)
+		move.w	#$7F,$3C(a0)
 		addq.b	#4,$25(a0)
 		
-@Skip:
+@NoExplode:
 		rts
 		
-@Do:
+@Normal:
 		subq.w	#1,$3C(a0)
 		bpl.s	Obj3D_Reverse
 		addq.b	#2,$25(a0)
 		move.w	#$3F,$3C(a0)
-		move.w	#$100,$10(a0)	; move the ship	sideways
+		move.w	#$10,$C(a0)
 		cmpi.w	#$2A00,$30(a0)
 		bne.s	Obj3D_Reverse
 		move.w	#$7F,$3C(a0)
@@ -29725,15 +29755,79 @@ loc_1797A:				; XREF: Obj3D_ShipIndex
 ; ===========================================================================
 
 loc_17984:
+		move.b	#2,($FFFFFFA8).w
+		jsr	SingleObjLoad
+		bne.w	@End
+		move.b	#$3F,(a1)
+		move.w	8(a0),8(a1)
+		move.w	$C(a0),$C(a1)
+		jsr	SingleObjLoad
+		bne.w	@End
+		move.b	#$3F,(a1)
+		move.w	8(a0),d0
+		subi.w	#$10,d0
+		move.w	d0,8(a1)
+		move.w	$C(a0),d0
+		subi.w	#$10,d0
+		move.w	d0,$C(a1)
+		jsr	SingleObjLoad
+		bne.s	@End
+		move.b	#$3F,(a1)
+		move.w	8(a0),d0
+		subi.w	#$10,d0
+		move.w	d0,8(a1)
+		move.w	$C(a0),d0
+		addi.w	#$10,d0
+		move.w	d0,$C(a1)
+		jsr	SingleObjLoad
+		bne.s	@End
+		move.b	#$3F,(a1)
+		move.w	8(a0),d0
+		addi.w	#$10,d0
+		move.w	d0,8(a1)
+		move.w	$C(a0),d0
+		subi.w	#$10,d0
+		move.w	d0,$C(a1)
+		jsr	SingleObjLoad
+		bne.s	@End
+		move.b	#$3F,(a1)
+		move.w	8(a0),d0
+		addi.w	#$10,d0
+		move.w	d0,8(a1)
+		move.w	$C(a0),d0
+		addi.w	#$10,d0
+		move.w	d0,$C(a1)
+		
+@End:
+		move.w	#$200,$10(a0)
+		move.w	#-$400,$12(a0)
+		move.b	#$E,$25(a0)
+		rts
+; ===========================================================================
+		
+Obj3D_Dead:
 		tst.b	($FFFFF7A7).w
-		bne.s	locret_179AA
+		bne.s	@loc_179AA
 		move.b	#1,($FFFFF7A7).w
+		move.w	#$AC,d0
+		jsr	PlaySound_Special
 
-locret_179AA:
+@loc_179AA:
+		jsr	ObjectFall
+		tst.w	$12(a0)
+		bmi.s	@Skip
+		jsr	ObjHitFloor
+		tst.w	d1
+		bpl.s	@Skip
+		add.w	d1,$C(a0)
+		move.w	#0,$10(a0)
+		move.w	#0,$12(a0)
 		move.w	#$2AC0,($FFFFF72A).w
 		bsr.w	BossEnd
-		move.b	#2,($FFFFFFA8).w
-		jmp	DeleteObject
+		move.b	#0,$20(a0)
+		
+@Skip:
+		jmp	DisplaySprite
 ; ===========================================================================
 
 loc_179AC:				; XREF: Obj3D_ShipIndex
@@ -29766,7 +29860,6 @@ loc_179DA:
 
 loc_179E0:
 		clr.w	$12(a0)
-		
 		bsr.w	BossEnd
 
 loc_179EE:
@@ -29830,6 +29923,18 @@ loc_17A50:
 
 loc_17A5A:
 		move.b	d1,$1C(a0)
+		cmpi.b	#2,($FFFFFFA9).w
+		bne.s	@Chk
+		move.b	#5,$1C(a0)
+		bra.s	Obj3D_FaceDisp
+		
+@Chk:
+		tst.b	($FFFFFFA9).w
+		beq.s	@Skip
+		move.b	#6,$1C(a0)
+		bra.s	Obj3D_FaceDisp
+		
+@Skip:
 		subq.b	#2,d0
 		bne.s	Obj3D_FaceDisp
 		move.b	#6,$1C(a0)
@@ -29885,8 +29990,7 @@ Obj3D_Display:				; XREF: Obj3D_FaceDisp; Obj3D_FlameDisp
 ; ===========================================================================
 
 BossEnd:
-		moveq	#0,d0
-		move.b	d0,$FFFFFFFF	; clear Boss flag
+		move.b	#0,($FFFFFFFF).w	; clear Boss flag
 		rts
 ; ===========================================================================
 ; LEVEL MUSIC CONTROLLER
@@ -29894,13 +29998,13 @@ BossEnd:
 
 CtrlLevelMusic:
 		cmpi.b	#8,($FFFFF600).w	; Is this demo game mode?
-		bne.s	@notdemo			; If not, branch
+		bne.s	@not_demo			; If not, branch
 		tst.w	($FFFFFFF0).w		; Is it a credits demo
 		bmi.s	@end				; If so, branch
 
-@notdemo:
-		tst.b	($FFF027).l
-		bne.s	@end
+@not_demo:
+		tst.b	($FFF027).l			; Is the extra life jingle playing?
+		bne.s	@end				; If so, let it play
 		tst.b	($FFFFFFBC).w		; Has Sonic drowned?
 		bne.s	@end				; If so, skip all this
 		move.b	($FFFFFFFE).w,d0	; Level music
@@ -29924,13 +30028,11 @@ CtrlLevelMusic:
 @chk_value:
 		move.b	($FFFFFFFC).w,d1	; Get current music playing
 		cmp.b	d0,d1				; If the value is the same,
-		bne.s	@play				; don't play it again
+		beq.s	@end				; don't play it again
+		jmp	(PlayMusic).l			; Play music and return
 		
 @end:
 		rts							; Return
-		
-@play:
-		jmp	(PlayMusic).l			; Play music and return
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Object 48 - ball on a	chain that Eggman swings (GHZ)
@@ -29983,6 +30085,7 @@ loc_17B60:				; XREF: Obj48_Main
 		move.b	#4,1(a1)
 		move.b	#8,$19(a1)
 		move.b	#6,$18(a1)
+		move.b	#8,$16(a1)
 		move.l	$34(a0),$34(a1)
 		dbf	d1,Obj48_MakeLinks ; repeat sequence 5 more times
 
@@ -29992,6 +30095,7 @@ Obj48_MakeBall:
 		move.w	#$43AA,2(a1)	; use different	graphics
 		move.b	#1,$1A(a1)
 		move.b	#5,$18(a1)
+		move.b	#20,$16(a1)
 		move.b	#$81,$20(a1)	; make object hurt Sonic
 		rts	
 ; ===========================================================================
@@ -30001,20 +30105,6 @@ Obj48_PosData:	dc.b 0,	$10, $20, $30, $40, $60	; y-position data for links and	g
 ; ===========================================================================
 
 Obj48_Base:				; XREF: Obj48_Index
-		tst.b	($FFFFFFA8).w
-		beq.s	@Skip
-		jsr	ObjectFall
-		jsr	ObjHitFloor
-		tst.w	d1
-		bpl.w	Obj48_Display5
-		add.w	d1,$C(a0)	; match	object's position with the floor
-		move.w	#0,$12(a0)
-		move.b	#$3F,(a0)
-		move.b	#0,$24(a0)
-		move.b	#0,$1C(a0)
-		rts
-		
-@Skip:
 		lea	(Obj48_PosData).l,a3
 		lea	$28(a0),a2
 		moveq	#0,d6
@@ -30069,17 +30159,15 @@ sub_17C2A:				; XREF: Obj48_Display; Obj48_Display2
 		beq.s	@Skip
 		jsr	ObjectFall
 		jsr	ObjHitFloor
+		addq.l	#4,sp
 		tst.w	d1
 		bpl.w	@End
 		add.w	d1,$C(a0)	; match	object's position with the floor
 		move.w	#0,$12(a0)
 		move.b	#$3F,(a0)
 		move.b	#0,$24(a0)
-		move.b	#0,$1C(a0)
-		rts
 
 @End:
-		addq.l	#4,sp
 		jmp	DisplaySprite
 		
 @Skip:
@@ -30116,7 +30204,6 @@ loc_17C68:				; XREF: Obj48_Index
 		move.w	#0,$12(a0)
 		move.b	#$3F,(a0)
 		move.b	#0,$24(a0)
-		move.b	#0,$1C(a0)
 		rts
 		
 @Skip:
@@ -30132,7 +30219,7 @@ Obj48_Display3:
 
 Obj48_ChkVanish:			; XREF: Obj48_Index
 		tst.b	($FFFFFFA8).w
-		beq.s	@Skip
+		beq.w	@Skip
 		jsr	ObjectFall
 		jsr	ObjHitFloor
 		tst.w	d1
@@ -30141,7 +30228,44 @@ Obj48_ChkVanish:			; XREF: Obj48_Index
 		move.w	#0,$12(a0)
 		move.b	#$3F,(a0)
 		move.b	#0,$24(a0)
-		move.b	#0,$1C(a0)
+		jsr	SingleObjLoad
+		bne.w	@End
+		move.b	#$3F,(a1)
+		move.w	8(a0),d0
+		subi.w	#$10,d0
+		move.w	d0,8(a1)
+		move.w	$C(a0),d0
+		subi.w	#$10,d0
+		move.w	d0,$C(a1)
+		jsr	SingleObjLoad
+		bne.s	@End
+		move.b	#$3F,(a1)
+		move.w	8(a0),d0
+		subi.w	#$10,d0
+		move.w	d0,8(a1)
+		move.w	$C(a0),d0
+		addi.w	#$10,d0
+		move.w	d0,$C(a1)
+		jsr	SingleObjLoad
+		bne.s	@End
+		move.b	#$3F,(a1)
+		move.w	8(a0),d0
+		addi.w	#$10,d0
+		move.w	d0,8(a1)
+		move.w	$C(a0),d0
+		subi.w	#$10,d0
+		move.w	d0,$C(a1)
+		jsr	SingleObjLoad
+		bne.s	@End
+		move.b	#$3F,(a1)
+		move.w	8(a0),d0
+		addi.w	#$10,d0
+		move.w	d0,8(a1)
+		move.w	$C(a0),d0
+		addi.w	#$10,d0
+		move.w	d0,$C(a1)
+		
+@End:
 		rts
 		
 @Skip:

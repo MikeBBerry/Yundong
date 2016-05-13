@@ -78,6 +78,7 @@ MegaPCM:
 	DAC_Entry	$09, johorap3, dpcm		; $95	- Joe The Ho Rap 3
 	DAC_Entry	$09, johorap4, dpcm		; $96	- Joe The Ho Rap 4
 	DAC_Entry	$09, johocmon, dpcm		; $97	- Joe The Ho Drum Loop Vada Break
+	DAC_Entry	$08, EggmanScream, pcm+pri	; $98	- Eggman screaming
 
 MegaPCM_End:
 
@@ -104,5 +105,6 @@ MegaPCM_End:
 	IncludeDAC  johorap3, bin
 	IncludeDAC  johorap4, bin
 	IncludeDAC  johocmon, bin
+	IncludeDAC  EggmanScream, wav
 	even
 
