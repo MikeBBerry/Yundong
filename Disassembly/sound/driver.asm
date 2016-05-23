@@ -72,18 +72,50 @@ PSG2C:		incbin	"sound\PSG\S3K\PSG 26 (SK, S3D).bin"
 PSG2D:		incbin	"sound\PSG\S3K\PSG 27.bin"
 PSG2E:		incbin	"sound\PSG\S3K\PSG 28 (S3D).bin"
 ; ---------------------------------------------------------------------------
-SpeedUpIndex:	dc.b 7,	$72, $73, $26, $15, 8, $FF, 5
+SpeedUpIndex:
+		dc.b 7			; 1
+		dc.b $72		; 2
+		dc.b $73		; 3
+		dc.b $26		; 4
+		dc.b $15		; 5
+		dc.b 8			; 6
+		dc.b $FF		; 7
+		dc.b 5			; 8
+		dc.b $FF		; 9
+		dc.b $FF		; A
+		dc.b $FF		; B
+		dc.b $FF		; C
+		dc.b $FF		; D
+		dc.b $FF		; E
+		dc.b $FF		; F
+		dc.b $FF		; 10
+		dc.b $FF		; 11
+		dc.b $FF		; 12
+		dc.b $FF		; 13
+		dc.b $FF		; 14
+		dc.b $FF		; 15
+		dc.b $FF		; 16
+		dc.b 7			; 17
 ; ---------------------------------------------------------------------------
 ; Type of sound	being played ($90 = music; $70 = normal	sound effect)
 ; ---------------------------------------------------------------------------
 SoundPriorities:
-		dc.b $90, $90, $90, $90, $90, $90, $90,	$90, $90, $90, $90, $90, $90, $90, $90,	$90
-		dc.b $90, $90, $90, $90, $90, $90, $90,	$90, $90, $90, $90, $90, $90, $90, $90,	$80
-		dc.b $70, $70, $70, $70, $70, $70, $70,	$70, $70, $68, $70, $70, $70, $60, $70,	$70
-		dc.b $60, $70, $60, $70, $70, $70, $70,	$70, $70, $70, $70, $70, $70, $70, $7F,	$60
-		dc.b $70, $70, $70, $70, $70, $70, $70,	$70, $70, $70, $70, $70, $70, $70, $70,	$80
-		dc.b $80, $80, $80, $80, $80, $80, $80,	$80, $80, $80, $80, $80, $80, $80, $80,	$90
-		dc.b $90, $90, $90, $90, $90
+		dc.b $90, $90, $90, $90, $90, $90, $90,	$90, $90, $90, $90, $90, $90, $90, $90,	$90 ; $10
+		dc.b $90, $90, $90, $90, $90, $90, $90,	$90, $90, $90, $90, $90, $90, $90, $90,	$90 ; $20
+		dc.b $90, $90, $90, $90, $90, $90, $90,	$90, $90, $90, $90, $90, $90, $90, $90,	$90 ; $30
+		dc.b $90, $90, $90, $90, $90, $90, $90,	$90, $90, $90, $90, $90, $90, $90, $90,	$90 ; $40
+		dc.b $90, $90, $90, $90, $90, $90, $90,	$90, $90, $90, $90, $90, $90, $90, $90,	$90 ; $50
+		dc.b $90, $90, $90, $90, $90, $90, $90,	$90, $90, $90, $90, $90, $90, $90, $90,	$90 ; $60
+		dc.b $90, $90, $90, $90, $90, $90, $90,	$90, $90, $90, $90, $90, $90, $90, $90,	$90 ; $70
+		dc.b $90, $90, $90, $90, $90, $90, $90,	$90, $90, $90, $90, $90, $90, $90, $90,	$90 ; $80
+		dc.b $90, $90, $90, $90, $90, $90, $90,	$90, $90, $90, $90, $90, $90, $90, $90,	$90 ; $90
+		dc.b $90, $90, $90, $90, $90, $90, $90,	$90, $90, $90, $90, $90, $90, $90, $90,	$80 ; $A0
+		dc.b $70, $70, $70, $70, $70, $70, $70,	$70, $70, $68, $70, $70, $70, $60, $70,	$70 ; $B0
+		dc.b $60, $70, $60, $70, $70, $70, $70,	$70, $70, $70, $70, $70, $70, $70, $7F,	$60 ; $C0
+		dc.b $70, $70, $70, $70, $70, $70, $70,	$70, $70, $70, $70, $70, $70, $70, $70,	$80 ; $D0
+		dc.b $90, $90, $90, $90, $90, $90, $90,	$90, $90, $90, $90, $90, $90, $90, $90,	$90 ; $E0
+		dc.b $90, $90, $90, $90, $90, $90, $90,	$90, $90, $90, $90, $90, $90, $90, $90,	$90 ; $F0
+		dc.b $90, $90, $90, $90, $90, $90, $90,	$90, $90, $90, $90, $80, $80, $80, $80      ; $FF
 		even
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
@@ -119,7 +151,7 @@ UpdateMusic:				; XREF: loc_B10; PalToCRAM
 		jsr	Sound_Play(pc)
 
 @NoSndInput:
-		cmpi.b	#$80,9(a6)
+		tst.b	9(a6)
 		beq.s	@NoNewSound
 		jsr	Sound_ChkValue(pc)
 
@@ -584,20 +616,32 @@ loc_71F12:
 		move.b	(a1),d0		; move track number to d0
 		move.b	d0,d1
 		clr.b	(a1)+
-		subi.b	#$81,d0
-		bcs.s	loc_71F3E
-		cmpi.b	#$80,9(a6)
+		tst.b	d0
+		beq.s	loc_71F3E
+		cmpi.b	#$D1,d0
+		bhs.s	@MusicOrFlag
+		subi.b	#$A0,d0
+		blo.s	@MusicOrFlag
+		tst.b	9(a6)
 		beq.s	loc_71F2C
+		move.b	d1,$A(a6)
+		bra.s	loc_71F3E
+		
+@MusicOrFlag:
+		tst.b	9(a6)
+		beq.s	loc_71F3A
 		move.b	d1,$A(a6)
 		bra.s	loc_71F3E
 ; ===========================================================================
 
 loc_71F2C:
-		andi.w	#$7F,d0
+		andi.w	#$FF,d0
 		move.b	(a0,d0.w),d2
 		cmp.b	d3,d2
 		bcs.s	loc_71F3E
 		move.b	d2,d3
+		
+loc_71F3A:
 		move.b	d1,9(a6)	; set music flag
 
 loc_71F3E:
@@ -619,37 +663,30 @@ Sound_ChkValue:				; XREF: UpdateMusic
 		moveq	#0,d7
 		move.b	9(a6),d7
 		beq.w	StopSoundAndMusic
-		bpl.s	locret_71F8C
-		move.b	#$80,9(a6)	; reset	music flag
+		move.b	#0,9(a6)	; reset	music flag
 		cmpi.b	#$9F,d7
 		bls.w	Sound_PlayBGM	; music	$81-$9F
-		cmpi.b	#$A0,d7
-		bcs.w	locret_71F8C
 		cmpi.b	#$CF,d7
 		bls.w	Sound_PlaySFX	; sound	$A0-$CF
 		cmpi.b	#$D0,d7
-		bcs.w	locret_71F8C
-		cmpi.b	#$D1,d7
-		bcs.w	Sound_PlaySpecial	; sound	$D0
-		cmpi.b	#$DF,d7
-		blo.w	Sound_PlaySFX_2	; sound	$D1-$DF
-		cmpi.b	#$E4,d7
-		bls.s	Sound_E0toE4	; sound	$E0-$E4
+		bls.w	Sound_PlaySpecial	; sound	$D0
+		cmpi.b	#$FB,d7
+		bls.w	Sound_PlayBGM	; sound	$D1-$FB
+		cmpi.b	#$FF,d7
+		bls.s	Sound_E0toE4	; sound	$FC-$FF
 
 locret_71F8C:
 		rts	
 ; ===========================================================================
 
 Sound_E0toE4:				; XREF: Sound_ChkValue
-		subi.b	#$E0,d7
+		subi.b	#$FC,d7
 		lsl.w	#2,d7
 		jmp	Sound_ExIndex(pc,d7.w)
 ; ===========================================================================
 
 Sound_ExIndex:
 		bra.w	FadeOutMusic
-; ===========================================================================
-		bra.w	Sound_E1
 ; ===========================================================================
 		bra.w	SpeedUpMusic
 ; ===========================================================================
@@ -658,19 +695,11 @@ Sound_ExIndex:
 		bra.w	StopSoundAndMusic
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
-; Unused
-; ---------------------------------------------------------------------------
-
-Sound_E1:				  
-		rts
-
-; ===========================================================================
-; ---------------------------------------------------------------------------
 ; Play music track $81-$9F
 ; ---------------------------------------------------------------------------
 
 Sound_PlayBGM:				; XREF: Sound_ChkValue
-		cmpi.b	#$88,d7		; is "extra life" music	played?
+		cmpi.b	#8,d7		; is "extra life" music	played?
 		bne.s	loc_72024	; if not, branch
 		tst.b	$27(a6)
 		bne.w	loc_721B6
@@ -709,8 +738,15 @@ loc_72024:
 
 loc_7202C:
 		jsr	InitMusicPlayback(pc)
+		
+		subq.b	#1,d7
+		cmpi.b	#$D0,d7
+		bcs.s	@Normal
+		subi.b	#$B1,d7
+		
+@Normal:
+		
 		movea.l	(Go_SpeedUpIndex).l,a4
-		subi.b	#$81,d7
 		move.b	(a4,d7.w),$29(a6)
 		movea.l	(Go_MusicIndex).l,a4
 		add.w	d7,d7
@@ -858,7 +894,8 @@ loc_721B6:
 ChannelInitBytes:
 FMDACInitBytes:
 		dc.b 6,	0, 1, 2, 4, 5, 6
-PSGInitBytes:	dc.b $80, $A0, $C0
+PSGInitBytes:
+		dc.b $80, $A0, $C0
 		even
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -1330,7 +1367,7 @@ loc_725B6:
 		clr.l	(a0)+
 		dbf	d0,loc_725B6
 
-		move.b	#$80,9(a6)	; set music to $80 (silence)
+		move.b	#0,9(a6)	; set music to 0 (silence)
 		jsr	FMSilenceAll(pc)
 
 		tst.b	($FFFFFFB4).w
@@ -1363,7 +1400,7 @@ loc_725E4:
 		move.b	d3,$2A(a6)
 		move.b	d4,$26(a6)
 		move.w	d5,$A(a6)
-		move.b	#$80,9(a6)
+		move.b	#0,9(a6)
 		
 		lea	$41(a6),a1
 		lea	ChannelInitBytes(pc),a2

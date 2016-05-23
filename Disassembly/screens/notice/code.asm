@@ -1,6 +1,6 @@
 
 ;NoticeScreen:				; XREF: GameModeArray
-    move.b  #$E4,d0                 ; set music ID to stop
+    move.b  #$FF,d0                 ; set music ID to stop
     jsr    PlaySound_Special.w      ; play music ID
     jsr    Pal_FadeFrom.w           ; fade palette out
     move   #$2700,sr                ; disable interrupts
@@ -34,8 +34,6 @@ NoticeScreen_PalLoop:
     ori.b  #%01000000,d0            ; set display to "enable"
     move.w d0,(a6)                  ; save to VDP
     jsr    Pal_FadeTo               ; fade palette in
-;	move.b	#$E1,d0
-;	bsr.w	PlaySound_Special ; play "Notice"	sound
 
 Notice_MainLoop:
     move.b #2,($FFFFF62A).w         ; set V-blank routine to run

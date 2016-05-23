@@ -5,8 +5,8 @@
 ; ===========================================================================
 SndTest_Settings:
 		dc.l $FFFFFFB1			; RAM address for sound ID
-		dc.b $16				; Maximum ID
-		dc.b $81				; ID modifier (is added to ID)
+		dc.b $1F				; Maximum ID
+		dc.b 1					; ID modifier (is added to ID)
 		dc.l Txt_Music			; Sound type text address
 		dc.l $429E0003			; VDP value to draw the text and ID number
 		dc.b 1					; "Stop" flag (if 1, then it allows for an option to stop)
@@ -56,7 +56,7 @@ SndTest_PlayAddrs:
 ; Main sound test code
 ; ===========================================================================
 SoundTest:
-		move.b	#$E4,d0					; Stop music
+		move.b	#$FF,d0					; Stop music
 		jsr	PlaySound_Special
 		jsr	ClearPLC					; Clear PLCS
 		jsr	Pal_FadeFrom				; Fade palette
@@ -231,7 +231,7 @@ SndTest_StopMusic:
 
 		bsr.w	SndTest_InfoNothing
 
-		move.b	#$E4,d0					; Stop sound
+		move.b	#$FF,d0					; Stop sound
 		jmp	PlaySound_Special
 ; ===========================================================================
 ; Stopping SFX subroutine doesn't exist
@@ -307,7 +307,7 @@ SndTest_PlaySFX:
 ; Play PCM
 ; ===========================================================================
 SndTest_PlayPCM:
-		move.b	#$E4,d0
+		move.b	#$FF,d0
 		jsr	PlaySound_Special
 		
 		bsr.w	SndTest_InfoNothing
@@ -316,6 +316,12 @@ SndTest_PlayPCM:
 		move.b	(a6),d0
 		add.b	id_mod(a5),d0
 		
+		cmpi.b	#$A0,d0					; Is the ID $A0 or greater
+		bcs.s	@Normal					; If not, branch
+		
+		addi.b	#$31,d0					; Modify the ID to use the other music IDs
+		
+@Normal:
 		move.b	#0,($FFFFFFB5).w		; Clear the music playing flag
 		move.w	#0,($FFFFFFA2).w
 

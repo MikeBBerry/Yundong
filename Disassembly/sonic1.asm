@@ -815,10 +815,16 @@ PlaySample:
 ; ===========================================================================
 
 PlayMusic:
-		cmpi.b	#$88,d0
+		cmpi.b	#8,d0
 		beq.s	PlaySound
-		cmpi.b	#$A0,d0
-		bge.s	PlaySound
+		cmpi.b	#$FC,d0
+		bcc.s	PlaySound_Special
+		cmpi.b	#$D1,d0
+		bcc.s	@Set
+		cmpi.b	#$20,d0
+		bcc.s	PlaySound
+		
+@Set:
 		move.b	d0,($FFFFFFFC).w
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -864,15 +870,6 @@ Snd_ChkStop:
 @clr:
 		move.b	#0,($FFFFFFFC).w
 		rts
-; ===========================================================================
-; ---------------------------------------------------------------------------
-; Unused sound/music subroutine
-; ---------------------------------------------------------------------------
-
-PlaySound_Unk:
-		move.b	d0,($FFFFF00C).w
-		rts	
-
 ; ---------------------------------------------------------------------------
 ; Subroutine to	pause the game
 ; ---------------------------------------------------------------------------
@@ -3007,7 +3004,7 @@ NoticeScreen: include	"screens/notice/code.asm"
 ; ---------------------------------------------------------------------------
 
 SegaScreen:				; XREF: GameModeArray
-		move.b	#$E4,d0
+		move.b	#$FF,d0
 		bsr.w	PlaySound_Special ; stop music
 		bsr.w	ClearPLC
 		bsr.w	Pal_FadeFrom
@@ -3186,7 +3183,7 @@ Deform_Sega:
 ; ---------------------------------------------------------------------------
 
 TitleScreen:				; XREF: GameModeArray
-		move.b	#$E4,d0
+		move.b	#$FF,d0
 		bsr.w	PlaySound_Special ; stop music
 		bsr.w	ClearPLC
 		bsr.w	Pal_FadeFrom
@@ -3287,7 +3284,7 @@ Title_LoadText:
 		bsr.w	ShowVDPGraphics
 		moveq	#1,d0		; load title screen Palette
 		bsr.w	PalLoad1
-		move.b	#$8A,d0		; play title screen music
+		move.b	#$A,d0		; play title screen music
 		bsr.w	PlaySound_Special
 		move.b	#0,($FFFFFFFA).w ; disable debug mode
 		move.w	#$654,($FFFFF614).w ; run title	screen for $178	frames
@@ -3417,7 +3414,7 @@ Title_ClrVram:
 
 StartLvlSelect:
 		move.b	#0,($FFFFFFB4).w
-		move.b	#$E4,d0
+		move.b	#$FF,d0
 		bsr.w	PlaySound_Special
 		bsr.w	ClearPLC
 		bsr.w	Pal_FadeFrom
@@ -3427,7 +3424,7 @@ StartLvlSelect:
 		move.w	#$8B03,(a6)
 		moveq	#$15,d0
 		jsr	PalLoad1
-		move.w	#$8B,d0
+		move.w	#$B,d0
 		jsr	PlaySound
 		bsr.w	LevSelTextLoad
 		bsr.w	Pal_FadeTo
@@ -3490,7 +3487,7 @@ PlayLevel:				; XREF: ROM:00003246j ...
 		move.l	d0,($FFFFFE58).w ; clear emeralds
 		move.l	d0,($FFFFFE5C).w ; clear emeralds
 		move.b	d0,($FFFFFE18).w ; clear continues
-		move.b	#$E0,d0
+		move.b	#$FC,d0
 		bra.w	PlaySound_Special ; fade out music
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -3553,7 +3550,7 @@ loc_33E4:				; XREF: Demo
 		bne.w	Title_ChkLevSel	; if yes, branch
 		tst.w	($FFFFF614).w
 		bne.w	loc_33B6
-		move.b	#$E0,d0
+		move.b	#$FC,d0
 		bsr.w	PlaySound_Special ; fade out music
 		move.w	($FFFFFFF2).w,d0 ; load	demo number
 		andi.w	#7,d0
@@ -3748,21 +3745,21 @@ LevelMenuText:
 ; Music	playlist
 ; ---------------------------------------------------------------------------
 MusicList_Levels:
-		dc.b $83, $83, $83, $83
-		dc.b $82, $82, $82, $86
-		dc.b $81, $97, $81, $97
-		dc.b $89, $89, $84, $84
-		dc.b $85, $85, $85, $85
-		dc.b $86, $86, $8D, $86
+		dc.b   3,   3,   3,   3
+		dc.b   2,   2,   2,   6
+		dc.b   1,   7,   1, $17
+		dc.b   9,   9,   4,   4
+		dc.b   5,   5,   5,   5
+		dc.b   6,   6,  $D,   6
 		even
 MusicList_Credits:
-		dc.b $91, $91
+		dc.b $11, $11
 		even
 MusicList_Endings:
-		dc.b $8B, $8B
+		dc.b  $B,  $B
 		even
 MusicList_Bosses:
-		dc.b $8C, $8C, $8C, $8C, $8C, $8C
+		dc.b  $C,  $C,  $C,  $C,  $C,  $C
 		even
 ; ===========================================================================
 
@@ -3782,7 +3779,7 @@ Level:					; XREF: GameModeArray
 		bset	#7,($FFFFF600).w ; add $80 to screen mode (for pre level sequence)
 		tst.w	($FFFFFFF0).w
 		bmi.s	loc_37B6
-		move.b	#$E0,d0
+		move.b	#$FC,d0
 		bsr.w	PlaySound_Special ; fade out music
 
 loc_37B6:
@@ -4974,7 +4971,7 @@ Cont_ClrObjRam:
 		jsr	ContScrCounter	; run countdown	(start from 10)
 		moveq	#$12,d0
 		bsr.w	PalLoad1	; load continue	screen Palette
-		move.b	#$90,d0
+		move.b	#$10,d0
 		bsr.w	PlaySound	; play continue	music
 		move.w	#659,($FFFFF614).w ; set time delay to 11 seconds
 		clr.l	($FFFFF700).w
@@ -5196,7 +5193,7 @@ Obj81_GetUp:				; XREF: Obj81_Animate
 		move.b	#$1E,$1C(a0)	; use "getting up" animation
 		clr.w	$14(a0)
 		subq.w	#8,$C(a0)
-		move.b	#$E0,d0
+		move.b	#$FC,d0
 		bsr.w	PlaySound_Special ; fade out music
 
 Obj81_Run:				; XREF: Obj81_Index
@@ -5229,7 +5226,7 @@ Map_obj80:
 ; ---------------------------------------------------------------------------
 
 EndingSequence:				; XREF: GameModeArray
-		move.b	#$E4,d0
+		move.b	#$FF,d0
 		bsr.w	PlaySound_Special ; stop music
 		bsr.w	Pal_FadeFrom
 		lea	($FFFFD000).w,a1
@@ -11816,7 +11813,7 @@ CollectRing:				; XREF: Obj25_Collect
 loc_9CA4:
 		addq.b	#1,($FFFFFE12).w ; add 1 to the	number of lives	you have
 		addq.b	#1,($FFFFFE1C).w ; add 1 to the	lives counter
-		move.w	#$88,d0		; play extra life music
+		move.w	#8,d0		; play extra life music
 
 Obj25_PlaySnd:
 		jmp	(PlaySound_Special).l
@@ -12387,7 +12384,7 @@ Obj2E_ChkSonic:
 ExtraLife:
 		addq.b	#1,($FFFFFE12).w ; add 1 to the	number of lives	you have
 		addq.b	#1,($FFFFFE1C).w ; add 1 to the	lives counter
-		move.w	#$88,d0
+		move.w	#8,d0
 		jmp	(PlaySound).l	; play extra life music
 ; ===========================================================================
 
@@ -12400,7 +12397,7 @@ Obj2E_ChkShoes:
 		bne.s	Obj2E_NoShoes	; if so, branch
 		move.b	#1,($FFFFFE2E).w ; speed up the	BG music
 		
-		move.b	#$E2,d0
+		move.w	#$FD,d0
 		jmp	PlaySound_Special
 		
 Obj2E_NoShoes:
@@ -15207,7 +15204,7 @@ Obj3A_SBZ2:				; XREF: Obj3A_ChkPos2
 		bne.w	DeleteObject
 		addq.b	#2,$24(a0)
 		clr.b	($FFFFF7CC).w	; unlock controls
-		move.w	#$8D,d0
+		move.w	#$D,d0
 		jmp	(PlaySound).l	; play FZ music
 ; ===========================================================================
 
@@ -18196,7 +18193,7 @@ loc_ECD0:
 		move.w	($FFFFFE20).w,d0 ; load	number of rings
 		mulu.w	#10,d0		; multiply by 10
 		move.w	d0,($FFFFF7D4).w ; set ring bonus
-		move.w	#$8E,d0
+		move.w	#$E,d0
 		jsr	(PlaySound_Special).l ;	play "Sonic got	through" music
 
 locret_ECEE:
@@ -23522,7 +23519,7 @@ Obj01_ChkShoes:
 		move.w	#$C,($FFFFF762).w ; restore Sonic's acceleration
 		move.w	#$80,($FFFFF764).w ; restore Sonic's deceleration
 		move.b	#0,($FFFFFE2E).w ; cancel speed	shoes
-		move.b	#$E3,d0
+		move.w	#$FE,d0
 		jmp	PlaySound_Special
 ; ===========================================================================
 
@@ -24701,7 +24698,7 @@ GameOver:				; XREF: Obj01_Death
 		move.b	#$39,($FFFFD0C0).w ; load OVER object
 		move.b	#1,($FFFFD0DA).w ; set OVER object to correct frame
 		clr.b	($FFFFFE1A).w
-		move.w	#$8F,d0
+		move.w	#$F,d0
 		jsr	(PlaySound).l	; play game over music
 		moveq	#3,d0
 		jmp	(LoadPLC).l	; load game over patterns
@@ -24716,7 +24713,7 @@ loc_138D4:
 		move.b	#$39,($FFFFD0C0).w ; load OVER object
 		move.b	#2,($FFFFD09A).w
 		move.b	#3,($FFFFD0DA).w
-		move.w	#$8F,d0
+		move.w	#$F,d0
 		jsr	(PlaySound).l	; play game over music
 		moveq	#$20,d0
 		jmp	(LoadPLC).l	; load game over patterns
@@ -30010,7 +30007,7 @@ CtrlLevelMusic:
 		move.b	($FFFFFFFE).w,d0	; Level music
 		tst.b	($FFFFFE2D).w		; Is Sonic invincible?
 		beq.s	@chk_spdshoes		; If not, check if he has speed shoes
-		move.b	#$87,d0				; Invincibility music
+		move.b	#7,d0				; Invincibility music
 		
 @chk_spdshoes:
 		tst.b	($FFFFFFFF).w		; Is there a boss?
@@ -30023,7 +30020,7 @@ CtrlLevelMusic:
 @chk_drowning:
 		cmpi.b	#$C,($FFFFD028).w	; Check air remaining
 		bcc.s	@chk_value			; If air is above $C, branch
-		move.b	#$92,d0				; Drowning music
+		move.b	#$12,d0				; Drowning music
 		
 @chk_value:
 		move.b	($FFFFFFFC).w,d1	; Get current music playing
