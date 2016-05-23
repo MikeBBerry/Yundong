@@ -231,7 +231,7 @@ SndTest_StopMusic:
 
 		bsr.w	SndTest_InfoNothing
 
-		move.b	#$FF,d0					; Stop sound
+		move.b	#CmdID_Stop,d0			; Stop sound
 		jmp	PlaySound_Special
 ; ===========================================================================
 ; Stopping SFX subroutine doesn't exist
@@ -293,12 +293,6 @@ SndTest_PlayMusic:
 		move.b	(a6),d0
 		add.b	id_mod(a5),d0
 		
-		cmpi.b	#MusicID_End+1,d0		; Is the ID $A0 or greater
-		bcs.s	@Normal					; If not, branch
-		
-		addi.b	#(MusicID2_Start-MusicID_End+1),d0	; Modify the ID to use the other music IDs
-		
-@Normal:
 		jmp	PlaySound					; Play the music
 ; ===========================================================================
 ; Play SFX
@@ -313,7 +307,7 @@ SndTest_PlaySFX:
 ; Play PCM
 ; ===========================================================================
 SndTest_PlayPCM:
-		move.b	#$FF,d0
+		move.b	#CmdID_Stop,d0			; Stop sound
 		jsr	PlaySound_Special
 		
 		bsr.w	SndTest_InfoNothing

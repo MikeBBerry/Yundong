@@ -3,7 +3,7 @@
 ; Currently unoptimized and incomplete
 ; ===========================================================================
 FlickySS:
-		move.b	#$FF,d0					; Stop music
+		move.b	#CmdID_Stop,d0			; Stop music
 		jsr	PlaySound_Special
 		jsr	ClearPLC					; Clear PLCS
 		jsr	Pal_FadeFrom				; Fade palette

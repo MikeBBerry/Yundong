@@ -1,6 +1,6 @@
 
 ;NoticeScreen:				; XREF: GameModeArray
-    move.b  #$FF,d0                 ; set music ID to stop
+    move.b  #CmdID_Stop,d0                 ; set music ID to stop
     jsr    PlaySound_Special.w      ; play music ID
     jsr    Pal_FadeFrom.w           ; fade palette out
     move   #$2700,sr                ; disable interrupts

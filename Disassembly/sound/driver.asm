@@ -606,7 +606,7 @@ loc_71F12:
 		clr.b	(a1)+
 		tst.b	d0
 		beq.s	loc_71F3E
-		cmpi.b	#MusicID2_Start,d0
+		cmpi.b	#SpecSFXID_End+1,d0
 		bhs.s	@MusicOrFlag
 		subi.b	#SFXID_Start,d0
 		blo.s	@MusicOrFlag
@@ -654,12 +654,10 @@ Sound_ChkValue:				; XREF: UpdateMusic
 		move.b	#0,9(a6)	; reset	music flag
 		cmpi.b	#MusicID_End,d7
 		bls.w	Sound_PlayBGM	; music	$81-$9F
-		cmpi.b	#MusicID_End,d7
+		cmpi.b	#SFXID_End,d7
 		bls.w	Sound_PlaySFX	; sound	$A0-$CF
 		cmpi.b	#SpecSFXID_End,d7
 		bls.w	Sound_PlaySpecial	; sound	$D0
-		cmpi.b	#MusicID2_End,d7
-		bls.w	Sound_PlayBGM	; sound	$D1-$FB
 		cmpi.b	#CmdID_End,d7
 		bls.s	Sound_E0toE4	; sound	$FC-$FF
 
@@ -687,7 +685,7 @@ Sound_ExIndex:
 ; ---------------------------------------------------------------------------
 
 Sound_PlayBGM:				; XREF: Sound_ChkValue
-		cmpi.b	#8,d7		; is "extra life" music	played?
+		cmpi.b	#MusID_1UP,d7		; is "extra life" music	played?
 		bne.s	loc_72024	; if not, branch
 		tst.b	$27(a6)
 		bne.w	loc_721B6
@@ -727,12 +725,7 @@ loc_72024:
 loc_7202C:
 		jsr	InitMusicPlayback(pc)
 		
-		subq.b	#1,d7
-		cmpi.b	#MusicID2_Start-1,d7
-		bcs.s	@Normal
-		subi.b	#(MusicID2_Start-SFXID_Start-1),d7
-		
-@Normal:
+		subq.b	#MusicID_Start,d7
 		movea.l	(Go_SpeedUpIndex).l,a4
 		move.b	(a4,d7.w),$29(a6)
 		movea.l	(Go_MusicIndex).l,a4
@@ -889,17 +882,6 @@ PSGInitBytes:
 ; Play normal sound effect
 ; ---------------------------------------------------------------------------
 
-Sound_PlaySFX_2:
-		tst.b	$27(a6)
-		bne.w	loc_722C6
-		tst.b	4(a6)
-		bne.w	loc_722C6
-		tst.b	$24(a6)
-		bne.w	loc_722C6
-		movea.l	(Go_SoundIndex).l,a0
-		subi.b	#$A1,d7
-		bra.s	SoundEffects_Common
-
 Sound_PlaySFX:				; XREF: Sound_ChkValue
 		tst.b	$27(a6)
 		bne.w	loc_722C6
@@ -907,17 +889,17 @@ Sound_PlaySFX:				; XREF: Sound_ChkValue
 		bne.w	loc_722C6
 		tst.b	$24(a6)
 		bne.w	loc_722C6
-		cmpi.b	#$B5,d7		; is ring sound	effect played?
+		cmpi.b	#SndID_Ring,d7		; is ring sound	effect played?
 		bne.s	Sound_notB5	; if not, branch
 		tst.b	$2B(a6)
 		bne.s	loc_721EE
-		move.b	#$CE,d7		; play ring sound in left speaker
+		move.b	#SndID_RingLeft,d7		; play ring sound in left speaker
 
 loc_721EE:
 		bchg	#0,$2B(a6)	; change speaker
 
 Sound_notB5:
-		cmpi.b	#$A7,d7		; is "pushing" sound played?
+		cmpi.b	#SndID_Push,d7		; is "pushing" sound played?
 		bne.s	Sound_notA7	; if not, branch
 		tst.b	$2C(a6)
 		bne.w	locret_722C4
@@ -925,9 +907,7 @@ Sound_notB5:
 
 Sound_notA7:
 		movea.l	(Go_SoundIndex).l,a0
-		subi.b	#$A0,d7
-
-SoundEffects_Common:
+		subi.b	#SFXID_Start,d7
 		lsl.w	#2,d7
 		movea.l	(a0,d7.w),a3
 		movea.l	a3,a1
@@ -1041,7 +1021,7 @@ Sound_PlaySpecial:				; XREF: Sound_ChkValue
 		tst.b	$24(a6)
 		bne.w	locret_723C6
 		movea.l	(Go_SpecSoundIndex).l,a0
-		subi.b	#$D0,d7
+		subi.b	#SpecSFXID_Start,d7
 		lsl.w	#2,d7
 		movea.l	(a0,d7.w),a3
 		movea.l	a3,a1

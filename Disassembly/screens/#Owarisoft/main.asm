@@ -80,7 +80,7 @@ Owarisoft:
 		move.w	#0,-4(owsf_VDP)
 	endif
 
-		move.b	#$14,d0 ; play music 94
+		move.b	#MusID_Owarisoft,d0 ; play music 94
 		jsr	PlaySound			; play music
 
 		move.l	#OwariVBlank,VBlankJump+2
