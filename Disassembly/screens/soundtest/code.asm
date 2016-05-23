@@ -4,7 +4,7 @@
 ; Sound test settings
 ; ===========================================================================
 SndTest_Settings:
-		dc.l $FFFFFFB1			; RAM address for sound ID
+		dc.l Snd_Test_Music_ID	; RAM address for sound ID
 		dc.b $16				; Maximum ID
 		dc.b MusicID_Start		; ID modifier (is added to ID)
 		dc.l Txt_Music			; Sound type text address
@@ -12,7 +12,7 @@ SndTest_Settings:
 		dc.b 1					; "Stop" flag (if 1, then it allows for an option to stop)
 		dc.b 0					; Sound type (0 = Music, 1 = SFX, 2 = PCM)
 		
-		dc.l $FFFFFFB2
+		dc.l Snd_Test_SFX_ID
 		dc.b $2F
 		dc.b SFXID_Start
 		dc.l Txt_SFX
@@ -20,7 +20,7 @@ SndTest_Settings:
 		dc.b 0
 		dc.b 1
 		
-		dc.l $FFFFFFB3
+		dc.l Snd_Test_PCM_ID
 		dc.b $16
 		dc.b $81
 		dc.l Txt_PCM
@@ -87,10 +87,10 @@ SoundTest:
 		moveq	#$15,d0					; Load palette
 		jsr	PalLoad1
 		
-		move.l	#0,($FFFFFFA0).w		; Clear scroll variables
-		move.l	#0,($FFFFFFB0).w		; Clear variables
-		move.b	#1,($FFFFFFB4).w		; Make it so that when the music is stopped in the sound test, PCM isn't affected
-		move.b	#0,($FFFFFFB5).w		; Clear the music playing flag
+		move.l	#0,(Snd_Test_Deform_Modifier).w		; Clear scroll variables
+		move.l	#0,(Snd_Test_Selection).w	; Clear variables
+		move.b	#1,(Snd_Test_PCM_Flag).w	; Make it so that when the music is stopped in the sound test, PCM isn't affected
+		move.b	#0,(Snd_Test_Music_Playing_Flag).w	; Clear the music playing flag
 		
 		move.l	#$411E0003,($C00004).l	; Draw "SOUND TEST"
 		lea	(Txt_SoundTest).l,a0
@@ -125,31 +125,31 @@ SndTest_MainLoop:
 		jsr	DelayProgram				; Wait for that to run...
 
 		bsr.w	SndTest_Deform
-		tst.w	($FFFFFFA2).w
+		tst.b	(Snd_Test_Music_Playing_Flag).w
 		beq.s	@NoCap
-		addq.w	#1,($FFFFFFA0).w
-		cmpi.w	#53,($FFFFFFA0).w
+		addq.w	#1,(Snd_Test_Deform_Modifier).w
+		cmpi.w	#53,(Snd_Test_Deform_Modifier).w
 		ble.s	@NoCap
-		move.w	#0,($FFFFFFA0).w
+		move.w	#0,(Snd_Test_Deform_Modifier).w
 
 @NoCap:
-		btst	#0,($FFFFF605).w		; Is the up button pressed?
+		btst	#0,(Ctrl_1_Press).w		; Is the up button pressed?
 		beq.s	@NotUp					; If not, branch
-		tst.b	($FFFFFFB0).w			; Is the sound test selection 0?
+		tst.b	(Snd_Test_Selection).w			; Is the sound test selection 0?
 		beq.s	@NotUp					; If so, skip
-		subq.b	#1,($FFFFFFB0).w		; Decrement sound test selection
+		subq.b	#1,(Snd_Test_Selection).w		; Decrement sound test selection
 		
 @NotUp:
-		btst	#1,($FFFFF605).w		; Is the down button pressed?
+		btst	#1,(Ctrl_1_Press).w		; Is the down button pressed?
 		beq.s	@NotDown				; If not, branch
-		cmpi.b	#2,($FFFFFFB0).w		; Is the sound test selection at the max?
+		cmpi.b	#2,(Snd_Test_Selection).w		; Is the sound test selection at the max?
 		beq.s	@NotDown				; If so, skip
-		addq.b	#1,($FFFFFFB0).w		; Increment sound test selection
+		addq.b	#1,(Snd_Test_Selection).w		; Increment sound test selection
 		
 @NotDown:
 		bsr.w	SndTest_GetAddrs		; Get settings address for current sound test selection
 
-		btst	#2,($FFFFF605).w		; Is the left button pressed?
+		btst	#2,(Ctrl_1_Press).w		; Is the left button pressed?
 		beq.s	@NotLeft				; If not, branch
 
 		subq.b	#1,(a6)					; Decrement the ID
@@ -166,7 +166,7 @@ SndTest_MainLoop:
 		
 @NotMin:
 @NotLeft:
-		btst	#3,($FFFFF605).w		; Is the right button pressed?
+		btst	#3,(Ctrl_1_Press).w		; Is the right button pressed?
 		beq.s	@NotRight				; If not, branch
 		addq.b	#1,(a6)					; Increment the ID
 		move.b	max_id(a5),d0			; Get the maximum ID
@@ -185,7 +185,7 @@ SndTest_MainLoop:
 
 @NotMax:
 @NotRight:
-		btst	#6,($FFFFF605).w		; Is the A button pressed?
+		btst	#6,(Ctrl_1_Press).w		; Is the A button pressed?
 		beq.s	@NotA					; If not, branch
 
 		moveq	#0,d0					; Set up for an array of addresses according to the sound type
@@ -212,8 +212,9 @@ SndTest_MainLoop:
 	
 @Continue:	
 @NotA:
-		btst	#4,($FFFFF605).w		; Is the B button pressed?
+		btst	#4,(Ctrl_1_Press).w		; Is the B button pressed?
 		beq.s	@NotB					; If not, branch
+		move.b	#0,(Snd_Test_PCM_Flag).w
 		jmp	StartLvlSelect				; Go back to the level select
 		
 @NotB:
@@ -225,9 +226,8 @@ SndTest_MainLoop:
 ; Stop music
 ; ===========================================================================
 SndTest_StopMusic:
-		tst.b	($FFFFFFB5).w			; Is music playing?
+		tst.b	(Snd_Test_Music_Playing_Flag).w		; Is music playing?
 		beq.s	SndTest_Null			; If not, skip
-		move.w	#0,($FFFFFFA2).w
 
 		bsr.w	SndTest_InfoNothing
 
@@ -242,7 +242,7 @@ SndTest_Null:
 ; Stop PCM
 ; ===========================================================================
 SndTest_StopPCM:
-		tst.b	($FFFFFFB5).w			; Is music playing?
+		tst.b	(Snd_Test_Music_Playing_Flag).w		; Is music playing?
 		bne.s	@End					; If so, skip
 		stopZ80							; Stop PCM
 		move.b	#$80,($A01FFF).l
@@ -266,8 +266,7 @@ SndTest_PlayMusic:
 		nop
 		nop
 
-		move.b	#1,($FFFFFFB5).w		; Set the music playing flag
-		move.w	#1,($FFFFFFA2).w
+		move.b	#1,(Snd_Test_Music_Playing_Flag).w		; Set the music playing flag
 
 		move.w	#$4000,d1
 		move.l	#$47800003,($C00004).l	; Apply VDP command
@@ -316,14 +315,13 @@ SndTest_PlayPCM:
 		move.b	(a6),d0
 		add.b	id_mod(a5),d0
 		
-		move.b	#0,($FFFFFFB5).w		; Clear the music playing flag
-		move.w	#0,($FFFFFFA2).w
+		move.b	#0,(Snd_Test_Music_Playing_Flag).w		; Clear the music playing flag
 
 		jmp	PlaySample					; Play the PCM
 ; ===========================================================================
 SndTest_GetAddrs:
 		moveq	#0,d0
-		move.b	($FFFFFFB0).w,d0		; Get current sound test selection
+		move.b	(Snd_Test_Selection).w,d0		; Get current sound test selection
 		
 SndTest_GetSettingsAddr:
 		mulu.w	#snd_setting_size,d0	; Multiply it by the size of one set of settings
@@ -343,7 +341,7 @@ DrawSndTestText:
 		bsr.s	SndTest_GetSettingsAddr
 
 		move.w	#$2000,d1				; If not highlighted, use the 2nd palette line
-		move.b	($FFFFFFB0).w,d6
+		move.b	(Snd_Test_Selection).w,d6
 		cmp.b	d5,d6					; Is the current line highlighted?
 		bne.s	@NotHighlight			; If not, branch
 		move.w	#$4000,d1				; If so, use the 3rd palette line
@@ -427,7 +425,7 @@ SndTest_Deform:
 		move.w	#6,d6
 		
 @Deform:
-		move.w	($FFFFFFA0).w,d0
+		move.w	(Snd_Test_Deform_Modifier).w,d0
 		muls.w	d4,d0
 		bmi.s	@Pos
 		subi.w	#54,d0

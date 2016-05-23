@@ -38,7 +38,7 @@ NoticeScreen_PalLoop:
 Notice_MainLoop:
     move.b #2,($FFFFF62A).w         ; set V-blank routine to run
     jsr    DelayProgram.w           ; wait for V-blank (decreases "Demo_Time_left")
-    tst.b  ($FFFFF605).w            ; has player 1 pressed start button?
+    tst.b  (Ctrl_1_Press).w            ; has player 1 pressed start button?
     bmi.s  Notice_GotoTitle           ; if so, branch
     move.w #1*60,($FFFFF614).w      ; set delay time (3 seconds on a 60hz system)
     tst.w  ($FFFFF614).w            ; has the delay time finished?

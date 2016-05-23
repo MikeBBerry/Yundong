@@ -504,7 +504,7 @@ ObjFlicky_Jump:
 		beq.s	@NoJump
 		tst.b	$2D(a0)
 		bne.s	@NoJump
-		move.b	($FFFFF605).w,d0
+		move.b	(Ctrl_1_Press).w,d0
 		andi.b	#$70,d0
 		beq.w	@NoJump
 		
@@ -521,13 +521,13 @@ ObjFlicky_Move:
 		move.w	($FFFFF760).w,d6
 		move.w	($FFFFF762).w,d5
 		move.w	($FFFFF764).w,d4
-		btst	#2,($FFFFF604).w
+		btst	#2,(Ctrl_1_Held).w
 		beq.s	ObjFlicky_NotLeft
 		;bset	#0,1(a0)
 		bra.w	ObjFlicky_MoveLeft
 
 ObjFlicky_NotLeft:
-		btst	#3,($FFFFF604).w
+		btst	#3,(Ctrl_1_Held).w
 		beq.s	ObjFlicky_NotRight
 		;bclr	#0,1(a0)
 		bra.w	ObjFlicky_MoveRight

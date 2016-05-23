@@ -211,9 +211,9 @@ UpdateMusic:				; XREF: loc_B10; PalToCRAM
 CheckSoundPAL:
 		btst	#6,($FFFFFFF8).w	   	; is Megadrive PAL?
 		beq.s	@End		 			; if not, branch
-		subq.b	#1,($FFFFFFBF).w		; decrement timer
+		subq.b	#1,(Snd_Driver_PAL_Counter).w	; decrement timer
 		bpl.s	@End					; if it's not 0, return
-		move.b  #5,($FFFFFFBF).w	   	; reset counter
+		move.b  #5,(Snd_Driver_PAL_Counter).w	; reset counter
 		bra.w	UpdateMusic		  		; run sound driver again
 		
 @End:
@@ -1337,7 +1337,7 @@ loc_725B6:
 		move.b	#0,9(a6)	; set music to 0 (silence)
 		jsr	FMSilenceAll(pc)
 
-		tst.b	($FFFFFFB4).w
+		tst.b	(Snd_Test_PCM_Flag).w
 		bne.s	@Skip
 		stopZ80
 		move.b	#$80,($A01FFF).l ; stop DAC playback

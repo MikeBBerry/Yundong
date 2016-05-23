@@ -90,7 +90,7 @@ Owarisoft:
 
 ; ===========================================================================
 .mainloop	STOP	#$2300				; stop CPU
-		move.b	$FFFFF604.w,d0			; get player 1's held buttons
+		move.b	Ctrl_1_Held.w,d0			; get player 1's held buttons
 		or.b	$FFFFF606.w,d0			; get player 2's held buttons
 		bpl.s	.mainloop			; if start is not pressed, branch
 
@@ -98,11 +98,11 @@ Owarisoft:
 		moveq	#0,owsf_PalOff			; clear palette offset
 
 		move.l	#OwariVBlank2,VBlankJump+2
-		sf	$FFFFF604.w			; force start button press
+		sf	Ctrl_1_Held.w			; force start button press
 		lea	Owari_txPalette_end,owsf_txPal
 
 .mainloop2	STOP	#$2300				; stop CPU
-		tst.b	$FFFFF604.w			; get player 1's held buttons
+		tst.b	Ctrl_1_Held.w			; get player 1's held buttons
 		bpl.s	.mainloop2			; if start is not pressed, branch
 
 		move.l	#V_Int,VBlankJump+2
@@ -170,7 +170,7 @@ OwariVBlank2:
 		add.w	#3,owsf_PalOff			; add 3 to advance to next row
 
 		cmp.w	#Owari_po_3,owsf_PalOff		; is the limit reached,
-		sgt	$FFFFF604.w			; force start button press
+		sgt	Ctrl_1_Held.w			; force start button press
 
 		move.l	#$C0620000,(owsf_VDP)		; set CRAM write
 		move.w	-(owsf_txPal),-4(owsf_VDP)	; write next palette
@@ -205,7 +205,7 @@ OwariVBlank:
 		cmp.w	#Owari_po_0,owsf_PalOff		; is the limit reached
 		bge	.st				; if not, skip
 		sf	$FFFFF606.w			; force start button press
-		sf	$FFFFF604.w			; force start button press
+		sf	Ctrl_1_Held.w			; force start button press
 
 .st		subq.b	#1,owsf_Timer			; sub 1 from timer
 		bpl.s	.end				; if positive, skip
