@@ -1932,20 +1932,22 @@ cfPanningAMSFMS:				; XREF: coordflagLookup
 		move.b	(a4)+,d1
 		tst.b	1(a5)
 		bmi.s	locret_72AEA
+		btst	#2,(a5)
+		bne.s	locret_72AEA
 		move.b	$A(a5),d0
 		andi.b	#$37,d0
 		or.b	d0,d1
 		move.b	d1,$A(a5)
+		btst	#2,(a5)
+		bne.s	locret_72AEA
 		move.b	#$B4,d0
 		bra.w	WriteFMIorIIMain
 ; ===========================================================================
 
-locret_72AEA:
-		rts	
-; ===========================================================================
-
 cfDetune:				; XREF: coordflagLookup
 		move.b	(a4)+,$1E(a5)
+		
+locret_72AEA:
 		rts	
 ; ===========================================================================
 

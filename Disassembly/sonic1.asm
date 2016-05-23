@@ -3450,6 +3450,8 @@ LevSel_Ending:				; XREF: LevelSelect
 
 LevSel_Credits:				; XREF: LevelSelect
 		move.b	#$1C,(Game_Mode).w ; set screen	mode to	$1C (Credits)
+		moveq	#0,d0
+		move.b	(Bad_Ending_Flag).w,d0
 		lea	(MusicList_Credits).l,a1	; load Music Playlist for credits
 		move.b	(a1,d0.w),d0	; get d0-th entry from the playlist
 		bsr.w	PlaySound_Special ; play credits music
@@ -5351,6 +5353,7 @@ End_MainLoop:
 		cmpi.b	#$18,(Game_Mode).w ; is	scene number $18 (ending)?
 		beq.s	loc_52DA	; if yes, branch
 		move.b	#$1C,(Game_Mode).w ; set scene to $1C (credits)
+		moveq	#0,d0
 		move.b	(Bad_Ending_Flag).w,d0	; get kind of ending (0 = good, 1 = bad)
 		lea	(MusicList_Credits).l,a1	; load Music Playlist for credits
 		move.b	(a1,d0.w),d0	; get d0-th entry from the playlist
@@ -5510,7 +5513,7 @@ Obj87_ClrObjRam:			; XREF: Obj87_Index
 		subq.w	#1,$30(a0)
 		bne.s	Obj87_Wait2
 		lea	(Object_Space_17).w,a1
-		move.w	#$FF,d1
+		move.w	#(Normal_Object_RAM_End-Object_Space_17)>>2-1,d1
 
 Obj87_ClrLoop:
 		clr.l	(a1)+
