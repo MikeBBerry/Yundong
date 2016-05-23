@@ -380,8 +380,8 @@ loc_CD4:
 		jsr	ProcessDMAQueue
 
 loc_D50:
-		movem.l	(Camera_X_Pos).w,d0-d7
-		movem.l	d0-d7,(Camera_X_Pos_Copy).w
+		movem.l	(Camera_RAM).w,d0-d7
+		movem.l	d0-d7,(Camera_RAM_Copy).w
 		movem.l	(Scroll_Flags).w,d0-d1
 		movem.l	d0-d1,(Scroll_Flags_Copy).w
 		cmpi.b	#$60,(H_Int_Counter+1).w
@@ -443,8 +443,8 @@ loc_ED8:
 	dma68kToVDP Sprite_Table,$F800,$280,VRAM	; sprite table
 	dma68kToVDP Horiz_Scroll_Buf,$FC00,$380,VRAM	; horiz buffer
 		jsr	ProcessDMAQueue
-		movem.l	(Camera_X_Pos).w,d0-d7
-		movem.l	d0-d7,(Camera_X_Pos_Copy).w
+		movem.l	(Camera_RAM).w,d0-d7
+		movem.l	d0-d7,(Camera_RAM_Copy).w
 		movem.l	(Scroll_Flags).w,d0-d1
 		movem.l	d0-d1,(Scroll_Flags_Copy).w
 		bsr.w	LoadTilesAsYouMove
@@ -456,7 +456,7 @@ loc_ED8:
 
 loc_F8A:				; XREF: off_B6E
 		bsr.w	sub_106E
-		addq.b	#1,(Misc_Variables).w
+		addq.b	#1,(V_Int_E_Run_Count).w
 		move.b	#$E,(V_Int_Routine).w
 		rts
 ; ===========================================================================
@@ -634,7 +634,7 @@ Joypad_WaitZ80:
 
 
 ReadJoypads:
-		lea	(Ctrl_1_Held).w,a0 ; address where joypad	states are written
+		lea	(Ctrl_1).w,a0	; address where joypad	states are written
 		lea	($A10003).l,a1	; first	joypad port
 		bsr.s	Joypad_Read	; do the first joypad
 		addq.w	#2,a1		; do the second	joypad
@@ -2198,7 +2198,7 @@ Pal_FadeTo:
 Pal_FadeTo2:
 		moveq	#0,d0
 		lea	(Normal_Palette).w,a0
-		move.b	(Palette_Fade_Range).w,d0
+		move.b	(Palette_Fade_Start).w,d0
 		adda.w	d0,a0
 		moveq	#0,d1
 		move.b	(Palette_Fade_Length).w,d0
@@ -2234,7 +2234,7 @@ Pal_FadeIn:				; XREF: Pal_FadeTo
 		moveq	#0,d0
 		lea	(Normal_Palette).w,a0
 		lea	(Target_Palette).w,a1
-		move.b	(Palette_Fade_Range).w,d0
+		move.b	(Palette_Fade_Start).w,d0
 		adda.w	d0,a0
 		adda.w	d0,a1
 		move.b	(Palette_Fade_Length).w,d0
@@ -2247,7 +2247,7 @@ loc_1DFA:
 		moveq	#0,d0
 		lea	(Underwater_Palette).w,a0
 		lea	(Target_Underwater_Palette).w,a1
-		move.b	(Palette_Fade_Range).w,d0
+		move.b	(Palette_Fade_Start).w,d0
 		adda.w	d0,a0
 		adda.w	d0,a1
 		move.b	(Palette_Fade_Length).w,d0
@@ -2321,7 +2321,7 @@ loc_1E5C:
 Pal_FadeOut:				; XREF: Pal_FadeFrom
 		moveq	#0,d0
 		lea	(Normal_Palette).w,a0
-		move.b	(Palette_Fade_Range).w,d0
+		move.b	(Palette_Fade_Start).w,d0
 		adda.w	d0,a0
 		move.b	(Palette_Fade_Length).w,d0
 
@@ -2331,7 +2331,7 @@ loc_1E82:
 
 		moveq	#0,d0
 		lea	(Underwater_Palette).w,a0
-		move.b	(Palette_Fade_Range).w,d0
+		move.b	(Palette_Fade_Start).w,d0
 		adda.w	d0,a0
 		move.b	(Palette_Fade_Length).w,d0
 
@@ -2381,7 +2381,7 @@ Pal_MakeWhite:				; XREF: SpecialStage
 		move.w	#$3F,(Palette_Fade_Range).w
 		moveq	#0,d0
 		lea	(Normal_Palette).w,a0
-		move.b	(Palette_Fade_Range).w,d0
+		move.b	(Palette_Fade_Start).w,d0
 		adda.w	d0,a0
 		move.w	#$EEE,d1
 		move.b	(Palette_Fade_Length).w,d0
@@ -2408,7 +2408,7 @@ Pal_WhiteToBlack:			; XREF: Pal_MakeWhite
 		moveq	#0,d0
 		lea	(Normal_Palette).w,a0
 		lea	(Target_Palette).w,a1
-		move.b	(Palette_Fade_Range).w,d0
+		move.b	(Palette_Fade_Start).w,d0
 		adda.w	d0,a0
 		adda.w	d0,a1
 		move.b	(Palette_Fade_Length).w,d0
@@ -2422,7 +2422,7 @@ loc_1F20:
 		moveq	#0,d0
 		lea	(Underwater_Palette).w,a0
 		lea	(Target_Underwater_Palette).w,a1
-		move.b	(Palette_Fade_Range).w,d0
+		move.b	(Palette_Fade_Start).w,d0
 		adda.w	d0,a0
 		adda.w	d0,a1
 		move.b	(Palette_Fade_Length).w,d0
@@ -2500,7 +2500,7 @@ loc_1F86:
 Pal_ToWhite:				; XREF: Pal_MakeFlash
 		moveq	#0,d0
 		lea	(Normal_Palette).w,a0
-		move.b	(Palette_Fade_Range).w,d0
+		move.b	(Palette_Fade_Start).w,d0
 		adda.w	d0,a0
 		move.b	(Palette_Fade_Length).w,d0
 
@@ -2509,7 +2509,7 @@ loc_1FAC:
 		dbf	d0,loc_1FAC
 		moveq	#0,d0
 		lea	(Underwater_Palette).w,a0
-		move.b	(Palette_Fade_Range).w,d0
+		move.b	(Palette_Fade_Start).w,d0
 		adda.w	d0,a0
 		move.b	(Palette_Fade_Length).w,d0
 
@@ -3019,16 +3019,16 @@ SegaScreen:				; XREF: GameModeArray
 		move.l	#$40000000,($C00004).l
 		lea	(Nem_SegaLogo).l,a0 ; load Sega	logo patterns
 		bsr.w	NemDec
-		lea	(RAM_Start).l,a1
+		lea	(General_Buffer).l,a1
 		lea	(Eni_SegaLogo).l,a0 ; load Sega	logo mappings
 		move.w	#0,d0
 		bsr.w	EniDec
-		lea	(RAM_Start).l,a1
+		lea	(General_Buffer).l,a1
 		move.l	#$65100003,d0
 		moveq	#$17,d1
 		moveq	#7,d2
 		bsr.w	ShowVDPGraphics
-		lea	(RAM_Start+$180).l,a1
+		lea	(General_Buffer+$180).l,a1
 		move.l	#$40000003,d0
 		moveq	#$27,d1
 		moveq	#$1B,d2
@@ -3205,11 +3205,11 @@ Title_ClrObjRam:
 		move.l	#$54C00000,($C00004).l
 		lea	(Nem_CreditText).l,a0 ;	load alphabet
 		bsr.w	NemDec
-		lea	(RAM_Start).l,a1
+		lea	(General_Buffer).l,a1
 		lea	(Eni_JapNames).l,a0 ; load mappings for	Japanese credits
 		move.w	#0,d0
 		bsr.w	EniDec
-		lea	(RAM_Start).l,a1
+		lea	(General_Buffer).l,a1
 		move.l	#$40000003,d0
 		moveq	#$27,d1
 		moveq	#$1B,d2
@@ -3247,7 +3247,7 @@ Title_LoadText:
 		move.b	#0,(Last_Checkpoint_Hit).w ; clear lamppost counter
 		move.w	#0,(Debug_Placement_Mode).w ; disable debug item placement	mode
 		move.w	#0,(Demo_Mode).w ; disable debug mode
-		move.w	#0,(Current_Zone).w ; set level to	GHZ (00)
+		move.w	#0,(Current_Zone_And_Act).w ; set level to	GHZ (00)
 		move.w	#0,(Pal_Cycle_Timer).w ; disable Palette cycling
 		bsr.w	Pal_FadeFrom
 		move	#$2700,sr
@@ -3264,11 +3264,11 @@ Title_LoadText:
 		lea	(Nem_TitleBG).l,a0
 		bsr.w	NemDec
 		
-		lea	(RAM_Start).l,a1
+		lea	(General_Buffer).l,a1
 		lea	(Eni_Title).l,a0 ; load	title screen mappings
 		move.w	#0,d0
 		bsr.w	EniDec
-		lea	(RAM_Start).l,a1
+		lea	(General_Buffer).l,a1
 		move.l	#$42060003,d0
 		moveq	#$21,d1
 		moveq	#$15,d2
@@ -3335,7 +3335,7 @@ Title_ChkRegion:
 		addq.w	#1,(Cheat_Btn_Press_Count).w ; next	button press
 		tst.b	d0
 		bne.s	Title_CountC
-		lea	(Level_Sel_Cheat_Flag).w,a0
+		lea	(Cheat_Flags).w,a0
 		move.w	(C_Press_Counter).w,d1
 		lsr.w	#1,d1
 		andi.w	#3,d1
@@ -3346,8 +3346,8 @@ Title_ChkRegion:
 		move.b	d1,1(a0,d1.w)
 
 Title_PlayRing:
-		move.b	#1,(a0,d1.w)	; activate cheat
-		move.l	#$1010101,(Level_Sel_Cheat_Flag).w	; activate all cheats
+		move.b	#1,(a0,d1.w)				; activate cheat
+		move.l	#$1010101,(Cheat_Flags).w	; activate all cheats
 		move.b	#SndID_GetContinue,d0		; play continue sound when code is entered
 		bsr.w	PlaySound_Special
 		bra.s	Title_CountC
@@ -3444,7 +3444,7 @@ LevSel_PlaySnd:
 
 LevSel_Ending:				; XREF: LevelSelect
 		move.b	#$18,(Game_Mode).w ; set screen	mode to	$18 (Ending)
-		move.w	#$600,(Current_Zone).w ; set level	to 0600	(Ending)
+		move.w	#$600,(Current_Zone_And_Act).w ; set level	to 0600	(Ending)
 		rts	
 ; ===========================================================================
 
@@ -3462,7 +3462,7 @@ LevSel_Level:			; XREF: LevelSelect
 		move.w	LSelectPointers(pc,d0.w),d0 ; load level number
 		bmi.w	LevelSelect
 		andi.w	#$3FFF,d0
-		move.w	d0,(Current_Zone).w ; set level number
+		move.w	d0,(Current_Zone_And_Act).w ; set level number
 
 PlayLevel:				; XREF: ROM:00003246j ...
 		move.b	#$C,(Game_Mode).w ; set	screen mode to $C (level)
@@ -3546,7 +3546,7 @@ loc_33E4:				; XREF: Demo
 		andi.w	#7,d0
 		add.w	d0,d0
 		move.w	Demo_Levels(pc,d0.w),d0	; load level number for	demo
-		move.w	d0,(Current_Zone).w
+		move.w	d0,(Current_Zone_And_Act).w
 		addq.w	#1,(Demo_Number).w ; add 1 to demo number
 		cmpi.w	#4,(Demo_Number).w ; is demo number less than 4?
 		bcs.s	loc_3422	; if yes, branch
@@ -3558,7 +3558,7 @@ loc_3422:
 		cmpi.w	#$600,d0	; is level number 0600 (special	stage)?
 		bne.s	Demo_Level	; if not, branch
 		move.b	#$10,(Game_Mode).w ; set screen	mode to	$10 (Special Stage)
-		clr.w	(Current_Zone).w	; clear	level number
+		clr.w	(Current_Zone_And_Act).w	; clear	level number
 		clr.b	(Current_Special_Stage).w	; clear	special	stage number
 
 Demo_Level:
@@ -3788,10 +3788,10 @@ loc_37B6:
 		
 		move.l	#$75A00002,($C00004).l
 		lea	(Nem_TitleCard_Hell).l,a0
-		cmpi.w	#$103,(Current_Zone).w
+		cmpi.w	#$103,(Current_Zone_And_Act).w
 		beq.s	@IsSBZ3Final
 		lea	(Nem_TitleCard_Final).l,a0
-		cmpi.w	#$502,(Current_Zone).w
+		cmpi.w	#$502,(Current_Zone_And_Act).w
 		beq.s	@IsSBZ3Final
 		moveq	#0,d0
 		move.b	(Current_Zone).w,d0
@@ -3835,7 +3835,7 @@ Level_ClrVars:
 		move.l	d0,(a1)+
 		dbf	d1,Level_ClrVars ; clear misc variables
 
-		lea	(Camera_X_Pos).w,a1
+		lea	(Camera_RAM).w,a1
 		moveq	#0,d0
 		move.w	#$3F,d1
 
@@ -3910,7 +3910,7 @@ Level_GetBgm:
 		bmi.w	loc_3946
 		
 		moveq	#0,d0
-		move.w	(Current_Zone).w,d1
+		move.w	(Current_Zone_And_Act).w,d1
 		ror.b	#2,d1
 		lsr.w	#6,d1
 		lea	(MusicList_Levels).l,a1
@@ -5234,7 +5234,7 @@ End_ClrRam:
 		move.l	d0,(a1)+
 		dbf	d1,End_ClrRam	; clear	variables
 
-		lea	(Camera_X_Pos).w,a1
+		lea	(Camera_RAM).w,a1
 		moveq	#0,d0
 		move.w	#$3F,d1
 
@@ -5265,11 +5265,11 @@ End_ClrRam3:
 		move.w	#$8720,(a6)
 		move.w	#$8ADF,(H_Int_Counter).w
 		move.w	(H_Int_Counter).w,(a6)
-		move.w	#$600,(Current_Zone).w ; set level	number to 0600 (extra flowers)
+		move.w	#$600,(Current_Zone_And_Act).w ; set level	number to 0600 (extra flowers)
 		move.b	#0,(Bad_Ending_Flag).w	; puts a 0 in this flag
 		cmpi.b	#6,(Emerald_Count).w ; do you have all 6 emeralds?
 		beq.s	End_LoadData	; if yes, branch
-		move.w	#$601,(Current_Zone).w ; set level	number to 0601 (no flowers)
+		move.w	#$601,(Current_Zone_And_Act).w ; set level	number to 0601 (no flowers)
 		move.b	#1,(Bad_Ending_Flag).w	; puts a 1 in this flag
 
 End_LoadData:
@@ -5286,7 +5286,7 @@ End_LoadData:
 		move.l	#Col_GHZ_2,(Second_Collision_Addr).w			; MJ: Set second collision for ending
 		move	#$2300,sr
 		lea	(Kos_EndFlowers).l,a0 ;	load extra flower patterns
-		lea	(RAM_Start+$9400).w,a1 ; RAM address to buffer the patterns
+		lea	(General_Buffer+$9400).w,a1 ; RAM address to buffer the patterns
 		bsr.w	KosDec
 		moveq	#3,d0
 		bsr.w	PalLoad1	; load Sonic's Palette
@@ -5391,7 +5391,7 @@ loc_5334:
 		move.w	#$2E2F,(Level_Layout+$80).w ; modify level layout
 		lea	($C00004).l,a5
 		lea	($C00000).l,a6
-		lea	(Camera_X_Pos).w,a3
+		lea	(Camera_RAM).w,a3
 		movea.l	(Level_Layout_FG).w,a4			; MJ: Load address of layout
 		move.w	#$4000,d2
 		bsr.w	LoadTilesFromStart2
@@ -5786,7 +5786,7 @@ EndingDemoLoad:				; XREF: Credits
 		andi.w	#$F,d0
 		add.w	d0,d0
 		move.w	EndDemo_Levels(pc,d0.w),d0 ; load level	array
-		move.w	d0,(Current_Zone).w ; set level from level	array
+		move.w	d0,(Current_Zone_And_Act).w ; set level from level	array
 		addq.w	#1,(Credits_Index).w
 		cmpi.w	#9,(Credits_Index).w ; have	credits	finished?
 		bcc.s	EndDemo_Exit	; if yes, branch
@@ -6113,7 +6113,7 @@ Demo_EndGHZ2:	incbin	data/demo/e_ghz2.bin
 LevelSizeLoad:				; XREF: TitleScreen; Level; EndingSequence
 		moveq	#0,d0
 		move.b	d0,(Dynamic_Resize_Routine).w
-		move.w	(Current_Zone).w,d0
+		move.w	(Current_Zone_And_Act).w,d0
 		lsl.b	#6,d0
 		lsr.w	#4,d0
 		move.w	d0,d1
@@ -6208,7 +6208,7 @@ LevSz_ChkLamp:				; XREF: LevelSizeLoad
 ; ===========================================================================
 
 LevSz_StartLoc:				; XREF: LevelSizeLoad
-		move.w	(Current_Zone).w,d0
+		move.w	(Current_Zone_And_Act).w,d0
 		lsl.b	#6,d0
 		lsr.w	#4,d0
 		lea	(StartLocArray).l,a1			; MJ: load location array
@@ -7655,7 +7655,7 @@ sub_6C3C:
 LoadTilesFromStart:			; XREF: Level; EndingSequence
 		lea	($C00004).l,a5
 		lea	($C00000).l,a6
-		lea	(Camera_X_Pos).w,a3
+		lea	(Camera_RAM).w,a3
 		movea.l	(Level_Layout_FG).w,a4			; MJ: Load address of layout
 		move.w	#$4000,d2
 		bsr.s	LoadTilesFromStart2
@@ -7707,20 +7707,20 @@ MainLoadBlockLoad:			; XREF: Level; EndingSequence
 		move.w	#0,d0
 		bsr.w	EniDec
 		movea.l	(a2)+,a0
-		lea	(RAM_Start).l,a1	; RAM address for 256x256 mappings
+		lea	(Chunk_Table).l,a1	; RAM address for 256x256 mappings
 		bsr.w	KosDec
 		bsr.w	LevelLayoutLoad
 		move.w	(a2)+,d0
 		move.w	(a2),d0
 		andi.w	#$FF,d0
-		cmpi.w	#$103,(Current_Zone).w ; is level SBZ3 (LZ4) ?
+		cmpi.w	#$103,(Current_Zone_And_Act).w ; is level SBZ3 (LZ4) ?
 		bne.s	MLB_ChkSBZPal	; if not, branch
 		moveq	#$C,d0		; use SB3 Palette
 
 MLB_ChkSBZPal:
-		cmpi.w	#$501,(Current_Zone).w ; is level SBZ2?
+		cmpi.w	#$501,(Current_Zone_And_Act).w ; is level SBZ2?
 		beq.s	MLB_UsePal0E	; if yes, branch
-		cmpi.w	#$502,(Current_Zone).w ; is level FZ?
+		cmpi.w	#$502,(Current_Zone_And_Act).w ; is level FZ?
 		bne.s	MLB_NormalPal	; if not, branch
 
 MLB_UsePal0E:
@@ -7747,7 +7747,7 @@ locret_6D10:
 ; This method now releases free ram space from A408 - A7FF
 
 LevelLayoutLoad:
-		move.w	(Current_Zone).w,d0
+		move.w	(Current_Zone_And_Act).w,d0
 		lsl.b	#6,d0
 		lsr.w	#4,d0
 		move.w	d0,d2
@@ -8005,7 +8005,7 @@ Resize_SBZ3:
 		bcc.s	locret_6F8C	; if not, branch
 		clr.b	(Last_Checkpoint_Hit).w
 		move.w	#1,(Level_Inactive_Flag).w ; restart level
-		move.w	#$502,(Current_Zone).w ; set level	number to 0502 (FZ)
+		move.w	#$502,(Current_Zone_And_Act).w ; set level	number to 0502 (FZ)
 		move.b	#1,(No_Player_Physics_Flag).w ; freeze Sonic
 
 locret_6F8C:
@@ -8220,7 +8220,6 @@ locret_715C:
 
 Resize_SLZ3end:
 		move.w	(Camera_X_Pos).w,(Camera_Min_X_Pos).w
-		rts
 		rts
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -14361,7 +14360,7 @@ loc_BF6E:				; XREF: Obj33_Index
 		move.w	#$11,d3
 		move.w	8(a0),d4
 		bsr.w	loc_C186
-		cmpi.w	#$200,(Current_Zone).w ; is the level MZ act 1?
+		cmpi.w	#$200,(Current_Zone_And_Act).w ; is the level MZ act 1?
 		bne.s	loc_BFC6	; if not, branch
 		bclr	#7,$28(a0)
 		move.w	8(a0),d0
@@ -14508,7 +14507,7 @@ loc_C104:
 ; ===========================================================================
 
 Obj33_ChkLava:
-		cmpi.w	#$201,(Current_Zone).w ; is the level MZ act 2?
+		cmpi.w	#$201,(Current_Zone_And_Act).w ; is the level MZ act 2?
 		bne.s	Obj33_ChkLava2	; if not, branch
 		move.w	#-$20,d2
 		cmpi.w	#$DD0,8(a0)
@@ -14521,7 +14520,7 @@ Obj33_ChkLava:
 ; ===========================================================================
 
 Obj33_ChkLava2:
-		cmpi.w	#$202,(Current_Zone).w ; is the level MZ act 3?
+		cmpi.w	#$202,(Current_Zone_And_Act).w ; is the level MZ act 3?
 		bne.s	Obj33_NoLava	; if not, branch
 		move.w	#$20,d2
 		cmpi.w	#$560,8(a0)
@@ -14703,7 +14702,7 @@ Obj34_Index:	dc.w Obj34_CheckSBZ3-Obj34_Index
 Obj34_CheckSBZ3:			; XREF: Obj34_Index
 		movea.l	a0,a1
 		moveq	#0,d0
-		cmpi.w	#$502,(Current_Zone).w
+		cmpi.w	#$502,(Current_Zone_And_Act).w
 		bne.s	@NotFinal
 		moveq	#6,d0
 		
@@ -14746,10 +14745,10 @@ Obj34_MakeSprite:
 		cmpi.w	#1,d1
 		ble.s	@NotText
 		move.l	#Map_obj34_Hell,4(a1)
-		cmpi.w	#$103,(Current_Zone).w
+		cmpi.w	#$103,(Current_Zone_And_Act).w
 		beq.s	@IsSBZ3Final
 		move.l	#Map_obj34_Final,4(a1)
-		cmpi.w	#$502,(Current_Zone).w
+		cmpi.w	#$502,(Current_Zone_And_Act).w
 		beq.s	@IsSBZ3Final
 		bsr.w	Obj34_GetMappings
 		
@@ -15090,7 +15089,7 @@ Obj3A_ChkBonus:
 		move.w	#SndID_KaChing,d0
 		jsr	(PlaySound_Special).l ;	play "ker-ching" sound
 		addq.b	#2,$24(a0)
-		cmpi.w	#$501,(Current_Zone).w
+		cmpi.w	#$501,(Current_Zone_And_Act).w
 		bne.s	Obj3A_SetDelay
 		addq.b	#4,$24(a0)
 
@@ -15119,7 +15118,7 @@ Obj3A_NextLevel:			; XREF: Obj3A_Index
 		add.w	d1,d1
 		add.w	d1,d0
 		move.w	LevelOrder(pc,d0.w),d0 ; load level from level order array
-		move.w	d0,(Current_Zone).w ; set level number
+		move.w	d0,(Current_Zone_And_Act).w ; set level number
 		tst.w	d0
 		bne.s	Obj3A_ChkSS
 		move.b	#0,(Game_Mode).w ; set game mode to level (00)
@@ -16593,7 +16592,7 @@ OPL_Index:	dc.w OPL_Main-OPL_Index
 
 OPL_Main:				; XREF: OPL_Index
 		addq.b	#2,(Obj_Manager_Routine).w
-		move.w	(Current_Zone).w,d0
+		move.w	(Current_Zone_And_Act).w,d0
 		lsl.b	#6,d0
 		lsr.w	#4,d0
 		lea	(ObjPos_Index).l,a0
@@ -19967,7 +19966,7 @@ loc_10444:
 Obj56_Type05:				; XREF: Obj56_TypeIndex
 		tst.b	$38(a0)
 		bne.s	loc_104A4
-		cmpi.w	#$100,(Current_Zone).w ; is level LZ1 ?
+		cmpi.w	#$100,(Current_Zone_And_Act).w ; is level LZ1 ?
 		bne.s	loc_1047A	; if not, branch
 		cmpi.b	#3,$3C(a0)
 		bne.s	loc_1047A
@@ -19983,7 +19982,7 @@ loc_1047A:
 		move.b	$3C(a0),d0
 		btst	#0,(a2,d0.w)
 		beq.s	loc_104AE
-		cmpi.w	#$100,(Current_Zone).w ; is level LZ1 ?
+		cmpi.w	#$100,(Current_Zone_And_Act).w ; is level LZ1 ?
 		bne.s	loc_1049E	; if not, branch
 		cmpi.b	#3,d0
 		bne.s	loc_1049E
@@ -24127,13 +24126,13 @@ loc_13336:
 ; ===========================================================================
 
 Boundary_Bottom:
-		cmpi.w	#$501,(Current_Zone).w ; is level SBZ2 ?
+		cmpi.w	#$501,(Current_Zone_And_Act).w ; is level SBZ2 ?
 		bne.w	JmpTo_KillSonic	; if not, kill Sonic
 		cmpi.w	#$2000,(Object_RAM+$8).w
 		bcs.w	JmpTo_KillSonic
 		clr.b	(Last_Checkpoint_Hit).w	; clear	lamppost counter
 		move.w	#1,(Level_Inactive_Flag).w ; restart the level
-		move.w	#$103,(Current_Zone).w ; set level	to SBZ3	(LZ4)
+		move.w	#$103,(Current_Zone_And_Act).w ; set level	to SBZ3	(LZ4)
 		rts	
 		
 JmpTo_KillSonic:
@@ -35354,7 +35353,7 @@ AniArt_Ending:				; XREF: AniArt_Index
 		bpl.s	loc_1C2F4
 		move.b	#7,(Level_Ani1_Timer).w
 		lea	(Art_GhzFlower1).l,a1 ;	load big flower	patterns
-		lea	(RAM_Start+$9400).w,a2
+		lea	(General_Buffer+$9400).w,a2
 		move.b	(Level_Ani1_Frame).w,d0
 		addq.b	#1,(Level_Ani1_Frame).w
 		andi.w	#1,d0
@@ -35404,7 +35403,7 @@ loc_1C33C:
 		lsl.w	#8,d0
 		add.w	d0,d0
 		move.l	#$70000001,($C00004).l
-		lea	(RAM_Start+$9800).w,a1 ; load	special	flower patterns	(from RAM)
+		lea	(General_Buffer+$9800).w,a1 ; load	special	flower patterns	(from RAM)
 		lea	(a1,d0.w),a1
 		move.w	#$F,d1
 		bra.w	LoadTiles
@@ -35423,7 +35422,7 @@ loc_1C37A:
 		lsl.w	#8,d0
 		add.w	d0,d0
 		move.l	#$68000001,($C00004).l
-		lea	(RAM_Start+$9E00).w,a1 ; load	special	flower patterns	(from RAM)
+		lea	(General_Buffer+$9E00).w,a1 ; load	special	flower patterns	(from RAM)
 		lea	(a1,d0.w),a1
 		move.w	#$F,d1
 		bra.w	LoadTiles

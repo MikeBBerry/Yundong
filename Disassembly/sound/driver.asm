@@ -990,24 +990,24 @@ loc_722C6:
 		rts	
 ; ===========================================================================
 SFX_BGMChannelRAM:
-		dc.l Sound_Driver_RAM+$D0
+		dc.l (Sound_Driver_RAM+$D0)&$FFFFFF
 		dc.l 0
-		dc.l Sound_Driver_RAM+$100
-		dc.l Sound_Driver_RAM+$130
-		dc.l Sound_Driver_RAM+$190
-		dc.l Sound_Driver_RAM+$1C0
-		dc.l Sound_Driver_RAM+$1F0
-		dc.l Sound_Driver_RAM+$1F0
+		dc.l (Sound_Driver_RAM+$100)&$FFFFFF
+		dc.l (Sound_Driver_RAM+$130)&$FFFFFF
+		dc.l (Sound_Driver_RAM+$190)&$FFFFFF
+		dc.l (Sound_Driver_RAM+$1C0)&$FFFFFF
+		dc.l (Sound_Driver_RAM+$1F0)&$FFFFFF
+		dc.l (Sound_Driver_RAM+$1F0)&$FFFFFF
 		
 SFX_SFXChannelRAM:
-		dc.l Sound_Driver_RAM+$220
+		dc.l (Sound_Driver_RAM+$220)&$FFFFFF
 		dc.l 0
-		dc.l Sound_Driver_RAM+$250
-		dc.l Sound_Driver_RAM+$280
-		dc.l Sound_Driver_RAM+$2B0
-		dc.l Sound_Driver_RAM+$2E0
-		dc.l Sound_Driver_RAM+$310
-		dc.l Sound_Driver_RAM+$310
+		dc.l (Sound_Driver_RAM+$250)&$FFFFFF
+		dc.l (Sound_Driver_RAM+$280)&$FFFFFF
+		dc.l (Sound_Driver_RAM+$2B0)&$FFFFFF
+		dc.l (Sound_Driver_RAM+$2E0)&$FFFFFF
+		dc.l (Sound_Driver_RAM+$310)&$FFFFFF
+		dc.l (Sound_Driver_RAM+$310)&$FFFFFF
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Play GHZ waterfall sound
@@ -1090,16 +1090,16 @@ locret_723C6:
 
 ; ===========================================================================
 SpecSFX_BGMChannelRAM:
-		dc.l Sound_Driver_RAM+$100
-		dc.l Sound_Driver_RAM+$1F0
+		dc.l (Sound_Driver_RAM+$100)&$FFFFFF
+		dc.l (Sound_Driver_RAM+$1F0)&$FFFFFF
 		
 SpecSFX_SFXChannelRAM:
-		dc.l Sound_Driver_RAM+$250
-		dc.l Sound_Driver_RAM+$310
+		dc.l (Sound_Driver_RAM+$250)&$FFFFFF
+		dc.l (Sound_Driver_RAM+$310)&$FFFFFF
 		
 SpecSFX_SpecSFXChannelRAM:
-		dc.l Sound_Driver_RAM+$340
-		dc.l Sound_Driver_RAM+$370
+		dc.l (Sound_Driver_RAM+$340)&$FFFFFF
+		dc.l (Sound_Driver_RAM+$370)&$FFFFFF
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 

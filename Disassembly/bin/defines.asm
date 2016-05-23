@@ -5,6 +5,7 @@
 ; ===========================================================================
 		rsset $FFFF0000
 RAM_Start						rs.b 0
+General_Buffer					rs.b 0
 Chunk_Table						rs.b $A400		; $FFFF0000
 Chunk_Table_End					rs.b 0
 Level_Layout					rs.b 0
@@ -276,6 +277,7 @@ Ring_Spill_Anim_Accum			rs.w 1			; $FFFFFEC8
 Camera_Min_Y_Pos_Debug_Copy		rs.w 1			; $FFFFFEF0
 Camera_Max_Y_Pos_Debug_Copy		rs.w 1			; $FFFFFEF2
 								rs.b $1C		; $FFFFFEF4
+Camera_RAM_Copy					rs.b 0
 Camera_X_Pos_Copy				rs.l 1			; $FFFFFF10
 Camera_Y_Pos_Copy				rs.l 1			; $FFFFFF14
 Camera_BG_X_Pos_Copy			rs.l 1			; $FFFFFF18
