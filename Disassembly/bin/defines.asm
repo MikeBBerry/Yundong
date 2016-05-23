@@ -25,7 +25,139 @@ Sonic_Pos_Record_Buf			rs.b $100		; $FFFFCB00
 Horiz_Scroll_Buf				rs.b $380		; $FFFFCC00
 Horiz_Scroll_Buf_End			rs.b 0
 								rs.b $80		; $FFFFCF80
-Object_RAM						rs.b $2000		; $FFFFD000
+Object_RAM						rs.b 0
+Normal_Object_RAM				rs.b 0
+Object_Space_1					rs.b $40		; $FFFFD000
+Object_Space_2					rs.b $40		; $FFFFD040
+Object_Space_3					rs.b $40		; $FFFFD080
+Object_Space_4					rs.b $40		; $FFFFD0C0
+Object_Space_5					rs.b $40		; $FFFFD100
+Object_Space_6					rs.b $40		; $FFFFD140
+Object_Space_7					rs.b $40		; $FFFFD180
+Object_Space_8					rs.b $40		; $FFFFD1C0
+Object_Space_9					rs.b $40		; $FFFFD200
+Object_Space_10					rs.b $40		; $FFFFD240
+Object_Space_11					rs.b $40		; $FFFFD280
+Object_Space_12					rs.b $40		; $FFFFD2C0
+Object_Space_13					rs.b $40		; $FFFFD300
+Object_Space_14					rs.b $40		; $FFFFD340
+Object_Space_15					rs.b $40		; $FFFFD380
+Object_Space_16					rs.b $40		; $FFFFD3C0
+Object_Space_17					rs.b $40		; $FFFFD400
+Object_Space_18					rs.b $40		; $FFFFD440
+Object_Space_19					rs.b $40		; $FFFFD480
+Object_Space_20					rs.b $40		; $FFFFD4C0
+Object_Space_21					rs.b $40		; $FFFFD500
+Object_Space_22					rs.b $40		; $FFFFD540
+Object_Space_23					rs.b $40		; $FFFFD580
+Object_Space_24					rs.b $40		; $FFFFD5C0
+Object_Space_25					rs.b $40		; $FFFFD600
+Object_Space_26					rs.b $40		; $FFFFD640
+Object_Space_27					rs.b $40		; $FFFFD680
+Object_Space_28					rs.b $40		; $FFFFD6C0
+Object_Space_29					rs.b $40		; $FFFFD700
+Object_Space_30					rs.b $40		; $FFFFD740
+Object_Space_31					rs.b $40		; $FFFFD780
+Object_Space_32					rs.b $40		; $FFFFD7C0
+Normal_Object_RAM_End			rs.b 0
+Dynamic_Object_RAM				rs.b 0
+Object_Space_33					rs.b $40		; $FFFFD800
+Object_Space_34					rs.b $40		; $FFFFD840
+Object_Space_35					rs.b $40		; $FFFFD880
+Object_Space_36					rs.b $40		; $FFFFD8C0
+Object_Space_37					rs.b $40		; $FFFFD900
+Object_Space_38					rs.b $40		; $FFFFD940
+Object_Space_39					rs.b $40		; $FFFFD980
+Object_Space_40					rs.b $40		; $FFFFD9C0
+Object_Space_41					rs.b $40		; $FFFFDA00
+Object_Space_42					rs.b $40		; $FFFFDA40
+Object_Space_43					rs.b $40		; $FFFFDA80
+Object_Space_44					rs.b $40		; $FFFFDAC0
+Object_Space_45					rs.b $40		; $FFFFDB00
+Object_Space_46					rs.b $40		; $FFFFDB40
+Object_Space_47					rs.b $40		; $FFFFDB80
+Object_Space_48					rs.b $40		; $FFFFDBC0
+Object_Space_49					rs.b $40		; $FFFFDC00
+Object_Space_50					rs.b $40		; $FFFFDC40
+Object_Space_51					rs.b $40		; $FFFFDC80
+Object_Space_52					rs.b $40		; $FFFFDCC0
+Object_Space_53					rs.b $40		; $FFFFDD00
+Object_Space_54					rs.b $40		; $FFFFDD40
+Object_Space_55					rs.b $40		; $FFFFDD80
+Object_Space_56					rs.b $40		; $FFFFDDC0
+Object_Space_57					rs.b $40		; $FFFFDE00
+Object_Space_58					rs.b $40		; $FFFFDE40
+Object_Space_59					rs.b $40		; $FFFFDE80
+Object_Space_60					rs.b $40		; $FFFFDEC0
+Object_Space_61					rs.b $40		; $FFFFDF00
+Object_Space_62					rs.b $40		; $FFFFDF40
+Object_Space_63					rs.b $40		; $FFFFDF80
+Object_Space_64					rs.b $40		; $FFFFDFC0
+Object_Space_65					rs.b $40		; $FFFFE000
+Object_Space_66					rs.b $40		; $FFFFE040
+Object_Space_67					rs.b $40		; $FFFFE080
+Object_Space_68					rs.b $40		; $FFFFE0C0
+Object_Space_69					rs.b $40		; $FFFFE100
+Object_Space_70					rs.b $40		; $FFFFE140
+Object_Space_71					rs.b $40		; $FFFFE180
+Object_Space_72					rs.b $40		; $FFFFE1C0
+Object_Space_73					rs.b $40		; $FFFFE200
+Object_Space_74					rs.b $40		; $FFFFE240
+Object_Space_75					rs.b $40		; $FFFFE280
+Object_Space_76					rs.b $40		; $FFFFE2C0
+Object_Space_77					rs.b $40		; $FFFFE300
+Object_Space_78					rs.b $40		; $FFFFE340
+Object_Space_79					rs.b $40		; $FFFFE380
+Object_Space_80					rs.b $40		; $FFFFE3C0
+Object_Space_81					rs.b $40		; $FFFFE400
+Object_Space_82					rs.b $40		; $FFFFE440
+Object_Space_83					rs.b $40		; $FFFFE480
+Object_Space_84					rs.b $40		; $FFFFE4C0
+Object_Space_85					rs.b $40		; $FFFFE500
+Object_Space_86					rs.b $40		; $FFFFE540
+Object_Space_87					rs.b $40		; $FFFFE580
+Object_Space_88					rs.b $40		; $FFFFE5C0
+Object_Space_89					rs.b $40		; $FFFFE600
+Object_Space_90					rs.b $40		; $FFFFE640
+Object_Space_91					rs.b $40		; $FFFFE680
+Object_Space_92					rs.b $40		; $FFFFE6C0
+Object_Space_93					rs.b $40		; $FFFFE700
+Object_Space_94					rs.b $40		; $FFFFE740
+Object_Space_95					rs.b $40		; $FFFFE780
+Object_Space_96					rs.b $40		; $FFFFE7C0
+Object_Space_97					rs.b $40		; $FFFFE800
+Object_Space_98					rs.b $40		; $FFFFE840
+Object_Space_99					rs.b $40		; $FFFFE880
+Object_Space_100				rs.b $40		; $FFFFE8C0
+Object_Space_101				rs.b $40		; $FFFFE900
+Object_Space_102				rs.b $40		; $FFFFE940
+Object_Space_103				rs.b $40		; $FFFFE980
+Object_Space_104				rs.b $40		; $FFFFE9C0
+Object_Space_105				rs.b $40		; $FFFFEA00
+Object_Space_106				rs.b $40		; $FFFFEA40
+Object_Space_107				rs.b $40		; $FFFFEA80
+Object_Space_108				rs.b $40		; $FFFFEAC0
+Object_Space_109				rs.b $40		; $FFFFEB00
+Object_Space_110				rs.b $40		; $FFFFEB40
+Object_Space_111				rs.b $40		; $FFFFEB80
+Object_Space_112				rs.b $40		; $FFFFEBC0
+Object_Space_113				rs.b $40		; $FFFFEC00
+Object_Space_114				rs.b $40		; $FFFFEC40
+Object_Space_115				rs.b $40		; $FFFFEC80
+Object_Space_116				rs.b $40		; $FFFFECC0
+Object_Space_117				rs.b $40		; $FFFFED00
+Object_Space_118				rs.b $40		; $FFFFED40
+Object_Space_119				rs.b $40		; $FFFFED80
+Object_Space_120				rs.b $40		; $FFFFEDC0
+Object_Space_121				rs.b $40		; $FFFFEE00
+Object_Space_122				rs.b $40		; $FFFFEE40
+Object_Space_123				rs.b $40		; $FFFFEE80
+Object_Space_124				rs.b $40		; $FFFFEEC0
+Object_Space_125				rs.b $40		; $FFFFEF00
+Object_Space_126				rs.b $40		; $FFFFEF40
+Object_Space_127				rs.b $40		; $FFFFEF80
+Object_Space_128				rs.b $40		; $FFFFEFC0
+Dynamic_Object_RAM_End			rs.b 0
 Object_RAM_End					rs.b 0
 Sound_Driver_RAM				rs.b $600		; $FFFFF000
 Game_Mode						rs.b 1			; $FFFFF600
@@ -80,6 +212,7 @@ Water_Fullscreen_Flag			rs.b 1			; $FFFFF64E
 Do_Updates_In_H_Int				rs.b 1			; $FFFFF64F
 Pal_Cycle_Buffer				rs.b $12		; $FFFFF650
 								rs.b $1E		; $FFFFF662
+Misc_Variables_End				rs.b 0
 PLC_Buffer						rs.b $60		; $FFFFF680
 PLC_Buffer_Only_End				rs.b 0
 PLC_Buffer_Reg_0				rs.l 1			; $FFFFF6E0
@@ -92,6 +225,7 @@ PLC_Buffer_Reg_18				rs.w 1			; $FFFFF6F8
 PLC_Buffer_Reg_1A				rs.w 1			; $FFFFF6FA
 								rs.b 4			; $FFFFF6FC
 PLC_Buffer_End					rs.b 0
+Camera_And_Misc_RAM				rs.b 0
 Camera_RAM						rs.b 0
 Camera_X_Pos					rs.l 1			; $FFFFF700
 Camera_Y_Pos					rs.l 1			; $FFFFF704
@@ -191,6 +325,7 @@ Sonic_Ending_Routine			rs.b 1			; $FFFFF7D7
 Switch_Statuses					rs.b $10		; $FFFFF7E0
 Unk_Scroll_Values				rs.b 8			; $FFFFF7F0
 								rs.b 8			; $FFFFF7F8
+Camera_And_Misc_RAM_End			rs.b 0
 Sprite_Table					rs.b $280		; $FFFFF800
 Sprite_Table_End				rs.b 0
 Target_Underwater_Palette		= __rs-$80		; $FFFFFA00
@@ -262,6 +397,7 @@ Saved_Extra_Life_Flags			rs.b 1			; $FFFFFE54
 Emerald_Count					rs.b 1			; $FFFFFE57
 Got_Emeralds_Array				rs.b 6			; $FFFFFE58
 Oscillation_Control				rs.w 1			; $FFFFFE5E
+Osc_And_Misc_RAM				rs.b 0
 Oscillation_Data				rs.w $20		; $FFFFFE60
 								rs.b $20		; $FFFFFEA0
 Logspike_Anim_Counter			rs.b 1			; $FFFFFEC0
@@ -291,6 +427,7 @@ Scroll_Flags_BG_Copy			rs.w 1			; $FFFFFF32
 Scroll_Flags_BG2_Copy			rs.w 1			; $FFFFFF34
 Scroll_Flags_BG3_Copy			rs.w 1			; $FFFFFF36
 								rs.b $48		; $FFFFFF38
+Osc_And_Misc_RAM_End			rs.b 0
 Level_Sel_Move_Timer			rs.w 1			; $FFFFFF80
 Level_Sel_Selection				rs.w 1			; $FFFFFF82
 Level_Sel_Sound_ID				rs.w 1			; $FFFFFF84

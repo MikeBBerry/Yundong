@@ -28,7 +28,7 @@ FlickySS:
 		jsr	NemDec
 		
 		lea	(Object_RAM).w,a0			; Clear object RAM
-		move.w	#$7FF,d1
+		move.w	#(Object_RAM_End-Object_RAM)>>2-1,d1
 		
 @ClearObj:
 		move.l	#0,(a0)+
@@ -39,10 +39,10 @@ FlickySS:
 		
 		move.b	#0,(Flicky_Door_Flag).w
 		
-		move.b	#$8D,(Object_RAM).w		; Load flicky object
-		move.b	#$90,(Object_RAM+$40).w
-		move.w	#128,(Object_RAM+$48).w
-		move.w	#192,(Object_RAM+$4C).w
+		move.b	#$8D,(Object_Space_1).w		; Load flicky object
+		move.b	#$90,(Object_Space_2).w
+		move.w	#128,(Object_Space_2+8).w
+		move.w	#192,(Object_Space_2+$C).w
 		
 		bsr.w	Flicky_LoadObjects
 		jsr	ObjectsLoad					; Run objects
@@ -122,8 +122,8 @@ FlickySS:
 HandleChicks:
 		moveq	#0,d3
 		moveq	#0,d4
-		lea	(Object_RAM+$800).w,a1
-		move.w	#((Object_RAM_End-(Object_RAM+$800))/$40)-1,d1
+		lea	(Dynamic_Object_RAM).w,a1
+		move.w	#((Dynamic_Object_RAM_End-Dynamic_Object_RAM)/$40)-1,d1
 		move.w	#$1C,d0
 		
 @Check:
@@ -168,7 +168,7 @@ Flicky_LoadLevelMap:
 ; Load objects
 ; ===========================================================================
 Flicky_LoadObjects:
-		lea	(Object_RAM+$800).w,a0
+		lea	(Dynamic_Object_RAM).w,a0
 		lea	(Flicky_Objects).l,a1
 		move.w	#(Flicky_Objects_End-Flicky_Objects)/6-1,d1
 		
@@ -189,8 +189,8 @@ Flicky_Objects_End:
 ; Collision response routine for the player
 ; ===========================================================================
 Flicky_ColResponse:
-		lea	(Object_RAM+$40).w,a1
-		move.w	#(Object_RAM_End-(Object_RAM+$40))/$40-1,d6
+		lea	(Object_Space_2).w,a1
+		move.w	#(Object_RAM_End-Object_Space_2)/$40-1,d6
 		
 @Loop:
 		move.w	8(a0),d0
@@ -291,7 +291,7 @@ ObjChick_Follow:
 		
 		tst.w	(Flicky_Door_Flag).w
 		bne.s	ObjChick_Door
-		cmpi.b	#4,(Object_RAM+$24).w
+		cmpi.b	#4,(Object_Space_1+$24).w
 		bne.s	@Skip
 		move.b	#6,$24(a0)
 		
@@ -301,7 +301,7 @@ ObjChick_Follow:
 ; ===========================================================================
 ObjChick_Door:
 		move.w	8(a0),d0
-		move.w	(Object_RAM+$48).w,d1
+		move.w	(Object_Space_2+8).w,d1
 		move.w	#$100,d2
 		cmp.w	d1,d0
 		blt.s	@Skip
@@ -372,7 +372,7 @@ ObjCat_Movement:
 		
 		cmpi.w	#172,$C(a0)
 		blt.w	@Normal
-		cmpi.w	#190,(Object_RAM+$0C).w
+		cmpi.w	#190,(Object_Space_1+$C).w
 		bge.w	@Skip
 		tst.w	$10(a0)
 		bmi.s	@ChkLeft2
@@ -427,7 +427,7 @@ ObjCat_Movement:
 		bpl.s	@Skip2
 		move.w	#-$260,d0
 		move.w	$C(a0),d1
-		move.w	(Object_RAM+$0C).w,d2
+		move.w	(Object_Space_1+$C).w,d2
 		cmp.w	d2,d1
 		bge.s	@Apply
 		move.w	#0,d0
