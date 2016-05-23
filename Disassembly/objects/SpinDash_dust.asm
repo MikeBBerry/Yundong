@@ -20,7 +20,7 @@ Obj05_Init:
 		move.w	#$7A0,2(a0)
 ; ===========================================================================
 Obj05_Main:
-		lea	(Object_RAM).w,a2
+		lea	(Object_Space_1).w,a2
 		moveq	#0,d0
 		move.b	$1C(a0),d0
 		add.w	d0,d0
@@ -82,7 +82,7 @@ Obj05_Delete:
 		bra.w	DeleteObject
 ; ===========================================================================
 Obj05_CheckSkid:
-		lea	(Object_RAM).w,a2
+		lea	(Object_Space_1).w,a2
 		cmpi.b	#$D,$1C(a2)
 		beq.s	Obj05_SkidDust
 		move.b	#2,$24(a0)
