@@ -1,3 +1,4 @@
+; ===========================================================================
 ; ---------------------------------------------------------------------------
 Go_SoundPriorities:	dc.l SoundPriorities
 Go_SpecSoundIndex:	dc.l SpecSoundIndex
@@ -605,9 +606,9 @@ loc_71F12:
 		clr.b	(a1)+
 		tst.b	d0
 		beq.s	loc_71F3E
-		cmpi.b	#$D1,d0
+		cmpi.b	#MusicID2_Start,d0
 		bhs.s	@MusicOrFlag
-		subi.b	#$A0,d0
+		subi.b	#SFXID_Start,d0
 		blo.s	@MusicOrFlag
 		tst.b	9(a6)
 		beq.s	loc_71F2C
@@ -651,15 +652,15 @@ Sound_ChkValue:				; XREF: UpdateMusic
 		move.b	9(a6),d7
 		beq.w	StopSoundAndMusic
 		move.b	#0,9(a6)	; reset	music flag
-		cmpi.b	#$9F,d7
+		cmpi.b	#MusicID_End,d7
 		bls.w	Sound_PlayBGM	; music	$81-$9F
-		cmpi.b	#$CF,d7
+		cmpi.b	#MusicID_End,d7
 		bls.w	Sound_PlaySFX	; sound	$A0-$CF
-		cmpi.b	#$D0,d7
+		cmpi.b	#SpecSFXID_End,d7
 		bls.w	Sound_PlaySpecial	; sound	$D0
-		cmpi.b	#$FB,d7
+		cmpi.b	#MusicID2_End,d7
 		bls.w	Sound_PlayBGM	; sound	$D1-$FB
-		cmpi.b	#$FF,d7
+		cmpi.b	#CmdID_End,d7
 		bls.s	Sound_E0toE4	; sound	$FC-$FF
 
 locret_71F8C:
@@ -667,7 +668,7 @@ locret_71F8C:
 ; ===========================================================================
 
 Sound_E0toE4:				; XREF: Sound_ChkValue
-		subi.b	#$FC,d7
+		subi.b	#CmdID_Start,d7
 		lsl.w	#2,d7
 		jmp	Sound_ExIndex(pc,d7.w)
 ; ===========================================================================
@@ -727,9 +728,9 @@ loc_7202C:
 		jsr	InitMusicPlayback(pc)
 		
 		subq.b	#1,d7
-		cmpi.b	#$D0,d7
+		cmpi.b	#MusicID2_Start-1,d7
 		bcs.s	@Normal
-		subi.b	#$30,d7
+		subi.b	#(MusicID2_Start-SFXID_Start-1),d7
 		
 @Normal:
 		movea.l	(Go_SpeedUpIndex).l,a4

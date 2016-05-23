@@ -4,6 +4,19 @@
 ; lets clean up a little and put all macros and commandline options here!
 	include "bin/macro.asm"
 ; ===========================================================================
+; Constansts
+; ===========================================================================
+MusicID_Start		= 1			; First music ID (part 1)
+MusicID_End			= $9F		; Last music ID (part 1)
+SFXID_Start			= $A0		; First SFX ID
+SFXID_End			= $CF		; Last SFX ID
+SpecSFXID_Start		= $D0		; First special SFX ID
+SpecSFXID_End		= $D0		; Last special SFX ID
+MusicID2_Start		= $D1		; First music ID (part 2)
+MusicID2_End		= $FB		; Last music ID (part 2)
+CmdID_Start			= $FC		; First command ID
+CmdID_End			= $FF		; Last command ID
+; ===========================================================================
 StartOfRom:
 Vectors:	dc.l $FFFE00, EntryPoint
 ErrorTrap:	bra.w	*

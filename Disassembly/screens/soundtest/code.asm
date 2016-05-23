@@ -5,8 +5,8 @@
 ; ===========================================================================
 SndTest_Settings:
 		dc.l $FFFFFFB1			; RAM address for sound ID
-		dc.b $1F				; Maximum ID
-		dc.b 1					; ID modifier (is added to ID)
+		dc.b $16				; Maximum ID
+		dc.b MusicID_Start		; ID modifier (is added to ID)
 		dc.l Txt_Music			; Sound type text address
 		dc.l $429E0003			; VDP value to draw the text and ID number
 		dc.b 1					; "Stop" flag (if 1, then it allows for an option to stop)
@@ -14,7 +14,7 @@ SndTest_Settings:
 		
 		dc.l $FFFFFFB2
 		dc.b $2F
-		dc.b $A0
+		dc.b SFXID_Start
 		dc.l Txt_SFX
 		dc.l $439E0003
 		dc.b 0
@@ -293,10 +293,10 @@ SndTest_PlayMusic:
 		move.b	(a6),d0
 		add.b	id_mod(a5),d0
 		
-		cmpi.b	#$A0,d0					; Is the ID $A0 or greater
+		cmpi.b	#MusicID_End+1,d0		; Is the ID $A0 or greater
 		bcs.s	@Normal					; If not, branch
 		
-		addi.b	#$31,d0					; Modify the ID to use the other music IDs
+		addi.b	#(MusicID2_Start-MusicID_End+1),d0	; Modify the ID to use the other music IDs
 		
 @Normal:
 		jmp	PlaySound					; Play the music
