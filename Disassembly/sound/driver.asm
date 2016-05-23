@@ -110,12 +110,12 @@ SoundPriorities:
 
 
 UpdateMusic:				; XREF: loc_B10; PalToCRAM
-		cmpi.b	#$10,($FFFFF600).w
+		cmpi.b	#$10,(Game_Mode).w
 		bne.s	@NotSS
 		rts
 		
 @NotSS:
-		lea	($FFF000).l,a6
+		lea	(Sound_Driver_RAM).w,a6
 		clr.b	$E(a6)
 		tst.b	3(a6)		; is music paused?
 		bne.w	PauseMusic	; if yes, branch
@@ -209,7 +209,7 @@ UpdateMusic:				; XREF: loc_B10; PalToCRAM
 		jsr	PSGUpdateTrack(pc)
 
 CheckSoundPAL:
-		btst	#6,($FFFFFFF8).w	   	; is Megadrive PAL?
+		btst	#6,(Console_Version).w	; is Megadrive PAL?
 		beq.s	@End		 			; if not, branch
 		subq.b	#1,(Snd_Driver_PAL_Counter).w	; decrement timer
 		bpl.s	@End					; if it's not 0, return
@@ -990,24 +990,24 @@ loc_722C6:
 		rts	
 ; ===========================================================================
 SFX_BGMChannelRAM:
-		dc.l $FFF0D0
+		dc.l Sound_Driver_RAM+$D0
 		dc.l 0
-		dc.l $FFF100
-		dc.l $FFF130
-		dc.l $FFF190
-		dc.l $FFF1C0
-		dc.l $FFF1F0
-		dc.l $FFF1F0
+		dc.l Sound_Driver_RAM+$100
+		dc.l Sound_Driver_RAM+$130
+		dc.l Sound_Driver_RAM+$190
+		dc.l Sound_Driver_RAM+$1C0
+		dc.l Sound_Driver_RAM+$1F0
+		dc.l Sound_Driver_RAM+$1F0
 		
 SFX_SFXChannelRAM:
-		dc.l $FFF220
+		dc.l Sound_Driver_RAM+$220
 		dc.l 0
-		dc.l $FFF250
-		dc.l $FFF280
-		dc.l $FFF2B0
-		dc.l $FFF2E0
-		dc.l $FFF310
-		dc.l $FFF310
+		dc.l Sound_Driver_RAM+$250
+		dc.l Sound_Driver_RAM+$280
+		dc.l Sound_Driver_RAM+$2B0
+		dc.l Sound_Driver_RAM+$2E0
+		dc.l Sound_Driver_RAM+$310
+		dc.l Sound_Driver_RAM+$310
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Play GHZ waterfall sound
@@ -1090,16 +1090,16 @@ locret_723C6:
 
 ; ===========================================================================
 SpecSFX_BGMChannelRAM:
-		dc.l $FFF100
-		dc.l $FFF1F0
+		dc.l Sound_Driver_RAM+$100
+		dc.l Sound_Driver_RAM+$1F0
 		
 SpecSFX_SFXChannelRAM:
-		dc.l $FFF250
-		dc.l $FFF310
+		dc.l Sound_Driver_RAM+$250
+		dc.l Sound_Driver_RAM+$310
 		
 SpecSFX_SpecSFXChannelRAM:
-		dc.l $FFF340
-		dc.l $FFF370
+		dc.l Sound_Driver_RAM+$340
+		dc.l Sound_Driver_RAM+$370
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 

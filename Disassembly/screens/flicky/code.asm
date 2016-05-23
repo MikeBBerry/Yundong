@@ -12,7 +12,7 @@ FlickySS:
 		
 		move	#$2700,sr				; Stop interrupts
 		
-		move.w	($FFFFF60C).w,d0		; Disable screen
+		move.w	(VDP_Reg_1_Value).w,d0		; Disable screen
 		andi.b	#$BF,d0
 		move.w	d0,($C00004).l
 		
@@ -27,22 +27,22 @@ FlickySS:
 		lea	(Nem_FlickyPlayer).l,a0
 		jsr	NemDec
 		
-		lea	($FFFFD000).w,a0			; Clear object RAM
+		lea	(Object_RAM).w,a0			; Clear object RAM
 		move.w	#$7FF,d1
 		
 @ClearObj:
 		move.l	#0,(a0)+
 		dbf	d1,@ClearObj
 		
-		move.l	#0,($FFFFF700).w		; Clear camera RAM
-		move.l	#0,($FFFFF704).w
+		move.l	#0,(Camera_X_Pos).w		; Clear camera RAM
+		move.l	#0,(Camera_Y_Pos).w
 		
-		move.b	#0,($FFFFF722).w
+		move.b	#0,(Flicky_Door_Flag).w
 		
-		move.b	#$8D,($FFFFD000).w		; Load flicky object
-		move.b	#$90,($FFFFD040).w
-		move.w	#128,($FFFFD048).w
-		move.w	#192,($FFFFD04C).w
+		move.b	#$8D,(Object_RAM).w		; Load flicky object
+		move.b	#$90,(Object_RAM+$40).w
+		move.w	#128,(Object_RAM+$48).w
+		move.w	#192,(Object_RAM+$4C).w
 		
 		bsr.w	Flicky_LoadObjects
 		jsr	ObjectsLoad					; Run objects
@@ -56,7 +56,7 @@ FlickySS:
 		bsr.w	Flicky_LoadLevelMap
 		
 		lea	(Pal_Flicky).l,a0 
-		lea	($FFFFFB80).w,a1
+		lea	(Target_Palette).w,a1
 		moveq  #$F,d0
 
 @PalLoop:
@@ -64,30 +64,28 @@ FlickySS:
 		move.l (a0)+,(a1)+
 		dbf    d0,@PalLoop
 		
-		move.w	($FFFFF700).w,d0
+		move.w	(Camera_X_Pos).w,d0
 		andi.w	#$FF,d0
-		move.w	d0,($FFFFF700).w
+		move.w	d0,(Camera_X_Pos).w
 		neg.w	d0
-		move.w	d0,($FFFFCC02).w
-		
-		move.w	#0,($FFFFF710).w
+		move.w	d0,(Horiz_Scroll_Buf+2).w
 		
 		move.w	#$83,d0
 		bsr.w	Flicky_PlaySound
 		
-		move.w	($FFFFF60C).w,d0		; Enable screen
+		move.w	(VDP_Reg_1_Value).w,d0		; Enable screen
 		ori.b	#$40,d0
 		move.w	d0,($C00004).l
 		
 		jsr	Pal_FadeTo					; Fade to palette
 
 @Loop:
-		move.b	#2,($FFFFF62A).w		; Run V-INT subroutine 2
+		move.b	#2,(V_Int_Routine).w		; Run V-INT subroutine 2
 		jsr	DelayProgram
 		
-		tst.w	($FFFFF724).w
+		tst.w	(Flicky_Chicks_Following).w
 		bne.s	@ChickFollow
-		move.b	#0,($FFFFF722).w
+		move.b	#0,(Flicky_Door_Flag).w
 		
 @ChickFollow:
 		jsr	ObjectsLoad					; Run objects
@@ -95,19 +93,19 @@ FlickySS:
 		
 		jsr	HandleChicks
 		
-		move.w	($FFFFF700).w,d0
+		move.w	(Camera_X_Pos).w,d0
 		andi.w	#$FF,d0
-		move.w	d0,($FFFFF700).w
+		move.w	d0,(Camera_X_Pos).w
 		neg.w	d0
-		move.w	d0,($FFFFCC02).w
+		move.w	d0,(Horiz_Scroll_Buf+2).w
 		
-		tst.w	($FFFFF720).w
+		tst.w	(Flicky_Chicks_Left).w
 		beq.s	@End
-		cmpi.b	#$10,($FFFFF600).w
+		cmpi.b	#$10,(Game_Mode).w
 		beq.s	@Loop
 		
 @End:
-		move.b	#$C,($FFFFF600).w
+		move.b	#$C,(Game_Mode).w
 		jsr	ClearScreen
 		
 		move.w	#$9001,(a6)
@@ -124,8 +122,8 @@ FlickySS:
 HandleChicks:
 		moveq	#0,d3
 		moveq	#0,d4
-		lea	($FFFFD800).w,a1
-		move.w	#(($F000-$D800)/$40)-1,d1
+		lea	(Object_RAM+$800).w,a1
+		move.w	#((Object_RAM_End-(Object_RAM+$800))/$40)-1,d1
 		move.w	#$1C,d0
 		
 @Check:
@@ -135,15 +133,15 @@ HandleChicks:
 		cmpi.b	#4,$24(a1)
 		bne.s	@Skip2
 		addq.w	#1,d4
-		tst.b	($FFFFF722).w
+		tst.b	(Flicky_Door_Flag).w
 		bne.s	@Skip2
-		move.w	($FFFFF7A8).w,d2
+		move.w	(Sonic_Pos_Record_Index).w,d2
 		sub.w	d0,d2
 		bpl.s	@Skip
 		add.w	#$100,d2
 		
 @Skip:
-		lea	($FFFFCB00).w,a0
+		lea	(Sonic_Pos_Record_Buf).w,a0
 		lea	(a0,d2.w),a0
 		move.w	(a0)+,8(a1)
 		move.w	(a0)+,$C(a1)
@@ -152,8 +150,8 @@ HandleChicks:
 @Skip2:
 		lea	$40(a1),a1
 		dbf	d1,@Check
-		move.w	d3,($FFFFF720).w
-		move.w	d4,($FFFFF724).w
+		move.w	d3,(Flicky_Chicks_Left).w
+		move.w	d4,(Flicky_Chicks_Following).w
 		rts
 ; ===========================================================================
 ; Load mappings
@@ -170,7 +168,7 @@ Flicky_LoadLevelMap:
 ; Load objects
 ; ===========================================================================
 Flicky_LoadObjects:
-		lea	($FFFFD800).w,a0
+		lea	(Object_RAM+$800).w,a0
 		lea	(Flicky_Objects).l,a1
 		move.w	#(Flicky_Objects_End-Flicky_Objects)/6-1,d1
 		
@@ -179,11 +177,6 @@ Flicky_LoadObjects:
 		move.b	d0,(a0)
 		move.w	(a1)+,8(a0)
 		move.w	(a1)+,$C(a0)
-		cmpi.b	#$8F,(a0)
-		bne.s	@Skip
-		addq.w	#1,($FFFFF710).w
-		
-@Skip:
 		lea	$40(a0),a0
 		dbf	d1,@Load
 		rts
@@ -196,8 +189,8 @@ Flicky_Objects_End:
 ; Collision response routine for the player
 ; ===========================================================================
 Flicky_ColResponse:
-		lea	($FFFFD040).w,a1
-		move.w	#($F000-$D040)/$40-1,d6
+		lea	(Object_RAM+$40).w,a1
+		move.w	#(Object_RAM_End-(Object_RAM+$40))/$40-1,d6
 		
 @Loop:
 		move.w	8(a0),d0
@@ -253,7 +246,7 @@ Flicky_ColResponse:
 @Door:
 		cmpi.b	#$8F,(a0)
 		beq.s	@Door_Chick
-		move.b	#1,($FFFFF722).w
+		move.b	#1,(Flicky_Door_Flag).w
 		bra.s	@DoLoop
 		
 @Door_Chick:
@@ -296,9 +289,9 @@ ObjChick_Main:
 ObjChick_Follow:
 		jsr	Flicky_ColResponse
 		
-		tst.w	($FFFFF722).w
+		tst.w	(Flicky_Door_Flag).w
 		bne.s	ObjChick_Door
-		cmpi.b	#4,($FFFFD024).w
+		cmpi.b	#4,(Object_RAM+$24).w
 		bne.s	@Skip
 		move.b	#6,$24(a0)
 		
@@ -308,7 +301,7 @@ ObjChick_Follow:
 ; ===========================================================================
 ObjChick_Door:
 		move.w	8(a0),d0
-		move.w	($FFFFD048).w,d1
+		move.w	(Object_RAM+$48).w,d1
 		move.w	#$100,d2
 		cmp.w	d1,d0
 		blt.s	@Skip
@@ -354,7 +347,7 @@ ObjCat_Init:
 		move.w	#-$100,$10(a0)
 ; ===========================================================================
 ObjCat_Main:
-		tst.b	($FFFFF722).w
+		tst.b	(Flicky_Door_Flag).w
 		bne.s	@Skip
 		jsr	SpeedToPos
 		jsr	Flicky_DoCollision
@@ -379,7 +372,7 @@ ObjCat_Movement:
 		
 		cmpi.w	#172,$C(a0)
 		blt.w	@Normal
-		cmpi.w	#190,($FFFFD00C).w
+		cmpi.w	#190,(Object_RAM+$0C).w
 		bge.w	@Skip
 		tst.w	$10(a0)
 		bmi.s	@ChkLeft2
@@ -434,7 +427,7 @@ ObjCat_Movement:
 		bpl.s	@Skip2
 		move.w	#-$260,d0
 		move.w	$C(a0),d1
-		move.w	($FFFFD00C).w,d2
+		move.w	(Object_RAM+$0C).w,d2
 		cmp.w	d2,d1
 		bge.s	@Apply
 		move.w	#0,d0
@@ -476,12 +469,12 @@ ObjFlicky_Init:
 		move.w	#128,8(a0)
 		move.w	#192,$C(a0)
 		
-		move.w	#$180,($FFFFF760).w
-		move.w	#$18,($FFFFF762).w
-		move.w	#6,($FFFFF764).w
+		move.w	#$180,(Sonic_Top_Speed).w
+		move.w	#$18,(Sonic_Acceleration).w
+		move.w	#6,(Sonic_Deceleration).w
 ; ===========================================================================
 ObjFlicky_Main:
-		tst.b	($FFFFF722).w
+		tst.b	(Flicky_Door_Flag).w
 		bne.s	@Skip
 		jsr	SpeedToPos
 		jsr	Sonic_RecordPos
@@ -495,7 +488,7 @@ ObjFlicky_Main:
 		
 		move.w	8(a0),d0
 		subi.w	#128,d0
-		move.w	d0,($FFFFF700).w
+		move.w	d0,(Camera_X_Pos).w
 		
 		jmp	DisplaySprite
 ; ===========================================================================
@@ -518,9 +511,9 @@ ObjFlicky_Jump:
 		rts
 ; ===========================================================================	
 ObjFlicky_Move:
-		move.w	($FFFFF760).w,d6
-		move.w	($FFFFF762).w,d5
-		move.w	($FFFFF764).w,d4
+		move.w	(Sonic_Top_Speed).w,d6
+		move.w	(Sonic_Acceleration).w,d5
+		move.w	(Sonic_Deceleration).w,d4
 		btst	#2,(Ctrl_1_Held).w
 		beq.s	ObjFlicky_NotLeft
 		;bset	#0,1(a0)
@@ -585,11 +578,11 @@ ObjFlicky_Dead:
 		
 		move.w	8(a0),d0
 		subi.w	#128,d0
-		move.w	d0,($FFFFF700).w
+		move.w	d0,(Camera_X_Pos).w
 		
 		tst.b	$2E(a0)
 		beq.s	@Skip
-		move.b	#$C,($FFFFF600).w
+		move.b	#$C,(Game_Mode).w
 		
 @Skip:
 		jmp	DisplaySprite

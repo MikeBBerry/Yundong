@@ -25,6 +25,7 @@ Horiz_Scroll_Buf				rs.b $380		; $FFFFCC00
 Horiz_Scroll_Buf_End			rs.b 0
 								rs.b $80		; $FFFFCF80
 Object_RAM						rs.b $2000		; $FFFFD000
+Object_RAM_End					rs.b 0
 Sound_Driver_RAM				rs.b $600		; $FFFFF000
 Game_Mode						rs.b 1			; $FFFFF600
 								rs.b 1			; $FFFFF601
@@ -107,22 +108,15 @@ Camera_Min_X_Pos				rs.w 1			; $FFFFF728
 Camera_Max_X_Pos				rs.w 1			; $FFFFF72A
 Camera_Min_Y_Pos				rs.w 1			; $FFFFF72C
 Camera_Max_Y_Pos				rs.w 1			; $FFFFF72E
-Unk_F730						rs.w 1			; $FFFFF730
-Unk_F732						rs.w 1			; $FFFFF732
-								rs.b 6			; $FFFFF734
+								rs.b $A			; $FFFFF730
 Camera_X_Pos_Diff				rs.w 1			; $FFFFF73A
 Camera_Y_Pos_Diff				rs.w 1			; $FFFFF73C
 Camera_Y_Pos_Bias				rs.w 1			; $FFFFF73E
-Unk_F740						rs.b 1			; $FFFFF740
-Unk_F741						rs.b 1			; $FFFFF741
+								rs.b 2			; $FFFFF740
 Dynamic_Resize_Routine			rs.b 1			; $FFFFF742
 								rs.b 1			; $FFFFF743
 Deform_Lock						rs.b 1			; $FFFFF744
-								rs.b 1			; $FFFFF745
-Unk_F746						rs.b 1			; $FFFFF746
-								rs.b 1			; $FFFFF747
-Unk_F748						rs.b 1			; $FFFFF748
-								rs.b 1			; $FFFFF749
+								rs.b 5			; $FFFFF745
 Horiz_Block_Crossed_Flag		rs.b 1			; $FFFFF74A
 Verti_Block_Crossed_Flag		rs.b 1			; $FFFFF74B
 Horiz_Block_Crossed_Flag_BG		rs.b 1			; $FFFFF74C
@@ -159,7 +153,7 @@ Demo_Pal_Fade_Delay				rs.w 1			; $FFFFF794
 Collision_Addr					rs.l 1			; $FFFFF796
 								rs.b $B			; $FFFFF79A
 Obj31_Y_Pos						rs.w 1			; $FFFFF7A4
-Boss_Defeated_Flag				rs.b 1			; $FFFFF7A7
+Boss_Defeated_Flags				rs.b 1			; $FFFFF7A7
 Sonic_Pos_Record_Index			rs.w 1			; $FFFFF7A8
 Right_Boundary_Lock				rs.b 1			; $FFFFF7AA
 								rs.b 5			; $FFFFF7AB
@@ -233,7 +227,8 @@ Update_HUD_Timer				rs.b 1			; $FFFFFE1E
 Update_HUD_Score				rs.b 1			; $FFFFFE1F
 Ring_Count						rs.w 1			; $FFFFFE20
 Timer							rs.b 0
-Timer_Minute					rs.w 1			; $FFFFFE22
+Timer_Minute_Word				rs.b 1			; $FFFFFE22
+Timer_Minute					rs.b 1			; $FFFFFE23
 Timer_Second					rs.b 1			; $FFFFFE24
 Timer_Frame						rs.b 1			; $FFFFFE25
 Score							rs.l 1			; $FFFFFE26
@@ -297,7 +292,10 @@ Scroll_Flags_BG3_Copy			rs.w 1			; $FFFFFF36
 Level_Sel_Move_Timer			rs.w 1			; $FFFFFF80
 Level_Sel_Selection				rs.w 1			; $FFFFFF82
 Level_Sel_Sound_ID				rs.w 1			; $FFFFFF84
-								rs.b $1A		; $FFFFFF86
+								rs.b $15		; $FFFFFF86
+Flicky_Door_Flag				rs.b 1			; $FFFFFF9B
+Flicky_Chicks_Following			rs.w 1			; $FFFFFF9C
+Flicky_Chicks_Left				rs.w 1			; $FFFFFF9E
 Tutorial_Boss_Flags				rs.w 1			; $FFFFFFA0
 Sonic_Look_Delay_Counter		rs.w 1			; $FFFFFFA2
 Snd_Test_Deform_Modifier		rs.w 1			; $FFFFFFA4
@@ -337,7 +335,7 @@ Sonic_Current_Coll_Layer		rs.b 1			; $FFFFFFF7
 Console_Version					rs.b 1			; $FFFFFFF8
 								rs.b 1			; $FFFFFFF9
 Debug_Cheat_On					rs.w 1			; $FFFFFFFA
-Level_Current_Music				rs.b 1			; $FFFFFFFC
+Current_Music_ID				rs.b 1			; $FFFFFFFC
 Bad_Ending_Flag					rs.b 1			; $FFFFFFFD
 Level_Music_ID					rs.b 1			; $FFFFFFFE
 Boss_Flag						rs.b 1			; $FFFFFFFF

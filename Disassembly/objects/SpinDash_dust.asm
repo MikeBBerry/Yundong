@@ -20,7 +20,7 @@ Obj05_Init:
 		move.w	#$7A0,2(a0)
 ; ===========================================================================
 Obj05_Main:
-		lea	($FFFFD000).w,a2
+		lea	(Object_RAM).w,a2
 		moveq	#0,d0
 		move.b	$1C(a0),d0
 		add.w	d0,d0
@@ -34,7 +34,7 @@ Obj05_DisplayModes:
 		dc.w Obj05_MdSkidDust-Obj05_DisplayModes
 ; ===========================================================================
 Obj05_MdSplash:
-		move.w	($FFFFF646).w,$C(a0)
+		move.w	(Water_Height).w,$C(a0)
 		tst.b	$1D(a0)
 		bne.s	Obj05_Display
 		move.w	8(a2),8(a0)
@@ -82,7 +82,7 @@ Obj05_Delete:
 		bra.w	DeleteObject
 ; ===========================================================================
 Obj05_CheckSkid:
-		lea	($FFFFD000).w,a2
+		lea	(Object_RAM).w,a2
 		cmpi.b	#$D,$1C(a2)
 		beq.s	Obj05_SkidDust
 		move.b	#2,$24(a0)

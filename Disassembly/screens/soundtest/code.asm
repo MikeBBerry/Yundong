@@ -63,7 +63,7 @@ SoundTest:
 		
 		move	#$2700,sr				; Stop interrupts
 		
-		move.w	($FFFFF60C).w,d0		; Disable screen
+		move.w	(VDP_Reg_1_Value).w,d0		; Disable screen
 		andi.b	#$BF,d0
 		move.w	d0,($C00004).l
 		
@@ -114,14 +114,14 @@ SoundTest:
 
 		bsr.w	SndTest_InfoNothing
 
-		move.w	($FFFFF60C).w,d0		; Enable screen
+		move.w	(VDP_Reg_1_Value).w,d0		; Enable screen
 		ori.b	#$40,d0
 		move.w	d0,($C00004).l
 		
 		jsr	Pal_FadeTo					; Fade to palette
 
 SndTest_MainLoop:
-		move.b	#2,($FFFFF62A).w		; V-INT routine #2
+		move.b	#2,(V_Int_Routine).w		; V-INT routine #2
 		jsr	DelayProgram				; Wait for that to run...
 
 		bsr.w	SndTest_Deform
@@ -230,6 +230,7 @@ SndTest_StopMusic:
 		beq.s	SndTest_Null			; If not, skip
 
 		bsr.w	SndTest_InfoNothing
+		move.b	#0,(Snd_Test_Music_Playing_Flag).w
 
 		move.b	#CmdID_Stop,d0			; Stop sound
 		jmp	PlaySound_Special
@@ -419,7 +420,7 @@ DrawHexNumber:
 ; Do deform
 ; ===========================================================================
 SndTest_Deform:
-		lea	($FFFFCC00).w,a0
+		lea	(Horiz_Scroll_Buf).w,a0
 		move.w	#1,d4
 		move.w	#31,d5
 		move.w	#6,d6

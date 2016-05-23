@@ -18,7 +18,7 @@ VDP_Counter		equ $C00008
 owsf_dma68kToVDP macro source,dest,length,type
 	move.l	#(($9400|((((length)>>1)&$FF00)>>8))<<16)|($9300|(((length)>>1)&$FF)),(owsf_VDP)
 	move.l	#(($9600|((((source)>>1)&$FF00)>>8))<<16)|($9500|(((source)>>1)&$FF)),(owsf_VDP)
-	move.w	#$9700|(((((source)>>1)&$FF0000)>>16)&$7F),(owsf_VDP)
+	move.w	#$9700|(((((source)>>1)&RAM_Start)>>16)&$7F),(owsf_VDP)
 	move.w	#((dest)&$3FFF)|((type&1)<<15)|$4000,(owsf_VDP)
 	move.w	#$80|(((dest)&$C000)>>14)|((type&2)<<3),(owsf_VDP)
     endm
@@ -43,22 +43,22 @@ Owarisoft:
 		move.w	#$8700,(owsf_VDP)	; $8700 - BG color is Pal 0 Color 0
 
 	; load FG mappings
-		lea	$FF0000,a1
+		lea	RAM_Start,a1
 		lea	Owari_mapFG,a0
 		move.w	#1,d0
 		jsr	EniDec
-		lea	$FF0000,a1
+		lea	RAM_Start,a1
 		move.l	#$46040003,d0
 		moveq	#35-1,d1
 		moveq	#5-1,d2
 		jsr	ShowVDPGraphics
 
 	; load BG mappings
-		lea	$FF0000,a1
+		lea	RAM_Start,a1
 		lea	Owari_mapBG,a0
 		move.w	#$5B,d0
 		jsr	EniDec
-		lea	$FF0000,a1
+		lea	RAM_Start,a1
 		move.l	#$659A0003,d0
 		moveq	#16-1,d1
 		moveq	#8-1,d2
@@ -66,11 +66,11 @@ Owarisoft:
 
 	; decompress art
 		lea	Owari_tiles,a0
-		lea	$FF0200,a1
+		lea	RAM_Start+$200,a1
 		jsr	KosDec
 
 	; load tiles, HScroll and initial palette
-	owsf_dma68kToVDP $FF0200, $20, $14E0, VRAM
+	owsf_dma68kToVDP RAM_Start+$200, $20, $14E0, VRAM
 	owsf_dma68kToVDP Owari_HScroll,$FD5C,$100,VRAM
 	owsf_dma68kToVDP Owari_Blank, 0, $80, CRAM
 
@@ -91,7 +91,7 @@ Owarisoft:
 ; ===========================================================================
 .mainloop	STOP	#$2300				; stop CPU
 		move.b	Ctrl_1_Held.w,d0			; get player 1's held buttons
-		or.b	$FFFFF606.w,d0			; get player 2's held buttons
+		or.b	Ctrl_2_Held.w,d0			; get player 2's held buttons
 		bpl.s	.mainloop			; if start is not pressed, branch
 
 		bsr	OwariOutFade
@@ -110,7 +110,7 @@ Owarisoft:
 
 ; ===========================================================================
 OwariOutFade:
-		lea	$FF0000,a1		; get fadeout pal
+		lea	RAM_Start,a1		; get fadeout pal
 		lea	Owari_Palette,a0	; get palette
 		add.w	owsf_PalOff,a0		;
 		add.w	owsf_PalOff,a0		; add palette offset twice
@@ -175,17 +175,17 @@ OwariVBlank2:
 		move.l	#$C0620000,(owsf_VDP)		; set CRAM write
 		move.w	-(owsf_txPal),-4(owsf_VDP)	; write next palette
 
-		move.w	#$9500|((($FF0000)>>1)&$FF),d0; get DMA offset
+		move.w	#$9500|(((RAM_Start)>>1)&$FF),d0; get DMA offset
 		add.b	owsf_PalOff,d0			; add low byte of palette offset
 		move.w	d0,(owsf_VDP)			; move to VDP
 
-		move.w	#$9600|(((($FF0000)>>1)&$FF00)>>8),d0
+		move.w	#$9600|((((RAM_Start)>>1)&$FF00)>>8),d0
 		move.w	owsf_PalOff,d1			; get palette offset
 		lsr.w	#8,d1				; get high byte
 		add.b	d1,d0				; add to VDP command
 		move.w	d0,(owsf_VDP)			; move to vDP
 
-		move.w	#$9700|((((($FF0000)>>1)&$FF0000)>>16)&$7F),(owsf_VDP); set DMA source to RAM
+		move.w	#$9700|(((((RAM_Start)>>1)&RAM_Start)>>16)&$7F),(owsf_VDP); set DMA source to RAM
 		move.l	#(($9400|((((15*2)>>1)&$FF00)>>8))<<16)|($9300|(((15*2)>>1)&$FF)),d0; set DMA lenght
 		move.l	d0,(owsf_VDP)		; line 0
 		move.l	#$C0020080,(owsf_VDP)	; DMA!
@@ -204,7 +204,7 @@ OwariVBlank:
 
 		cmp.w	#Owari_po_0,owsf_PalOff		; is the limit reached
 		bge	.st				; if not, skip
-		sf	$FFFFF606.w			; force start button press
+		sf	Ctrl_2_Held.w			; force start button press
 		sf	Ctrl_1_Held.w			; force start button press
 
 .st		subq.b	#1,owsf_Timer			; sub 1 from timer
@@ -218,7 +218,7 @@ OwariVBlank:
 
 		subq.b	#1,owsf_Fades			; sub 1 from the fade times counter
 		bpl.s	.skp				; if negative, branch
-		st	$FFFFF606.w			; force start button press
+		st	Ctrl_2_Held.w			; force start button press
 
 .skp	if owsf_url=1
 		cmpa.l	#Owari_txPalette_end-2,owsf_txPal; is text fadein done?
@@ -237,7 +237,7 @@ OwariVBlank:
 		add.b	d1,d0				; add to VDP command
 		move.w	d0,(owsf_VDP)			; move to vDP
 
-		move.w	#$9700|(((((Owari_Palette)>>1)&$FF0000)>>16)&$7F),(owsf_VDP); set DMA source to RAM
+		move.w	#$9700|(((((Owari_Palette)>>1)&RAM_Start)>>16)&$7F),(owsf_VDP); set DMA source to RAM
 		move.l	#(($9400|((((15*2)>>1)&$FF00)>>8))<<16)|($9300|(((15*2)>>1)&$FF)),d0; set DMA lenght
 		move.l	d0,(owsf_VDP)		; line 0
 		move.l	#$C0020080,(owsf_VDP)	; DMA!
