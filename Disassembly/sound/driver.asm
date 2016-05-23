@@ -729,10 +729,9 @@ loc_7202C:
 		subq.b	#1,d7
 		cmpi.b	#$D0,d7
 		bcs.s	@Normal
-		subi.b	#$B1,d7
+		subi.b	#$30,d7
 		
 @Normal:
-		
 		movea.l	(Go_SpeedUpIndex).l,a4
 		move.b	(a4,d7.w),$29(a6)
 		movea.l	(Go_MusicIndex).l,a4

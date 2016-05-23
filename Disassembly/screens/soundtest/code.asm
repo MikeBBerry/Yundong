@@ -292,7 +292,13 @@ SndTest_PlayMusic:
 		moveq	#0,d0					; Get the current ID and apply the modifier
 		move.b	(a6),d0
 		add.b	id_mod(a5),d0
-
+		
+		cmpi.b	#$A0,d0					; Is the ID $A0 or greater
+		bcs.s	@Normal					; If not, branch
+		
+		addi.b	#$31,d0					; Modify the ID to use the other music IDs
+		
+@Normal:
 		jmp	PlaySound					; Play the music
 ; ===========================================================================
 ; Play SFX
@@ -316,12 +322,6 @@ SndTest_PlayPCM:
 		move.b	(a6),d0
 		add.b	id_mod(a5),d0
 		
-		cmpi.b	#$A0,d0					; Is the ID $A0 or greater
-		bcs.s	@Normal					; If not, branch
-		
-		addi.b	#$31,d0					; Modify the ID to use the other music IDs
-		
-@Normal:
 		move.b	#0,($FFFFFFB5).w		; Clear the music playing flag
 		move.w	#0,($FFFFFFA2).w
 
