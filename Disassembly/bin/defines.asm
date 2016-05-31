@@ -431,7 +431,10 @@ Osc_And_Misc_RAM_End			rs.b 0
 Level_Sel_Move_Timer			rs.w 1			; $FFFFFF80
 Level_Sel_Selection				rs.w 1			; $FFFFFF82
 Level_Sel_Sound_ID				rs.w 1			; $FFFFFF84
-								rs.b $15		; $FFFFFF86
+								rs.b $10		; $FFFFFF86
+H_Wrap_Min						rs.w 1			; $FFFFFF96
+H_Wrap_Max						rs.w 1			; $FFFFFF98
+H_Wrap_Flag						rs.b 1			; $FFFFFF9A
 Flicky_Door_Flag				rs.b 1			; $FFFFFF9B
 Flicky_Chicks_Following			rs.w 1			; $FFFFFF9C
 Flicky_Chicks_Left				rs.w 1			; $FFFFFF9E

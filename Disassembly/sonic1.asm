@@ -378,8 +378,7 @@ loc_CD4:
 	dma68kToVDP Sprite_Table,$F800,$280,VRAM	; sprite table
 	dma68kToVDP Horiz_Scroll_Buf,$FC00,$380,VRAM	; horiz buffer
 		jsr	ProcessDMAQueue
-
-loc_D50:
+		bsr.w	WrapBGPos
 		movem.l	(Camera_RAM).w,d0-d7
 		movem.l	d0-d7,(Camera_RAM_Copy).w
 		movem.l	(Scroll_Flags).w,d0-d1
@@ -443,6 +442,7 @@ loc_ED8:
 	dma68kToVDP Sprite_Table,$F800,$280,VRAM	; sprite table
 	dma68kToVDP Horiz_Scroll_Buf,$FC00,$380,VRAM	; horiz buffer
 		jsr	ProcessDMAQueue
+		bsr.w	WrapBGPos
 		movem.l	(Camera_RAM).w,d0-d7
 		movem.l	d0-d7,(Camera_RAM_Copy).w
 		movem.l	(Scroll_Flags).w,d0-d1
@@ -507,7 +507,54 @@ WriteToVDP200:
 		move.l	(a4)+,(a5)
 	endr
 		rts
+; ---------------------------------------------------------------------------
+; Subroutine to wrap the background's X positions
+; ---------------------------------------------------------------------------
 
+WrapBGPos:
+		moveq	#0,d0
+		move.b	($FFFFFE10).w,d0
+		add.w	d0,d0
+		move.w	CameraBGXWrapValues(pc,d0.w),d0
+		tst.w	(Camera_BG_X_Pos).w
+		bpl.s	@NotNeg
+		move.w	d0,(Camera_BG_X_Pos).w
+		
+@NotNeg:
+		tst.w	(Camera_BG2_X_Pos).w
+		bpl.s	@NotNeg2
+		move.w	d0,(Camera_BG2_X_Pos).w
+		
+@NotNeg2:
+		tst.w	(Camera_BG3_X_Pos).w
+		bpl.s	@NotNeg3
+		move.w	d0,(Camera_BG3_X_Pos).w
+		
+@NotNeg3:
+		cmp.w	(Camera_BG_X_Pos).w,d0
+		bge.s	@Skip
+		move.w	#0,(Camera_BG_X_Pos).w
+		
+@Skip:
+		cmp.w	(Camera_BG2_X_Pos).w,d0
+		bge.s	@Skip2
+		move.w	#0,(Camera_BG2_X_Pos).w
+		
+@Skip2:
+		cmp.w	(Camera_BG3_X_Pos).w,d0
+		bge.s	@Skip3
+		move.w	#0,(Camera_BG3_X_Pos).w
+		
+@Skip3:
+		rts
+; ---------------------------------------------------------------------------	
+CameraBGXWrapValues:
+		dc.w $2000		; GHZ
+		dc.w $2000		; LZ
+		dc.w $2000		; MZ
+		dc.w $2000		; SLZ
+		dc.w $2000		; SYZ
+		dc.w $2000		; SBZ
 ; ---------------------------------------------------------------------------
 ; Subroutine to	move Palettes from the RAM to CRAM
 ; ---------------------------------------------------------------------------
@@ -3486,24 +3533,24 @@ PlayLevel:				; XREF: ROM:00003246j ...
 ; Level	select - level pointers
 ; ---------------------------------------------------------------------------
 LSelectPointers:
-		dc.w $002
+		dc.w $0000
 		dc.w $8000
 		dc.w $8000
-		dc.w $200
-		dc.w $201
+		dc.w $0200
+		dc.w $0201
 		dc.w $8000
-		dc.w $400
-		dc.w $401
+		dc.w $0400
+		dc.w $0401
 		dc.w $8000
-		dc.w $100
-		dc.w $101
+		dc.w $0100
+		dc.w $0101
 		dc.w $8000
-		dc.w $300
-		dc.w $301
+		dc.w $0300
+		dc.w $0301
 		dc.w $8000
-		dc.w $500
-		dc.w $501
-		dc.w $502
+		dc.w $0500
+		dc.w $0501
+		dc.w $0502
 		dc.w $8000
 		dc.w $8000
 		dc.w $8000
@@ -6134,6 +6181,9 @@ LevelSizeLoad:				; XREF: TitleScreen; Level; EndingSequence
 		move.w	#$1010,(Horiz_Block_Crossed_Flag).w
 		move.w	(a0)+,d0
 		move.w	d0,(Camera_Y_Pos_Bias).w
+		move.b	#1,(H_Wrap_Flag).w
+		move.w	#$1100,(H_Wrap_Min).w
+		move.w	#$1300,(H_Wrap_Max).w
 		bra.w	LevSz_ChkLamp
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -6812,6 +6862,29 @@ loc_6576:
 ScrollHoriz:				; XREF: DeformBgLayer
 		move.w	(Camera_X_Pos).w,d4
 		bsr.s	ScrollHoriz2
+		tst.b	(H_Wrap_Flag).w
+		beq.s	@NoWrap
+		move.w	(Camera_X_Pos).w,d0
+		cmp.w	(H_Wrap_Min).w,d0
+		ble.s	@WrapLeft
+		cmp.w	(H_Wrap_Max).w,d0
+		bge.s	@WrapRight
+		bra.s	@NoWrap
+		
+@WrapLeft:
+		move.w	(H_Wrap_Max).w,d1
+		sub.w	d0,d1
+		add.w	d1,(Camera_X_Pos).w
+		add.w	d1,(Object_Space_1+8).w
+		bra.s	@NoWrap
+
+@WrapRight:
+		move.w	d0,d1
+		sub.w	(H_Wrap_Min).w,d1
+		sub.w	d1,(Camera_X_Pos).w
+		sub.w	d1,(Object_Space_1+8).w
+		
+@NoWrap:
 		move.w	(Camera_X_Pos).w,d0
 		andi.w	#$10,d0
 		move.b	(Horiz_Block_Crossed_Flag).w,d1
@@ -7232,40 +7305,40 @@ LoadTilesAsYouMove:			; XREF: Demo_Time
 		beq.s	loc_6908
 		moveq	#-$10,d4
 		moveq	#-$10,d5
-		bsr.w	sub_6C20
+		bsr.w	Calc_VRAM_Pos
 		moveq	#-$10,d4
 		moveq	#-$10,d5
-		bsr.w	sub_6AD8
+		bsr.w	DrawTiles_LR
 
 loc_6908:
 		bclr	#1,(a2)
 		beq.s	loc_6922
 		move.w	#$E0,d4
 		moveq	#-$10,d5
-		bsr.w	sub_6C20
+		bsr.w	Calc_VRAM_Pos
 		move.w	#$E0,d4
 		moveq	#-$10,d5
-		bsr.w	sub_6AD8
+		bsr.w	DrawTiles_LR
 
 loc_6922:
 		bclr	#2,(a2)
 		beq.s	loc_6938
 		moveq	#-$10,d4
 		moveq	#-$10,d5
-		bsr.w	sub_6C20
+		bsr.w	Calc_VRAM_Pos
 		moveq	#-$10,d4
 		moveq	#-$10,d5
-		bsr.w	sub_6B04
+		bsr.w	DrawTiles_TB
 
 loc_6938:
 		bclr	#3,(a2)
 		beq.s	locret_6952
 		moveq	#-$10,d4
 		move.w	#$140,d5
-		bsr.w	sub_6C20
+		bsr.w	Calc_VRAM_Pos
 		moveq	#-$10,d4
 		move.w	#$140,d5
-		bsr.w	sub_6B04
+		bsr.w	DrawTiles_TB
 
 locret_6952:
 		rts	
@@ -7282,29 +7355,29 @@ sub_6954:				; XREF: sub_6886; LoadTilesAsYouMove
 		beq.s	loc_6972
 		moveq	#-$10,d4
 		moveq	#-$10,d5
-		bsr.w	sub_6C20
+		bsr.w	Calc_VRAM_Pos
 		moveq	#-$10,d4
 		moveq	#-$10,d5
 		moveq	#$1F,d6
-		bsr.w	sub_6ADA
+		bsr.w	DrawTiles_LR_2
 
 loc_6972:
 		bclr	#1,(a2)
 		beq.s	loc_698E
 		move.w	#$E0,d4
 		moveq	#-$10,d5
-		bsr.w	sub_6C20
+		bsr.w	Calc_VRAM_Pos
 		move.w	#$E0,d4
 		moveq	#-$10,d5
 		moveq	#$1F,d6
-		bsr.w	sub_6ADA
+		bsr.w	DrawTiles_LR_2
 
 loc_698E:
 		bclr	#2,(a2)
 		beq.s	loc_69BE
 		moveq	#-$10,d4
 		moveq	#-$10,d5
-		bsr.w	sub_6C20
+		bsr.w	Calc_VRAM_Pos
 		moveq	#-$10,d4
 		moveq	#-$10,d5
 		move.w	(Unk_Scroll_Values).w,d6
@@ -7318,14 +7391,14 @@ loc_698E:
 		moveq	#$F,d6
 
 loc_69BA:
-		bsr.w	sub_6B06
+		bsr.w	DrawTiles_TB_2
 
 loc_69BE:
 		bclr	#3,(a2)
 		beq.s	locret_69F2
 		moveq	#-$10,d4
 		move.w	#$140,d5
-		bsr.w	sub_6C20
+		bsr.w	Calc_VRAM_Pos
 		moveq	#-$10,d4
 		move.w	#$140,d5
 		move.w	(Unk_Scroll_Values).w,d6
@@ -7339,7 +7412,7 @@ loc_69BE:
 		moveq	#$F,d6
 
 loc_69EE:
-		bsr.w	sub_6B06
+		bsr.w	DrawTiles_TB_2
 
 locret_69F2:
 		rts	
@@ -7362,7 +7435,7 @@ sub_69F4:				; XREF: sub_6886; LoadTilesAsYouMove
 		sub.w	d1,d4
 		move.w	d4,-(sp)
 		moveq	#-$10,d5
-		bsr.w	sub_6C20
+		bsr.w	Calc_VRAM_Pos
 		move.w	(sp)+,d4
 		moveq	#-$10,d5
 		move.w	(Unk_Scroll_Values).w,d6
@@ -7374,7 +7447,7 @@ sub_69F4:				; XREF: sub_6886; LoadTilesAsYouMove
 		subi.w	#$E,d6
 		bcc.s	loc_6A3E
 		neg.w	d6
-		bsr.w	sub_6B06
+		bsr.w	DrawTiles_TB_2
 
 loc_6A3E:
 		bclr	#3,(a2)
@@ -7385,7 +7458,7 @@ loc_6A3E:
 		sub.w	d1,d4
 		move.w	d4,-(sp)
 		move.w	#$140,d5
-		bsr.w	sub_6C20
+		bsr.w	Calc_VRAM_Pos
 		move.w	(sp)+,d4
 		move.w	#$140,d5
 		move.w	(Unk_Scroll_Values).w,d6
@@ -7397,7 +7470,7 @@ loc_6A3E:
 		subi.w	#$E,d6
 		bcc.s	locret_6A80
 		neg.w	d6
-		bsr.w	sub_6B06
+		bsr.w	DrawTiles_TB_2
 
 locret_6A80:
 		rts	
@@ -7418,7 +7491,7 @@ locret_6A80:
 		move.w	(sp)+,d4
 		moveq	#-$10,d5
 		moveq	#2,d6
-		bsr.w	sub_6B06
+		bsr.w	DrawTiles_TB_2
 
 loc_6AAC:
 		bclr	#3,(a2)
@@ -7433,7 +7506,7 @@ loc_6AAC:
 		move.w	(sp)+,d4
 		move.w	#$140,d5
 		moveq	#2,d6
-		bsr.w	sub_6B06
+		bsr.w	DrawTiles_TB_2
 
 locret_6AD6:
 		rts	
@@ -7441,15 +7514,15 @@ locret_6AD6:
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 
-sub_6AD8:				; XREF: LoadTilesAsYouMove
+DrawTiles_LR:				; XREF: LoadTilesAsYouMove
 		moveq	#$15,d6
-; End of function sub_6AD8
+; End of function DrawTiles_LR
 
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 
-sub_6ADA:				; XREF: sub_6954; LoadTilesFromStart2
+DrawTiles_LR_2:				; XREF: sub_6954; LoadTilesFromStart2
 		move.l	#$800000,d7
 		move.l	d0,d1
 
@@ -7464,21 +7537,21 @@ loc_6AE2:
 		addi.w	#$10,d5
 		dbf	d6,loc_6AE2
 		rts	
-; End of function sub_6ADA
+; End of function DrawTiles_LR_2
 
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 
-sub_6B04:				; XREF: LoadTilesAsYouMove
+DrawTiles_TB:				; XREF: LoadTilesAsYouMove
 		moveq	#$F,d6
-; End of function sub_6B04
+; End of function DrawTiles_TB
 
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 ; main draw section
 
-sub_6B06:
+DrawTiles_TB_2:
 		move.l	#$800000,d7
 		move.l	d0,d1
 
@@ -7493,13 +7566,13 @@ loc_6B0E:
 		addi.w	#$10,d4
 		dbf	d6,loc_6B0E
 		rts	
-; End of function sub_6B06
+; End of function DrawTiles_TB_2
 
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 
-sub_6B32:				; XREF: sub_6ADA; sub_6B06
+sub_6B32:				; XREF: DrawTiles_LR_2; DrawTiles_TB_2
 		or.w	d2,d0
 		swap	d0
 		btst	#3,(a0)					; MJ: checking bit 3 not 4 (Flip)
@@ -7616,7 +7689,7 @@ locret_6C1E:
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 ; getting VRam location
 
-sub_6C20:
+Calc_VRAM_Pos:
 		add.w	4(a3),d4
 		add.w	(a3),d5
 		andi.w	#$F0,d4
@@ -7628,7 +7701,7 @@ sub_6C20:
 		swap	d0
 		move.w	d4,d0
 		rts	
-; End of function sub_6C20
+; End of function Calc_VRAM_Pos
 
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
@@ -7680,11 +7753,11 @@ loc_6C82:
 		movem.l	d4-d6,-(sp)
 		moveq	#0,d5
 		move.w	d4,d1
-		bsr.w	sub_6C20
+		bsr.w	Calc_VRAM_Pos
 		move.w	d1,d4
 		moveq	#0,d5
 		moveq	#$1F,d6
-		bsr.w	sub_6ADA
+		bsr.w	DrawTiles_LR_2
 		movem.l	(sp)+,d4-d6
 		addi.w	#$10,d4
 		dbf	d6,loc_6C82
