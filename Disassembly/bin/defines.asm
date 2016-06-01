@@ -286,8 +286,9 @@ Demo_Press_Counter				rs.b 1			; $FFFFF792
 								rs.b 1			; $FFFFF793
 Demo_Pal_Fade_Delay				rs.w 1			; $FFFFF794
 Collision_Addr					rs.l 1			; $FFFFF796
-								rs.b $B			; $FFFFF79A
+								rs.b $A			; $FFFFF79A
 Obj31_Y_Pos						rs.w 1			; $FFFFF7A4
+								rs.b 1			; $FFFFF7A6
 Boss_Defeated_Flags				rs.b 1			; $FFFFF7A7
 Sonic_Pos_Record_Index			rs.w 1			; $FFFFF7A8
 Right_Boundary_Lock				rs.b 1			; $FFFFF7AA

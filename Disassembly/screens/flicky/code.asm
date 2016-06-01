@@ -289,7 +289,7 @@ ObjChick_Main:
 ObjChick_Follow:
 		jsr	Flicky_ColResponse
 		
-		tst.w	(Flicky_Door_Flag).w
+		tst.b	(Flicky_Door_Flag).w
 		bne.s	ObjChick_Door
 		cmpi.b	#4,(Object_Space_1+$24).w
 		bne.s	@Skip

@@ -270,7 +270,7 @@ Owari_txPalette_end:
 Owari_po_3	equ $70/2
 
 Owari_PadStart
-	align $200000
+	align $200
 Owari_Palette:
 	rept (16*2*3)
 		dc.w 0		; black before fade to white

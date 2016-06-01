@@ -35,8 +35,8 @@ Checksum:	dc.w 0
 		dc.b 'J               ' ; I/O support
 RomStartLoc:	dc.l StartOfRom			; ROM start
 RomEndLoc:	dc.l EndOfRom-1			; ROM end
-RamStartLoc:	dc.l RAM_Start&$FFFFFF			; RAM start
-RamEndLoc:		dc.l RAM_End&$FFFFFF			; RAM end
+RamStartLoc:	dc.l RAM_Start&$FFFFFF		; RAM start
+RamEndLoc:	dc.l RAM_End&$FFFFFF		; RAM end
 SRAMSupport:	dc.l $20202020			; change to $5241E020 to create	SRAM
 		dc.l $20202020			; SRAM start
 		dc.l $20202020			; SRAM end
@@ -163,10 +163,10 @@ GameClrRAM:
 		move.b	d0,(Console_Version).w
 
 		move.w	#$4EF9,d0
-		move.w	d0,HBlankJump
-		move.w	d0,VBlankJump
-		move.l	#V_Int,VBlankJump+2
-		move.l	#H_Int,HBlankJump+2
+		move.w	d0,HBlankJump.w
+		move.w	d0,VBlankJump.w
+		move.l	#V_Int,(VBlankJump+2).w
+		move.l	#H_Int,(HBlankJump+2).w
 
 		bsr.w	VDPSetupGame
 		bsr.w	InitMegaPCM
@@ -513,48 +513,59 @@ WriteToVDP200:
 
 WrapBGPos:
 		moveq	#0,d0
-		move.b	($FFFFFE10).w,d0
+		move.w	(Current_Zone_And_Act).w,d0
+		ror.b	#2,d0
+		lsr.w	#6,d0
 		add.w	d0,d0
 		move.w	CameraBGXWrapValues(pc,d0.w),d0
-		tst.w	(Camera_BG_X_Pos).w
-		bpl.s	@NotNeg
-		move.w	d0,(Camera_BG_X_Pos).w
+		tst.w	(Camera_X_Pos_Diff).w
+		bmi.s	@Left
+		bpl.s	@Right
+		rts
+; ---------------------------------------------------------------------------
+@Left:
+		cmpi.w	#$60,(Camera_BG_X_Pos).w
+		bgt.s	@NoWrap
+		add.w	d0,(Camera_BG_X_Pos).w
 		
-@NotNeg:
-		tst.w	(Camera_BG2_X_Pos).w
-		bpl.s	@NotNeg2
-		move.w	d0,(Camera_BG2_X_Pos).w
+@NoWrap:
+		cmpi.w	#$60,(Camera_BG2_X_Pos).w
+		bgt.s	@NoWrap2
+		add.w	d0,(Camera_BG2_X_Pos).w
 		
-@NotNeg2:
-		tst.w	(Camera_BG3_X_Pos).w
-		bpl.s	@NotNeg3
-		move.w	d0,(Camera_BG3_X_Pos).w
+@NoWrap2:
+		cmpi.w	#$60,(Camera_BG3_X_Pos).w
+		bgt.s	@NoWrap3
+		add.w	d0,(Camera_BG3_X_Pos).w
 		
-@NotNeg3:
+@NoWrap3:
+		rts
+; ---------------------------------------------------------------------------
+@Right:
 		cmp.w	(Camera_BG_X_Pos).w,d0
 		bge.s	@Skip
-		move.w	#0,(Camera_BG_X_Pos).w
+		sub.w	d0,(Camera_BG_X_Pos).w
 		
 @Skip:
 		cmp.w	(Camera_BG2_X_Pos).w,d0
 		bge.s	@Skip2
-		move.w	#0,(Camera_BG2_X_Pos).w
+		sub.w	d0,(Camera_BG2_X_Pos).w
 		
 @Skip2:
 		cmp.w	(Camera_BG3_X_Pos).w,d0
 		bge.s	@Skip3
-		move.w	#0,(Camera_BG3_X_Pos).w
+		sub.w	d0,(Camera_BG3_X_Pos).w
 		
 @Skip3:
 		rts
-; ---------------------------------------------------------------------------	
+; ---------------------------------------------------------------------------
 CameraBGXWrapValues:
-		dc.w $2000		; GHZ
-		dc.w $2000		; LZ
-		dc.w $2000		; MZ
-		dc.w $2000		; SLZ
-		dc.w $2000		; SYZ
-		dc.w $2000		; SBZ
+		dc.w $2000, $2000, $2000, $2000		; GHZ
+		dc.w $1800, $1800, $1800, $1800		; LZ
+		dc.w $1400, $1800, $1400, $1400		; MZ
+		dc.w $1800, $1800, $1800, $1800		; SLZ
+		dc.w $1C00, $1C00, $1C00, $1C00		; SYZ
+		dc.w $1E00, $3C00, $1E00, $1E00		; SBZ
 ; ---------------------------------------------------------------------------
 ; Subroutine to	move Palettes from the RAM to CRAM
 ; ---------------------------------------------------------------------------
@@ -4348,7 +4359,6 @@ DynWater_LZ3:				; XREF: DynWater_Index
 		cmpi.w	#$600,(Object_Space_1+$C).w
 		bcc.s	loc_3D54
 		move.w	#$4C8,d1
-		move.l	#Level_LZ3,(Level_Layout_FG).w		; MJ: Set normal version of act 3's layout to be read
 		move.b	#1,(Water_Routine).w
 		move.w	#SndID_Rumble,d0
 		bsr.w	PlaySound_Special ; play sound $B7 (rumbling)
@@ -6181,9 +6191,6 @@ LevelSizeLoad:				; XREF: TitleScreen; Level; EndingSequence
 		move.w	#$1010,(Horiz_Block_Crossed_Flag).w
 		move.w	(a0)+,d0
 		move.w	d0,(Camera_Y_Pos_Bias).w
-		move.b	#1,(H_Wrap_Flag).w
-		move.w	#$1100,(H_Wrap_Min).w
-		move.w	#$1300,(H_Wrap_Max).w
 		bra.w	LevSz_ChkLamp
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -7476,40 +7483,6 @@ locret_6A80:
 		rts	
 ; End of function sub_69F4
 
-; ===========================================================================
-		tst.b	(a2)
-		beq.s	locret_6AD6
-		bclr	#2,(a2)
-		beq.s	loc_6AAC
-		move.w	#$D0,d4
-		move.w	4(a3),d1
-		andi.w	#-$10,d1
-		sub.w	d1,d4
-		move.w	d4,-(sp)
-		moveq	#-$10,d5
-		bsr.w	sub_6C3C
-		move.w	(sp)+,d4
-		moveq	#-$10,d5
-		moveq	#2,d6
-		bsr.w	DrawTiles_TB_2
-
-loc_6AAC:
-		bclr	#3,(a2)
-		beq.s	locret_6AD6
-		move.w	#$D0,d4
-		move.w	4(a3),d1
-		andi.w	#-$10,d1
-		sub.w	d1,d4
-		move.w	d4,-(sp)
-		move.w	#$140,d5
-		bsr.w	sub_6C3C
-		move.w	(sp)+,d4
-		move.w	#$140,d5
-		moveq	#2,d6
-		bsr.w	DrawTiles_TB_2
-
-locret_6AD6:
-		rts	
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
@@ -7632,26 +7605,6 @@ loc_6B90:
 		rts	
 ; End of function sub_6B32
 
-; ===========================================================================
-		rts	
-; ===========================================================================
-		move.l	d0,(a5)
-		move.w	#$2000,d5
-		move.w	(a1)+,d4
-		add.w	d5,d4
-		move.w	d4,(a6)
-		move.w	(a1)+,d4
-		add.w	d5,d4
-		move.w	d4,(a6)
-		add.l	d7,d0
-		move.l	d0,(a5)
-		move.w	(a1)+,d4
-		add.w	d5,d4
-		move.w	d4,(a6)
-		move.w	(a1)+,d4
-		add.w	d5,d4
-		move.w	d4,(a6)
-		rts	
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 ; Reading from layout
@@ -7804,7 +7757,7 @@ MLB_UsePal0E:
 		moveq	#$E,d0		; use SBZ2/FZ Palette
 
 MLB_NormalPal:
-		bsr.w	PalLoad1	; load Palette (based on	d0)
+		bsr.w	PalLoad1	; load Palette (based on d0)
 		movea.l	(sp)+,a2
 		addq.w	#4,a2
 		moveq	#0,d0
@@ -7825,15 +7778,14 @@ locret_6D10:
 
 LevelLayoutLoad:
 		move.w	(Current_Zone_And_Act).w,d0
-		lsl.b	#6,d0
-		lsr.w	#4,d0
-		move.w	d0,d2
+		ror.b	#2,d0
+		lsr.w	#6,d0
 		add.w	d0,d0
-		add.w	d2,d0
+		add.w	d0,d0
 		lea	(Level_Index).l,a1
 		movea.l	(a1,d0.w),a1				; MJ: moving the address strait to a1 rather than adding a word to an address
 		move.l	a1,(Level_Layout_FG).w			; MJ: save location of layout to Level_Layout_FG
-		adda.w	#$080,a1				; MJ: add 80 (As the BG line is always after the FG line)
+		adda.w	#$80,a1					; MJ: add 80 (As the BG line is always after the FG line)
 		move.l	a1,(Level_Layout_BG).w			; MJ: save location of layout to Level_Layout_BG
 		rts						; MJ: Return
 
@@ -37884,118 +37836,61 @@ Art_SbzSmoke:	incbin	art/uncompressed/sbzsmoke.bin	; SBZ smoke in background
 ; ---------------------------------------------------------------------------
 ; Level	layout index
 ; ---------------------------------------------------------------------------
-Level_Index:	dc.l Level_GHZ1, Level_GHZbg, byte_68D70	; MJ: Table needs to be read in long-word as the layouts are now bigger
-		dc.l Level_GHZ2, Level_GHZbg, byte_68E3C
-		dc.l Level_GHZ3, Level_GHZbg, byte_68F84
-		dc.l byte_68F88, byte_68F88, byte_68F88
-		dc.l Level_LZ1, Level_LZbg, byte_69190
-		dc.l Level_LZ2, Level_LZbg, byte_6922E
-		dc.l Level_LZ3, Level_LZbg, byte_6934C
-		dc.l Level_SBZ3, Level_LZbg, byte_6940A
-		dc.l Level_MZ1, Level_MZ1bg, Level_MZ1
-		dc.l Level_MZ2, Level_MZ2bg, byte_6965C
-		dc.l Level_MZ3, Level_MZ3bg, byte_697E6
-		dc.l byte_697EA, byte_697EA, byte_697EA
-		dc.l Level_SLZ1, Level_SLZbg, byte_69B84
-		dc.l Level_SLZ2, Level_SLZbg, byte_69B84
-		dc.l Level_SLZ3, Level_SLZbg, byte_69B84
-		dc.l byte_69B84, byte_69B84, byte_69B84
-		dc.l Level_SYZ1, Level_SYZbg, byte_69C7E
-		dc.l Level_SYZ2, Level_SYZbg, byte_69D86
-		dc.l Level_SYZ3, Level_SYZbg, byte_69EE4
-		dc.l byte_69EE8, byte_69EE8, byte_69EE8
-		dc.l Level_SBZ1, Level_SBZ1bg, Level_SBZ1bg
-		dc.l Level_SBZ2, Level_SBZ2bg, Level_SBZ2bg
-		dc.l Level_SBZ2, Level_SBZ2bg, byte_6A2F8
-		dc.l byte_6A2FC, byte_6A2FC, byte_6A2FC
-		dc.l Level_End, Level_GHZbg, byte_6A320
-		dc.l Level_End, Level_GHZbg, byte_6A320
-		dc.l byte_6A320, byte_6A320, byte_6A320
-		dc.l byte_6A320, byte_6A320, byte_6A320
+Level_Index:	dc.l Level_GHZ1
+		dc.l Level_GHZ2
+		dc.l Level_GHZ1
+		dc.l Level_GHZ1
+		dc.l Level_LZ1
+		dc.l Level_LZ2
+		dc.l Level_LZ1
+		dc.l Level_LZ1
+		dc.l Level_MZ1
+		dc.l Level_MZ2
+		dc.l Level_MZ1
+		dc.l Level_MZ1
+		dc.l Level_SLZ1
+		dc.l Level_SLZ2
+		dc.l Level_SLZ1
+		dc.l Level_SLZ1
+		dc.l Level_SYZ1
+		dc.l Level_SYZ2
+		dc.l Level_SYZ1
+		dc.l Level_SYZ1
+		dc.l Level_SBZ1
+		dc.l Level_SBZ2
+		dc.l Level_SBZ1
+		dc.l Level_SBZ1
+		dc.l Level_End
+		dc.l Level_End
+		dc.l Level_End
+		dc.l Level_End
 
 Level_GHZ1:	incbin	level/layouts/ghz1.bin
 		even
-byte_68D70:	dc.b 0,	0, 0, 0
 Level_GHZ2:	incbin	level/layouts/ghz2.bin
 		even
-byte_68E3C:	dc.b 0,	0, 0, 0
-Level_GHZ3:	incbin	level/layouts/ghz3.bin
-		even
-Level_GHZbg:	incbin	level/layouts/ghzbg.bin
-		even
-byte_68F84:	dc.b 0,	0, 0, 0
-byte_68F88:	dc.b 0,	0, 0, 0
-
 Level_LZ1:	incbin	level/layouts/lz1.bin
 		even
-Level_LZbg:	incbin	level/layouts/lzbg.bin
-		even
-byte_69190:	dc.b 0,	0, 0, 0
 Level_LZ2:	incbin	level/layouts/lz2.bin
 		even
-byte_6922E:	dc.b 0,	0, 0, 0
-Level_LZ3:	incbin	level/layouts/lz3.bin
-		even
-Level_LZ3_WALL:	incbin	level/layouts/lz3_wall.bin	; MJ: layout with LZ's wall change (When the switch is pressed) data is not in ram anymore,
-		even				; and altering values in rom is prohibited, so a new layout is loaded in its place.
-byte_6934C:	dc.b 0,	0, 0, 0
-Level_SBZ3:	incbin	level/layouts/sbz3.bin
-		even
-byte_6940A:	dc.b 0,	0, 0, 0
-
 Level_MZ1:	incbin	level/layouts/mz1.bin
-		even
-Level_MZ1bg:	incbin	level/layouts/mz1bg.bin
 		even
 Level_MZ2:	incbin	level/layouts/mz2.bin
 		even
-Level_MZ2bg:	incbin	level/layouts/mz2bg.bin
-		even
-byte_6965C:	dc.b 0,	0, 0, 0
-Level_MZ3:	incbin	level/layouts/mz3.bin
-		even
-Level_MZ3bg:	incbin	level/layouts/mz3bg.bin
-		even
-byte_697E6:	dc.b 0,	0, 0, 0
-byte_697EA:	dc.b 0,	0, 0, 0
-
 Level_SLZ1:	incbin	level/layouts/slz1.bin
-		even
-Level_SLZbg:	incbin	level/layouts/slzbg.bin
 		even
 Level_SLZ2:	incbin	level/layouts/slz2.bin
 		even
-Level_SLZ3:	incbin	level/layouts/slz3.bin
-		even
-byte_69B84:	dc.b 0,	0, 0, 0
-
 Level_SYZ1:	incbin	level/layouts/syz1.bin
 		even
-Level_SYZbg:	incbin	level/layouts/syzbg.bin
-		even
-byte_69C7E:	dc.b 0,	0, 0, 0
 Level_SYZ2:	incbin	level/layouts/syz2.bin
 		even
-byte_69D86:	dc.b 0,	0, 0, 0
-Level_SYZ3:	incbin	level/layouts/syz3.bin
-		even
-byte_69EE4:	dc.b 0,	0, 0, 0
-byte_69EE8:	dc.b 0,	0, 0, 0
-
 Level_SBZ1:	incbin	level/layouts/sbz1.bin
-		even
-Level_SBZ1bg:	incbin	level/layouts/sbz1bg.bin
 		even
 Level_SBZ2:	incbin	level/layouts/sbz2.bin
 		even
-Level_SBZ2bg:	incbin	level/layouts/sbz2bg.bin
-		even
-byte_6A2F8:	dc.b 0,	0, 0, 0
-byte_6A2FC:	dc.b 0,	0, 0, 0
 Level_End:	incbin	level/layouts/ending.bin
 		even
-byte_6A320:	dc.b 0,	0, 0, 0
-
 ; ---------------------------------------------------------------------------
 ; Animated uncompressed giant ring graphics
 ; ---------------------------------------------------------------------------
