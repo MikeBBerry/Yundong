@@ -567,7 +567,8 @@ CameraBGXWrapValues:
 		dc.w $1400, $1800, $1400, $1400		; MZ
 		dc.w $1800, $1800, $1800, $1800		; SLZ
 		dc.w $1C00, $1C00, $1C00, $1C00		; SYZ
-		dc.w $1E00, $3C00, $1E00, $1E00		; SBZ
+		dc.w $1E00, $3C00, $3C00, $1E00		; SBZ
+		dc.w $2000, $2000, $2000, $2000		; Ending
 ; ---------------------------------------------------------------------------
 ; Wrap the camera if horizontal wrapping is enabled
 ; ---------------------------------------------------------------------------
@@ -37905,7 +37906,7 @@ Level_Index:	dc.l Level_GHZ1
 		dc.l Level_SYZ1
 		dc.l Level_SBZ1
 		dc.l Level_SBZ2
-		dc.l Level_SBZ1
+		dc.l Level_SBZ2
 		dc.l Level_SBZ1
 		dc.l Level_End
 		dc.l Level_End
