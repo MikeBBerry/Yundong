@@ -432,7 +432,8 @@ Osc_And_Misc_RAM_End			rs.b 0
 Level_Sel_Move_Timer			rs.w 1			; $FFFFFF80
 Level_Sel_Selection				rs.w 1			; $FFFFFF82
 Level_Sel_Sound_ID				rs.w 1			; $FFFFFF84
-								rs.b $10		; $FFFFFF86
+								rs.b $F			; $FFFFFF86
+Screen_Redraw_Flag				rs.b 1			; $FFFFFF95
 H_Wrap_Min						rs.w 1			; $FFFFFF96
 H_Wrap_Max						rs.w 1			; $FFFFFF98
 H_Wrap_Flag						rs.b 1			; $FFFFFF9A

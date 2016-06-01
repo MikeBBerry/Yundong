@@ -379,6 +379,7 @@ loc_CD4:
 	dma68kToVDP Horiz_Scroll_Buf,$FC00,$380,VRAM	; horiz buffer
 		jsr	ProcessDMAQueue
 		bsr.w	WrapBGPos
+		bsr.w	DoHWrap
 		movem.l	(Camera_RAM).w,d0-d7
 		movem.l	d0-d7,(Camera_RAM_Copy).w
 		movem.l	(Scroll_Flags).w,d0-d1
@@ -443,6 +444,7 @@ loc_ED8:
 	dma68kToVDP Horiz_Scroll_Buf,$FC00,$380,VRAM	; horiz buffer
 		jsr	ProcessDMAQueue
 		bsr.w	WrapBGPos
+		bsr.w	DoHWrap
 		movem.l	(Camera_RAM).w,d0-d7
 		movem.l	d0-d7,(Camera_RAM_Copy).w
 		movem.l	(Scroll_Flags).w,d0-d1
@@ -512,20 +514,20 @@ WriteToVDP200:
 ; ---------------------------------------------------------------------------
 
 WrapBGPos:
-		moveq	#0,d0
-		move.w	(Current_Zone_And_Act).w,d0
+		moveq	#0,d0				; Get the x position in which the background wraps at
+		move.w	(Current_Zone_And_Act).w,d0	; According to the current level
 		ror.b	#2,d0
 		lsr.w	#6,d0
 		add.w	d0,d0
 		move.w	CameraBGXWrapValues(pc,d0.w),d0
-		tst.w	(Camera_X_Pos_Diff).w
-		bmi.s	@Left
-		bpl.s	@Right
-		rts
+		tst.w	(Camera_X_Pos_Diff).w		; Check what direction the camera is going
+		bmi.s	@Left				; If left, branch
+		bpl.s	@Right				; If right, branch
+		rts					; If not moving, return
 ; ---------------------------------------------------------------------------
 @Left:
-		cmpi.w	#$60,(Camera_BG_X_Pos).w
-		bgt.s	@NoWrap
+		cmpi.w	#$60,(Camera_BG_X_Pos).w	; Check if each BG x position has passed $60
+		bgt.s	@NoWrap				; And if they did, apply the value to wrap to the maximum boundary
 		add.w	d0,(Camera_BG_X_Pos).w
 		
 @NoWrap:
@@ -542,8 +544,8 @@ WrapBGPos:
 		rts
 ; ---------------------------------------------------------------------------
 @Right:
-		cmp.w	(Camera_BG_X_Pos).w,d0
-		bge.s	@Skip
+		cmp.w	(Camera_BG_X_Pos).w,d0		; Check if each BG x position has passed the value
+		bge.s	@Skip				; And if they did, apply the value to wrap to the minimum boundary
 		sub.w	d0,(Camera_BG_X_Pos).w
 		
 @Skip:
@@ -566,6 +568,41 @@ CameraBGXWrapValues:
 		dc.w $1800, $1800, $1800, $1800		; SLZ
 		dc.w $1C00, $1C00, $1C00, $1C00		; SYZ
 		dc.w $1E00, $3C00, $1E00, $1E00		; SBZ
+; ---------------------------------------------------------------------------
+; Wrap the camera if horizontal wrapping is enabled
+; ---------------------------------------------------------------------------
+
+DoHWrap:
+		tst.b	(H_Wrap_Flag).w			; Is the horizontal wrap flag enabled?
+		beq.s	@End				; If not, return
+		move.w	(Camera_X_Pos).w,d0		; Get the camera's current X position
+		tst.w	(Camera_X_Pos_Diff).w		; Check what direction it's going
+		bmi.s	@Left				; If it's left, branch
+		bpl.s	@Right				; If it's right, branch
+		rts					; If not at all, return
+
+@Left:
+		cmp.w	(H_Wrap_Min).w,d0		; Has the camera passed the minimum x boundary for wrapping?
+		bgt.s	@End				; If not, return
+		move.w	(H_Wrap_Max).w,d1		; Get value to add to camera's x position and Sonic's x position
+		sub.w	d0,d1				; (Maximum wrap boundary - Camera's current x position)
+		add.w	d1,(Camera_X_Pos).w		; Apply value to camera' x position
+		add.w	d1,(Object_Space_1+8).w		; Apply value to Sonic's x position
+		bra.s	@Redraw				; Redraw the screen
+
+@Right:
+		cmp.w	(H_Wrap_Max).w,d0		; Has the camera passed the maximum x boundary for wrapping?
+		blt.s	@End				; If not, return
+		move.w	d0,d1				; Get value to subtract to camera's x position and Sonic's x position
+		sub.w	(H_Wrap_Min).w,d1		; (Camera's current x position - Minimum wrap boundary)
+		sub.w	d1,(Camera_X_Pos).w		; Apply value to camera' x position
+		sub.w	d1,(Object_Space_1+8).w		; Apply value to Sonic's x position
+
+@Redraw:
+		move.b	#1,(Screen_Redraw_Flag).w	; Set the screen redraw flag (a dirty fix)
+
+@End:
+		rts
 ; ---------------------------------------------------------------------------
 ; Subroutine to	move Palettes from the RAM to CRAM
 ; ---------------------------------------------------------------------------
@@ -6191,6 +6228,7 @@ LevelSizeLoad:				; XREF: TitleScreen; Level; EndingSequence
 		move.w	#$1010,(Horiz_Block_Crossed_Flag).w
 		move.w	(a0)+,d0
 		move.w	d0,(Camera_Y_Pos_Bias).w
+		sf.b	(H_Wrap_Flag).w
 		bra.w	LevSz_ChkLamp
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -6217,7 +6255,7 @@ LevelSizeArray:
 		dc.w 4,     0, $3EC0,     0, $720, $60
 
 		; MZ
-		dc.w 4,     0, $17BF,     0, $300, $60
+		dc.w 4,     0, $1D5F,     0, $300, $60
 		dc.w 4,     0, $17BF,     0, $300, $60
 		dc.w 4,     0, $2960,     0, $300, $60
 		dc.w 4,     0, $2ABF,     0, $300, $60
@@ -6288,11 +6326,9 @@ LevSz_SonicPos:
 		moveq	#0,d0
 		move.w	(a1),d0
 		move.w	d0,(Object_Space_1+$C).w ; set Sonic's position on y-axis
-		move.b	(Game_Mode).w,d2			; MJ: load game mode
-		andi.w	#$0FC,d2				; MJ: keep in range
-		cmpi.b	#$4,d2					; MJ: is screen mode at title?
+		cmpi.b	#$4,(Game_Mode).w			; MJ: is screen mode at title?
 		bne.s	loc_60D0				; MJ: if not, branch
-		move.w	#$050,d1				; MJ: set positions for title screen
+		move.w	#$50,d1					; MJ: set positions for title screen
 		move.w	#$3B0,d0				; MJ: ''
 		move.w	d1,(Object_Space_1+8).w			; MJ: save to object 1 so title screen follows
 		move.w	d0,(Object_Space_1+$C).w			; MJ: ''
@@ -6869,29 +6905,6 @@ loc_6576:
 ScrollHoriz:				; XREF: DeformBgLayer
 		move.w	(Camera_X_Pos).w,d4
 		bsr.s	ScrollHoriz2
-		tst.b	(H_Wrap_Flag).w
-		beq.s	@NoWrap
-		move.w	(Camera_X_Pos).w,d0
-		cmp.w	(H_Wrap_Min).w,d0
-		ble.s	@WrapLeft
-		cmp.w	(H_Wrap_Max).w,d0
-		bge.s	@WrapRight
-		bra.s	@NoWrap
-		
-@WrapLeft:
-		move.w	(H_Wrap_Max).w,d1
-		sub.w	d0,d1
-		add.w	d1,(Camera_X_Pos).w
-		add.w	d1,(Object_Space_1+8).w
-		bra.s	@NoWrap
-
-@WrapRight:
-		move.w	d0,d1
-		sub.w	(H_Wrap_Min).w,d1
-		sub.w	d1,(Camera_X_Pos).w
-		sub.w	d1,(Object_Space_1+8).w
-		
-@NoWrap:
 		move.w	(Camera_X_Pos).w,d0
 		andi.w	#$10,d0
 		move.b	(Horiz_Block_Crossed_Flag).w,d1
@@ -7306,6 +7319,27 @@ LoadTilesAsYouMove:			; XREF: Demo_Time
 		lea	(Camera_X_Pos_Copy).w,a3
 		movea.l	(Level_Layout_FG).w,a4			; MJ: Load address of layout
 		move.w	#$4000,d2
+		tst.b	(Screen_Redraw_Flag).w
+		beq.s	Draw_FG
+		move.b	#0,(Screen_Redraw_Flag).w
+		moveq	#-$10,d4
+		moveq	#$F,d6
+
+Draw_All:
+		movem.l	d4-d6,-(sp)
+		moveq	#-$10,d5
+		move.w	d4,d1
+		bsr.w	Calc_VRAM_Pos
+		move.w	d1,d4
+		moveq	#-$10,d5
+		bsr.w	DrawTiles_LR
+		movem.l	(sp)+,d4-d6
+		addi.w	#$10,d4
+		dbf	d6,Draw_All
+		move.b	#0,(Scroll_Flags_Copy).w
+		rts
+
+Draw_FG:
 		tst.b	(a2)
 		beq.s	locret_6952
 		bclr	#0,(a2)
@@ -7946,8 +7980,8 @@ loc_6EB0:
 		move.w	#$280,$C(a1)
 
 loc_6ED0:
-		move.b	#1,(Boss_Flag).w	; set boss flag
-		move.b	#1,(Right_Boundary_Lock).w ; lock	screen
+		move.b	#1,(Boss_Flag).w			; set boss flag
+		move.b	#1,(Right_Boundary_Lock).w		; lock screen
 		addq.b	#2,(Dynamic_Resize_Routine).w
 		moveq	#$11,d0
 		bra.w	LoadPLC		; load boss patterns
@@ -8057,6 +8091,19 @@ Resize_MZx:	dc.w Resize_MZ1-Resize_MZx
 ; ===========================================================================
 
 Resize_MZ1:
+		cmpi.w	#$1A00,(Camera_X_Pos).w
+		bcs.s	@Do
+		move.w	#$210,(Target_Camera_Max_Y_Pos).w
+		tst.b	(H_Wrap_Flag).w
+		bne.s	@Skip
+		st.b	(H_Wrap_Flag).w
+		move.w	#$1A00,(H_Wrap_Min).w
+		move.w	#$1B00,(H_Wrap_Max).w
+
+@Skip:
+		rts
+
+@Do:
 		moveq	#0,d0
 		move.b	(Dynamic_Resize_Routine).w,d0
 		move.w	off_6FB2(pc,d0.w),d0
@@ -8135,7 +8182,7 @@ loc_7050:
 		move.w	#$210,(Target_Camera_Max_Y_Pos).w
 
 locret_7072:
-		rts	
+		rts
 ; ===========================================================================
 
 Resize_MZ2:
