@@ -26,13 +26,13 @@ ErrorTrap:	bra.w	*
 ; ===========================================================================
 		align $100
 ; ===========================================================================
-Console:	dc.b 'SEGA IS TERRIBLE' ; Hardware system ID
-Date:		dc.b 'OWARI   2016.NOV' ; Release date
+Console:	dc.b 'SEGA IS TERRIBLE' 	; Hardware system ID
+Date:		dc.b 'OWARI   2016.NOV' 	; Release date
 Title_Local:	dc.b 'Yundong Zixingche                               ' ; Domestic name
 Title_Int:	dc.b 'Yundong Zixingche                               ' ; International name
-Serial:		dc.b 'GM 13131313-13'   ; Serial/version number
+Serial:		dc.b 'GM 13131313-13'   	; Serial/version number
 Checksum:	dc.w 0
-		dc.b 'J               ' ; I/O support
+		dc.b 'J               ' 	; I/O support
 RomStartLoc:	dc.l StartOfRom			; ROM start
 RomEndLoc:	dc.l EndOfRom-1			; ROM end
 RamStartLoc:	dc.l RAM_Start&$FFFFFF		; RAM start
@@ -41,7 +41,7 @@ SRAMSupport:	dc.l $20202020			; change to $5241E020 to create	SRAM
 		dc.l $20202020			; SRAM start
 		dc.l $20202020			; SRAM end
 Notes:		dc.b '                                                    '
-Region:		dc.b 'JUE             ' ; Region
+Region:		dc.b 'JUE             ' 	; Region
 ; ===========================================================================
 
 EntryPoint:
@@ -185,13 +185,13 @@ MainGameLoop:
 ; ---------------------------------------------------------------------------
 
 GameModeArray:
-		dc.l	NoticeScreen	; Notice Screen ($0)
+		dc.l	NoticeScreen		; Notice Screen ($0)
 		dc.l	TitleScreen		; Title	Screen ($4)
 		dc.l	Level			; Demo Mode ($8)
 		dc.l	Level			; Normal Level ($C)
 		dc.l	FlickySS		; Special Stage	($10)
-		dc.l	ContinueScreen	; Continue Screen ($14)
-		dc.l	EndingSequence	; End of game sequence ($18)
+		dc.l	ContinueScreen		; Continue Screen ($14)
+		dc.l	EndingSequence		; End of game sequence ($18)
 		dc.l	Credits			; Credits ($1C)
 		dc.l	SegaScreen		; Sega Screen ($20)
 ; ===========================================================================
@@ -576,28 +576,26 @@ DoHWrap:
 		tst.b	(H_Wrap_Flag).w			; Is the horizontal wrap flag enabled?
 		beq.s	@End				; If not, return
 		move.w	(Camera_X_Pos).w,d0		; Get the camera's current X position
+		move.w	(H_Wrap_Max).w,d1		; Get value to apply to camera's x position and Sonic's x position
+		sub.w	(H_Wrap_Min).w,d1		; (Maximum wrap boundary - Minimum wrap boundary)
 		tst.w	(Camera_X_Pos_Diff).w		; Check what direction it's going
 		bmi.s	@Left				; If it's left, branch
 		bpl.s	@Right				; If it's right, branch
 		rts					; If not at all, return
-
+; ---------------------------------------------------------------------------
 @Left:
 		cmp.w	(H_Wrap_Min).w,d0		; Has the camera passed the minimum x boundary for wrapping?
-		bgt.s	@End				; If not, return
-		move.w	(H_Wrap_Max).w,d1		; Get value to add to camera's x position and Sonic's x position
-		sub.w	d0,d1				; (Maximum wrap boundary - Camera's current x position)
+		bge.s	@End				; If not, return
 		add.w	d1,(Camera_X_Pos).w		; Apply value to camera' x position
 		add.w	d1,(Object_Space_1+8).w		; Apply value to Sonic's x position
 		bra.s	@Redraw				; Redraw the screen
-
+; ---------------------------------------------------------------------------
 @Right:
 		cmp.w	(H_Wrap_Max).w,d0		; Has the camera passed the maximum x boundary for wrapping?
 		blt.s	@End				; If not, return
-		move.w	d0,d1				; Get value to subtract to camera's x position and Sonic's x position
-		sub.w	(H_Wrap_Min).w,d1		; (Camera's current x position - Minimum wrap boundary)
 		sub.w	d1,(Camera_X_Pos).w		; Apply value to camera' x position
 		sub.w	d1,(Object_Space_1+8).w		; Apply value to Sonic's x position
-
+; ---------------------------------------------------------------------------
 @Redraw:
 		move.b	#1,(Screen_Redraw_Flag).w	; Set the screen redraw flag (a dirty fix)
 
@@ -8091,9 +8089,11 @@ Resize_MZx:	dc.w Resize_MZ1-Resize_MZx
 ; ===========================================================================
 
 Resize_MZ1:
-		cmpi.w	#$1A00,(Camera_X_Pos).w
+		cmpi.w	#$1780,(Camera_X_Pos).w
 		bcs.s	@Do
 		move.w	#$210,(Target_Camera_Max_Y_Pos).w
+		cmpi.w	#$1A00,(Camera_X_Pos).w
+		bcs.s	@Skip
 		tst.b	(H_Wrap_Flag).w
 		bne.s	@Skip
 		st.b	(H_Wrap_Flag).w
