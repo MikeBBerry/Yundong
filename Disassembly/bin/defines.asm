@@ -278,9 +278,7 @@ Obj_Manager_Routine				rs.b 1			; $FFFFF76C
 Camera_X_Pos_Last				rs.w 1			; $FFFFF76E
 Obj_Load_Addr_Right				rs.l 1			; $FFFFF770
 Obj_Load_Addr_Left				rs.l 1			; $FFFFF774
-Obj_Load_Addr_2					rs.l 1			; $FFFFF778
-Obj_Load_Addr_3					rs.l 1			; $FFFFF77C
-								rs.b $10		; $FFFFF780
+								rs.b $18		; $FFFFF778
 Demo_Button_Index				rs.w 1			; $FFFFF790
 Demo_Press_Counter				rs.b 1			; $FFFFF792
 								rs.b 1			; $FFFFF793
@@ -313,7 +311,7 @@ Wind_Tunnel_Mode				rs.b 1			; $FFFFF7C7
 No_Player_Physics_Flag			rs.b 1			; $FFFFF7C8
 Wind_Tunnel_Flag				rs.b 1			; $FFFFF7C9
 Jump_Only_Flag					rs.b 1			; $FFFFF7CA
-Obj6B_Flag						rs.b 1			; $FFFFF7CB
+								rs.b 1			; $FFFFF7CB
 Lock_Controls_Flag				rs.b 1			; $FFFFF7CC
 Jumped_In_Big_Ring_Flag			rs.b 1			; $FFFFF7CD
 								rs.b 2			; $FFFFF7CE
@@ -432,7 +430,8 @@ Osc_And_Misc_RAM_End			rs.b 0
 Level_Sel_Move_Timer			rs.w 1			; $FFFFFF80
 Level_Sel_Selection				rs.w 1			; $FFFFFF82
 Level_Sel_Sound_ID				rs.w 1			; $FFFFFF84
-								rs.b $F			; $FFFFFF86
+								rs.b $E			; $FFFFFF86
+No_Music_Ctrl					rs.b 1			; $FFFFFF94
 Screen_Redraw_Flag				rs.b 1			; $FFFFFF95
 H_Wrap_Min						rs.w 1			; $FFFFFF96
 H_Wrap_Max						rs.w 1			; $FFFFFF98
