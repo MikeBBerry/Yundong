@@ -15220,17 +15220,12 @@ Obj3A_Display2:				; XREF: Obj3A_NextLevel, Obj3A_ChkSS
 ; Level	order array
 ; ---------------------------------------------------------------------------
 LevelOrder:
-		dc.w $200, $000 	;GHZ1 -> MZ
-		dc.w $000, $000 	;Unused
-		dc.w $101, $102 	;LZ1 -> LZ2 -> LZ3
-		dc.w $300, $502 	;LZ3 -> SLZ1 or if act 4 -> FZ
-		dc.w $201, $400 	;MZ1 -> MZ2 -> SYZ
-		dc.w $000, $000 	;Unused
-		dc.w $301, $302 	;SLZ1 -> SLZ2 -> SLZ3
-		dc.w $500, $000 	;SLZ3 -> SYZ1
-		dc.w $401, $100 	;SYZ1 -> SYZ2 -> SYZ3
-		dc.w $000, $000 	;Unused
-		dc.w $501, $103 	;SBZ1 -> SBZ2 -> LZ4
+		dc.w $200, $000, $000, $000	; GHZ1 -> MZ1
+		dc.w $101, $502, $000, $000	; LZ1  -> LZ2,  LZ2  -> FZ
+		dc.w $201, $400, $000, $000	; MZ1  -> MZ2,  MZ2  -> SYZ1
+		dc.w $301, $100, $000, $000	; SLZ1 -> SLZ2, SLZ2 -> LZ1
+		dc.w $401, $300, $000, $000	; SYZ1 -> SYZ2, SYZ2 -> SLZ1
+		dc.w $000, $000, $000, $000
 		even
 ; ===========================================================================
 
