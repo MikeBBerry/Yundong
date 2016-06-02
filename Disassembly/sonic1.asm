@@ -4084,37 +4084,9 @@ loc_39E8:
 		move.b	(Current_Zone).w,d0
 		lsl.w	#2,d0
 		movea.l	(a1,d0.w),a1
-		tst.w	(Demo_Mode).w	; is demo mode on?
-		bpl.s	Level_Demo	; if yes, branch
-		lea	(Demo_EndIndex).l,a1 ; load ending demo	data
-		move.w	(Credits_Index).w,d0
-		subq.w	#1,d0
-		lsl.w	#2,d0
-		movea.l	(a1,d0.w),a1
-
-Level_Demo:
 		move.b	1(a1),(Demo_Press_Counter).w ; load key press duration
 		subq.b	#1,(Demo_Press_Counter).w ; subtract 1 from duration
 		move.w	#1800,(Universal_Timer).w
-		tst.w	(Demo_Mode).w
-		bpl.s	Level_ChkWaterPal
-		move.w	#540,(Universal_Timer).w
-		cmpi.w	#4,(Credits_Index).w
-		bne.s	Level_ChkWaterPal
-		move.w	#510,(Universal_Timer).w
-
-Level_ChkWaterPal:
-		cmpi.b	#1,(Current_Zone).w ; is level LZ/SBZ3?
-		bne.s	Level_Delay	; if not, branch
-		moveq	#$B,d0		; Palette $B (LZ underwater)
-		cmpi.b	#3,(Current_Act).w ; is level SBZ3?
-		bne.s	Level_WaterPal2	; if not, branch
-		moveq	#$D,d0		; Palette $D (SBZ3 underwater)
-
-Level_WaterPal2:
-		bsr.w	PalLoad4_Water
-
-Level_Delay:
 		move.w	#3,d1
 
 Level_DelayLoop:
@@ -4727,15 +4699,6 @@ loc_4022:
 loc_4038:
 		lsl.w	#2,d0
 		movea.l	(a1,d0.w),a1
-		tst.w	(Demo_Mode).w
-		bpl.s	loc_4056
-		lea	(Demo_EndIndex).l,a1
-		move.w	(Credits_Index).w,d0
-		subq.w	#1,d0
-		lsl.w	#2,d0
-		movea.l	(a1,d0.w),a1
-
-loc_4056:
 		move.w	(Demo_Button_Index).w,d0
 		adda.w	d0,a1
 		move.b	(a1),d0
@@ -5834,20 +5797,7 @@ Cred_ClrPalette:
 		move.b	#$8A,(Object_Space_3).w ; load credits object
 		jsr	ObjectsLoad
 		jsr	BuildSprites
-		bsr.w	EndingDemoLoad
-		moveq	#0,d0
-		move.b	(Current_Zone).w,d0
-		lsl.w	#4,d0
-		lea	(MainLoadBlocks).l,a2 ;	load block mappings etc
-		lea	(a2,d0.w),a2
-		moveq	#0,d0
-		move.b	(a2),d0
-		beq.s	loc_5862
-		bsr.w	LoadPLC		; load level patterns
-
-loc_5862:
-		moveq	#1,d0
-		bsr.w	LoadPLC		; load standard	level patterns
+		addq.w	#1,(Credits_Index).w
 		move.w	#120,(Universal_Timer).w ; display a credit for 2 seconds
 		bsr.w	Pal_FadeTo
 
@@ -5862,71 +5812,6 @@ Cred_WaitLoop:
 		cmpi.w	#9,(Credits_Index).w ; have	the credits finished?
 		beq.w	TryAgainEnd	; if yes, branch
 		rts	
-
-; ---------------------------------------------------------------------------
-; Ending sequence demo loading subroutine
-; ---------------------------------------------------------------------------
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
-EndingDemoLoad:				; XREF: Credits
-		move.w	(Credits_Index).w,d0
-		andi.w	#$F,d0
-		add.w	d0,d0
-		move.w	EndDemo_Levels(pc,d0.w),d0 ; load level	array
-		move.w	d0,(Current_Zone_And_Act).w ; set level from level	array
-		addq.w	#1,(Credits_Index).w
-		cmpi.w	#9,(Credits_Index).w ; have	credits	finished?
-		bcc.s	EndDemo_Exit	; if yes, branch
-		move.w	#$8001,(Demo_Mode).w ; force demo mode
-		move.b	#8,(Game_Mode).w ; set game mode to 08 (demo)
-		move.b	#4,(Life_Count).w ; set lives to	3
-		moveq	#0,d0
-		move.b	d0,(Boss_Flag).w	; clear Boss flag
-		move.w	d0,(Ring_Count).w ; clear rings
-		move.l	d0,(Timer).w ; clear time
-		move.l	d0,(Score).w ; clear score
-		move.b	d0,(Last_Checkpoint_Hit).w ; clear lamppost counter
-		cmpi.w	#4,(Credits_Index).w ; is SLZ demo running?
-		bne.s	EndDemo_Exit	; if not, branch
-		lea	(EndDemo_LampVar).l,a1 ; load lamppost variables
-		lea	(Last_Checkpoint_Hit).w,a2
-		move.w	#8,d0
-
-EndDemo_LampLoad:
-		move.l	(a1)+,(a2)+
-		dbf	d0,EndDemo_LampLoad
-
-EndDemo_Exit:
-		rts	
-; End of function EndingDemoLoad
-
-; ===========================================================================
-; ---------------------------------------------------------------------------
-; Levels used in the end sequence demos
-; ---------------------------------------------------------------------------
-EndDemo_Levels:
-		dc.w $00
-		dc.w $201
-		dc.w $402
-		dc.w $102
-		dc.w $302
-		dc.w $500
-		dc.w $501
-		dc.w $00
-		even
-
-; ---------------------------------------------------------------------------
-; Lamppost variables in the end sequence demo (Star Light Zone)
-; ---------------------------------------------------------------------------
-EndDemo_LampVar:
-		dc.b 1,	1		; XREF: EndingDemoLoad
-		dc.w $A00, $62C, $D
-		dc.l 0
-		dc.b 0,	0
-		dc.w $800, $957, $5CC, $4AB, $3A6, 0, $28C, 0, 0, $308
-		dc.b 1,	1
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; "TRY AGAIN" and "END"	screens
@@ -6303,14 +6188,6 @@ LevSz_StartLoc:				; XREF: LevelSizeLoad
 		lsr.w	#4,d0
 		lea	(StartLocArray).l,a1			; MJ: load location array
 		lea	(a1,d0.w),a1				; MJ: load Sonic's start location address
-		tst.w	(Demo_Mode).w	; is demo mode on?
-		bpl.s	LevSz_SonicPos	; if not, branch
-		move.w	(Credits_Index).w,d0
-		subq.w	#1,d0
-		lsl.w	#2,d0
-		lea	EndingStLocArray(pc,d0.w),a1 ; load Sonic's start location
-
-LevSz_SonicPos:
 		moveq	#0,d1
 		move.w	(a1)+,d1
 		move.w	d1,(Object_Space_1+8).w ; set Sonic's position on x-axis
