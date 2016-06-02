@@ -8669,7 +8669,7 @@ Obj17_MakeHelix:
 		bne.s	Obj17_Action
 		addq.b	#1,$28(a0)
 		move.w	a1,d5
-		subi.w	#$D000,d5
+		subi.w	#Object_RAM,d5
 		lsr.w	#6,d5
 		andi.w	#$7F,d5
 		move.b	d5,(a2)+
@@ -27191,7 +27191,7 @@ Obj48_MakeLinks:
 
 loc_17B60:				; XREF: Obj48_Main
 		move.w	a1,d5
-		subi.w	#$D000,d5
+		subi.w	#Object_RAM,d5
 		lsr.w	#6,d5
 		andi.w	#$7F,d5
 		move.b	d5,(a2)+
@@ -33593,6 +33593,7 @@ ObjPos_Index:	dc.l ObjPos_GHZ1
 		dc.l ObjPos_End
 		dc.l ObjPos_End
 		dc.l ObjPos_End
+		dc.b $FF, $FF, 0, 0, 0,	0
 ; ===========================================================================
 ObjPos_GHZ1:	incbin	level/objpos/ghz1.bin
 		even
