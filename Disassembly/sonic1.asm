@@ -22515,6 +22515,13 @@ Obj01_MdNormal:				; XREF: Obj01_Modes
 
 @crawl:
 		move.b	#1,d0
+		bclr	#5,$22(a0)
+		move.b	#8,$1C(a0)
+		tst.w	$14(a0)
+		beq.s	@chk
+		move.b	#$A,$1C(a0)
+
+@chk:
 		tst.b	crawling(a0)
 		bne.s	@do
 		move.b	#$E,$16(a0)
@@ -23525,7 +23532,6 @@ loc_137E4:
 ; ---------------------------------------------------------------------------
 
 Obj01_Hurt:				; XREF: Obj01_Index
-		move.b	#$1A,$1C(a0)
 		jsr	SpeedToPos
 		addi.w	#$30,$12(a0)
 		btst	#6,$22(a0)
@@ -23762,13 +23768,13 @@ loc_13A78:
 		neg.w	d2
 
 loc_13A9C:
-		lea		(SonAni_Crawl).l,a1 ; use crawling animation
+		lea	(SonAni_Crawl).l,a1 ; use crawling animation
 		tst.b	crawling(a0)
 		bne.s	loc_13AB4
-		lea		(SonAni_Run).l,a1 ; use	running	animation
+		lea	(SonAni_Run).l,a1 ; use	running	animation
 		cmpi.w	#$600,d2	; is Sonic at running speed?
 		bcc.s	loc_13AB4	; if yes, branch
-		lea		(SonAni_Walk).l,a1 ; use walking animation
+		lea	(SonAni_Walk).l,a1 ; use walking animation
 		move.b	d0,d1
 		lsr.b	#1,d1
 		add.b	d1,d0
@@ -23797,12 +23803,6 @@ SAnim_RollJump:				; XREF: SAnim_WalkRun
 		neg.w	d2
 
 loc_13ADE:
-	;	lea	(SonAni_Roll2).l,a1 ; use fast animation
-	;	cmpi.w	#$600,d2	; is Sonic moving fast?
-	;	bcc.s	loc_13AF0	; if yes, branch
-	;	lea	(SonAni_Roll).l,a1 ; use slower	animation
-
-loc_13AF0:
 		neg.w	d2
 		addi.w	#$400,d2
 		bpl.s	loc_13AFA
