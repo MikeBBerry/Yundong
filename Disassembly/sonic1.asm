@@ -3551,8 +3551,8 @@ LSelectPointers:
 		dc.w $0300
 		dc.w $0301
 		dc.w $8000
-		dc.w $0500
-		dc.w $0501
+		dc.w $8000
+		dc.w $8000
 		dc.w $0502
 		dc.w $8000
 		dc.w $8000
@@ -22507,13 +22507,11 @@ Obj01_MdNormal:				; XREF: Obj01_Modes
 		addi.b	#$80,d0
 		bsr.w	sub_14D48
 		cmpi.w	#6,d1
-		blt.w	@crawl
+		blt.w	@end
 		move.b	#0,d0
 		btst	#1,(Sonic_Ctrl_Held).w
 		beq.s	@not_crawling
 		bsr.w	Obj01_ApplySpeedCap
-
-@crawl:
 		move.b	#1,d0
 		bclr	#5,$22(a0)
 		move.b	#8,$1C(a0)
@@ -22536,6 +22534,8 @@ Obj01_MdNormal:				; XREF: Obj01_Modes
 
 @do:
 		move.b	d0,crawling(a0)
+		
+@end:
 		rts	
 ; ===========================================================================
 
