@@ -22250,6 +22250,45 @@ Obj01_ApplySpeedCap:
 		
 @no_cap:
 		rts
+; ===========================================================================	
+Obj01_CheckCrawl:
+		btst	#1,(Sonic_Ctrl_Held).w
+		bne.s	@is_crawling3
+		moveq	#0,d0
+		move.b	$26(a0),d0
+		addi.b	#$80,d0
+		bsr.w	sub_14D48
+		cmpi.w	#3,d1
+		blt.w	@end
+		
+@not_crawling:
+		move.b	#0,d0
+		tst.b	crawling(a0)
+		beq.s	@do
+		move.b	#$13,$16(a0)
+		subq.w	#5,$C(a0)
+		bra.s	@do
+		
+@is_crawling3:
+		bsr.w	Obj01_ApplySpeedCap
+		move.b	#1,d0
+		bclr	#5,$22(a0)
+		move.b	#8,$1C(a0)
+		tst.w	$14(a0)
+		beq.s	@chk
+		move.b	#$A,$1C(a0)
+
+@chk:
+		tst.b	crawling(a0)
+		bne.s	@do
+		move.b	#$E,$16(a0)
+		addq.w	#5,$C(a0)
+
+@do:
+		move.b	d0,crawling(a0)
+		
+@end:
+		rts
 ; ===========================================================================
 Obj01:					; XREF: Obj_Index
 		tst.w	(Debug_Placement_Mode).w	; is debug mode	being used?
@@ -22502,41 +22541,7 @@ Obj01_MdNormal:				; XREF: Obj01_Modes
 		subq.w	#1,$3E(a0)
 		
 @no_movelock:
-		moveq	#0,d0
-		move.b	$26(a0),d0
-		addi.b	#$80,d0
-		bsr.w	sub_14D48
-		cmpi.w	#6,d1
-		blt.w	@end
-		move.b	#0,d0
-		btst	#1,(Sonic_Ctrl_Held).w
-		beq.s	@not_crawling
-		bsr.w	Obj01_ApplySpeedCap
-		move.b	#1,d0
-		bclr	#5,$22(a0)
-		move.b	#8,$1C(a0)
-		tst.w	$14(a0)
-		beq.s	@chk
-		move.b	#$A,$1C(a0)
-
-@chk:
-		tst.b	crawling(a0)
-		bne.s	@do
-		move.b	#$E,$16(a0)
-		addq.w	#5,$C(a0)
-		bra.s	@do
-		
-@not_crawling:
-		tst.b	crawling(a0)
-		beq.s	@do
-		move.b	#$13,$16(a0)
-		subq.w	#5,$C(a0)
-
-@do:
-		move.b	d0,crawling(a0)
-		
-@end:
-		rts	
+		bra.w	Obj01_CheckCrawl	
 ; ===========================================================================
 
 Obj01_MdAir:				; XREF: Obj01_Modes
@@ -33130,23 +33135,6 @@ Eni_JapNames:	incbin	mappings/plane/enigma/japcreds.bin	; Japanese credits (mapp
 Nem_JapNames:	incbin	art/nemesis/japcreds.bin	; Japanese credits
 		even
 ; ---------------------------------------------------------------------------
-; Sprite mappings - Sonic
-; ---------------------------------------------------------------------------
-Map_Sonic:
-	include "mappings/sprite/Sonic.asm"
-
-; ---------------------------------------------------------------------------
-; Uncompressed graphics	loading	array for Sonic
-; ---------------------------------------------------------------------------
-SonicDynPLC:
-	include "mappings/DPLC/Sonic.asm"
-
-; ---------------------------------------------------------------------------
-; Uncompressed graphics	- Sonic
-; ---------------------------------------------------------------------------
-Art_Sonic:	incbin	art/uncompressed/sonic.bin	; Sonic
-		even
-; ---------------------------------------------------------------------------
 ; Compressed graphics - various
 ; ---------------------------------------------------------------------------
 Nem_Smoke:	incbin	art/nemesis/xxxsmoke.bin	; unused smoke
@@ -33853,6 +33841,23 @@ Nem_TitleBG:
 
 Map_TitleBG:
 		incbin "mappings/plane/uncompressed/title.bin"
+		even
+; ---------------------------------------------------------------------------
+; Sprite mappings - Sonic
+; ---------------------------------------------------------------------------
+Map_Sonic:
+	include "mappings/sprite/Sonic.asm"
+
+; ---------------------------------------------------------------------------
+; Uncompressed graphics	loading	array for Sonic
+; ---------------------------------------------------------------------------
+SonicDynPLC:
+	include "mappings/DPLC/Sonic.asm"
+
+; ---------------------------------------------------------------------------
+; Uncompressed graphics	- Sonic
+; ---------------------------------------------------------------------------
+Art_Sonic:	incbin	art/uncompressed/sonic.bin	; Sonic
 		even
 ; ===========================================================================
 		include "screens/soundtest/code.asm"
