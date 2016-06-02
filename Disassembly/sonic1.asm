@@ -24668,6 +24668,7 @@ loc_137E4:
 ; ---------------------------------------------------------------------------
 
 Obj01_Hurt:				; XREF: Obj01_Index
+		move.b	#$1A,$1C(a0)
 		jsr	SpeedToPos
 		addi.w	#$30,$12(a0)
 		btst	#6,$22(a0)
@@ -24715,6 +24716,7 @@ locret_13860:
 ; ---------------------------------------------------------------------------
 
 Obj01_Death:				; XREF: Obj01_Index
+		move.b	#$18,$1C(a0)
 		bsr.w	GameOver
 		jsr	ObjectFall
 		bsr.w	Sonic_RecordPos
