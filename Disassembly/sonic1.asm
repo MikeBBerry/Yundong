@@ -3493,8 +3493,8 @@ LevSel_PlaySnd:
 ; ===========================================================================
 
 LevSel_Ending:				; XREF: LevelSelect
-		move.b	#$18,(Game_Mode).w ; set screen	mode to	$18 (Ending)
-		move.w	#$600,(Current_Zone_And_Act).w ; set level	to 0600	(Ending)
+		move.b	#$18,(Game_Mode).w 		; set screen mode to	$18 (Ending)
+		move.w	#$600,(Current_Zone_And_Act).w 	; set level to 0600	(Ending)
 		rts	
 ; ===========================================================================
 
@@ -5946,26 +5946,14 @@ LevelSizeArray:
 		; SBZ
 		dc.w 4,     0, $21C0,     0, $720, $60
 		dc.w 4,     0, $1E40,     0, $800, $60
-		dc.w 4, $2080, $2460, $510, $510, $60
+		dc.w 4, $2080, $2760,  $510, $510, $60
 		dc.w 4,     0, $3EC0,     0, $720, $60
 		
 		; Ending
-		dc.w 4,     0, $500, $110, $110, $60
-		dc.w 4,     0, $DC0, $110, $110, $60
+		dc.w 4,     0, $500,   $110, $110, $60
+		dc.w 4,     0, $DC0,   $110, $110, $60
 		dc.w 4,     0, $2FFF,     0, $320, $60
 		dc.w 4,     0, $2FFF,     0, $320, $60
-; ===========================================================================
-
-EndingStLocArray:
-		dc.w $050, $3B0
-		dc.w $EA0, $46C
-		dc.w $1750, $0BD
-		dc.w $A00, $62C
-		dc.w $BB0, $04C
-		dc.w $1570, $16C
-		dc.w $1B0, $72C
-		dc.w $1400, $2AC
-		even
 ; ===========================================================================
 
 LevSz_ChkLamp:				; XREF: LevelSizeLoad
@@ -5989,14 +5977,8 @@ LevSz_StartLoc:				; XREF: LevelSizeLoad
 		moveq	#0,d0
 		move.w	(a1),d0
 		move.w	d0,(Object_Space_1+$C).w ; set Sonic's position on y-axis
-		cmpi.b	#$4,(Game_Mode).w			; MJ: is screen mode at title?
-		bne.s	loc_60D0				; MJ: if not, branch
-		move.w	#$50,d1					; MJ: set positions for title screen
-		move.w	#$3B0,d0				; MJ: ''
-		move.w	d1,(Object_Space_1+8).w			; MJ: save to object 1 so title screen follows
-		move.w	d0,(Object_Space_1+$C).w			; MJ: ''
-
-loc_60D0:				; XREF: LevSz_ChkLamp
+		
+loc_60D0:
 		clr.w	(Sonic_Pos_Record_Index).w		; reset Sonic's position tracking index
 		lea	(Sonic_Pos_Record_Buf).w,a2	; load the tracking array into a2
 		moveq	#63,d2				; begin a 64-step loop
@@ -7863,60 +7845,13 @@ Resize_SBZ2:
 ; ===========================================================================
 
 Resize_FZ:
-		moveq	#0,d0
-		move.b	(Dynamic_Resize_Routine).w,d0
-		move.w	off_72D8(pc,d0.w),d0
-		jmp	off_72D8(pc,d0.w)
-; ===========================================================================
-off_72D8:	dc.w Resize_FZmain-off_72D8, Resize_FZboss-off_72D8
-		dc.w Resize_FZend-off_72D8, locret_7322-off_72D8
-		dc.w Resize_FZend2-off_72D8
-; ===========================================================================
+		cmpi.w	#$2650,(Camera_X_Pos).w
+		bcs.s	@End
+		move.b	#$18,(Game_Mode).w 		; set screen mode to	$18 (Ending)
+		move.w	#$600,(Current_Zone_And_Act).w 	; set level to 0600
 
-loc_72C2:
-		move.w	(Camera_X_Pos).w,(Camera_Min_X_Pos).w
+@End:
 		rts
-; ===========================================================================
-
-Resize_FZmain:
-		cmpi.w	#$2148,(Camera_X_Pos).w
-		bcs.s	loc_72F4
-		addq.b	#2,(Dynamic_Resize_Routine).w
-		moveq	#$1F,d0
-		bsr.w	LoadPLC		; load FZ boss patterns
-
-loc_72F4:
-		bra.s	loc_72C2
-; ===========================================================================
-
-Resize_FZboss:
-		cmpi.w	#$2300,(Camera_X_Pos).w
-		bcs.s	loc_7312
-		bsr.w	SingleObjLoad
-		bne.s	loc_7312
-		move.b	#$85,(a1)	; load FZ boss object
-		addq.b	#2,(Dynamic_Resize_Routine).w
-		move.b	#1,(Right_Boundary_Lock).w ; lock	screen
-
-loc_7312:
-		bra.s	loc_72C2
-; ===========================================================================
-
-Resize_FZend:
-		cmpi.w	#$2450,(Camera_X_Pos).w
-		bcs.s	loc_7320
-		addq.b	#2,(Dynamic_Resize_Routine).w
-
-loc_7320:
-		bra.s	loc_72C2
-; ===========================================================================
-
-locret_7322:
-		rts	
-; ===========================================================================
-
-Resize_FZend2:
-		bra.s	loc_72C2
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Ending sequence dynamic screen resizing (empty)
@@ -22567,18 +22502,43 @@ Obj01_MdNormal:				; XREF: Obj01_Modes
 		subq.w	#1,$3E(a0)
 		
 @no_movelock:
+		moveq	#0,d0
+		move.b	$26(a0),d0
+		addi.b	#$80,d0
+		bsr.w	sub_14D48
+		cmpi.w	#6,d1
+		blt.w	@crawl
 		move.b	#0,d0
 		btst	#1,(Sonic_Ctrl_Held).w
 		beq.s	@not_crawling
 		bsr.w	Obj01_ApplySpeedCap
+
+@crawl:
 		move.b	#1,d0
+		tst.b	crawling(a0)
+		bne.s	@do
+		move.b	#$E,$16(a0)
+		addq.w	#5,$C(a0)
+		bra.s	@do
 		
 @not_crawling:
+		tst.b	crawling(a0)
+		beq.s	@do
+		move.b	#$13,$16(a0)
+		subq.w	#5,$C(a0)
+
+@do:
 		move.b	d0,crawling(a0)
 		rts	
 ; ===========================================================================
 
 Obj01_MdAir:				; XREF: Obj01_Modes
+		tst.b	crawling(a0)
+		beq.s	@do
+		move.b	#$13,$16(a0)
+		subq.w	#5,$C(a0)
+
+@do:
 		move.b	#0,crawling(a0)
 		bsr.w	Sonic_JumpHeight
 		bsr.w	Sonic_ChgJumpDir
@@ -22599,6 +22559,12 @@ Obj01_MdRoll:				; XREF: Obj01_Modes
 ; ===========================================================================
 
 Obj01_MdJump:				; XREF: Obj01_Modes
+		tst.b	crawling(a0)
+		beq.s	@do
+		move.b	#$13,$16(a0)
+		subq.w	#5,$C(a0)
+
+@do:
 		move.b	#0,crawling(a0)
 		bsr.w	Sonic_JumpHeight
 		bsr.w	Sonic_ChgJumpDir
@@ -22646,6 +22612,11 @@ Obj01_NotRight:
 		bne.w	Obj01_ResetScr	; if yes, branch
 		bclr	#5,$22(a0)
 		move.b	#5,$1C(a0)	; use "standing" animation
+		tst.b	crawling(a0)
+		beq.s	@nocrawl
+		move.b	#8,$1C(a0)
+
+@nocrawl:
 		btst	#3,$22(a0)
 		beq.s	Sonic_Balance
 		moveq	#0,d0
@@ -30085,1008 +30056,27 @@ Map_obj82:
 
 Obj83:					; XREF: Obj_Index
 		rts
-
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
-; Object 85 - Eggman (FZ)
+; Object 85 - Unused
 ; ---------------------------------------------------------------------------
-
-Obj85_Delete:
-		jmp	DeleteObject
-; ===========================================================================
 
 Obj85:					; XREF: Obj_Index
-		moveq	#0,d0
-		move.b	$24(a0),d0
-		move.w	Obj85_Index(pc,d0.w),d0
-		jmp	Obj85_Index(pc,d0.w)
-; ===========================================================================
-Obj85_Index:	dc.w Obj85_Main-Obj85_Index
-		dc.w Obj85_Eggman-Obj85_Index
-		dc.w loc_1A38E-Obj85_Index
-		dc.w loc_1A346-Obj85_Index
-		dc.w loc_1A2C6-Obj85_Index
-		dc.w loc_1A3AC-Obj85_Index
-		dc.w loc_1A264-Obj85_Index
-
-Obj85_ObjData:	dc.w $100, $100, $470	; X pos, Y pos,	VRAM setting
-		dc.l Map_obj82		; mappings pointer
-		dc.w $25B0, $590, $300
-		dc.l Map_obj84
-		dc.w $26E0, $596, $3A0
-		dc.l Map_FZBoss
-		dc.w $26E0, $596, $470
-		dc.l Map_obj82
-		dc.w $26E0, $596, $400
-		dc.l Map_Eggman
-		dc.w $26E0, $596, $400
-		dc.l Map_Eggman
-
-Obj85_ObjData2:	dc.b 2,	0, 4, $20, $19	; routine num, animation, sprite priority, width, height
-		dc.b 4,	0, 1, $12, 8
-		dc.b 6,	0, 3, 0, 0
-		dc.b 8,	0, 3, 0, 0
-		dc.b $A, 0, 3, $20, $20
-		dc.b $C, 0, 3, 0, 0
-; ===========================================================================
-
-Obj85_Main:				; XREF: Obj85_Index
-		lea	Obj85_ObjData(pc),a2
-		lea	Obj85_ObjData2(pc),a3
-		movea.l	a0,a1
-		moveq	#5,d1
-		bra.s	Obj85_LoadBoss
-; ===========================================================================
-
-Obj85_Loop:
-		jsr	SingleObjLoad2
-		bne.s	loc_19E20
-
-Obj85_LoadBoss:				; XREF: Obj85_Main
-		move.b	#$85,(a1)
-		move.w	(a2)+,8(a1)
-		move.w	(a2)+,$C(a1)
-		move.w	(a2)+,2(a1)
-		move.l	(a2)+,4(a1)
-		move.b	(a3)+,$24(a1)
-		move.b	(a3)+,$1C(a1)
-		move.b	(a3)+,$18(a1)
-		move.b	(a3)+,$17(a1)
-		move.b	(a3)+,$16(a1)
-		move.b	#4,1(a1)
-		bset	#7,1(a0)
-		move.l	a0,$34(a1)
-		dbf	d1,Obj85_Loop
-
-loc_19E20:
-		lea	$36(a0),a2
-		jsr	SingleObjLoad
-		bne.s	loc_19E5A
-		move.b	#$86,(a1)	; load energy ball object
-		move.w	a1,(a2)
-		move.l	a0,$34(a1)
-		lea	$38(a0),a2
-		moveq	#0,d2
-		moveq	#3,d1
-
-loc_19E3E:
-		jsr	SingleObjLoad2
-		bne.s	loc_19E5A
-		move.w	a1,(a2)+
-		move.b	#$84,(a1)	; load crushing	cylinder object
-		move.l	a0,$34(a1)
-		move.b	d2,$28(a1)
-		addq.w	#2,d2
-		dbf	d1,loc_19E3E
-
-loc_19E5A:
-		move.w	#0,$34(a0)
-		move.b	#1,$21(a0)	; set number of	hits to	1
-		jsr 	loc_19F6A
-		move.w	#-1,$30(a0)
-
-Obj85_Eggman:				; XREF: Obj85_Index
-		moveq	#0,d0
-		move.b	$34(a0),d0
-		move.w	off_19E80(pc,d0.w),d0
-		jsr	off_19E80(pc,d0.w)
-		jmp	DisplaySprite
-; ===========================================================================
-off_19E80:	dc.w loc_19E90-off_19E80, loc_19EA8-off_19E80
-		dc.w loc_19FE6-off_19E80, loc_1A02A-off_19E80
-		dc.w loc_1A074-off_19E80, loc_1A112-off_19E80
-		dc.w loc_1A192-off_19E80, loc_1A1D4-off_19E80
-; ===========================================================================
-
-loc_19E90:				; XREF: off_19E80
-		tst.l	(PLC_Buffer).w
-		bne.s	loc_19EA2
-		cmpi.w	#$2450,(Camera_X_Pos).w
-		bcs.s	loc_19EA2
-		addq.b	#2,$34(a0)
-
-loc_19EA2:
-		addq.l	#1,(Random_Seed).w
-		rts	
-; ===========================================================================
-
-loc_19EA8:				; XREF: off_19E80
-		tst.w	$30(a0)
-		bpl.s	loc_19F10
-		clr.w	$30(a0)
-		jsr	(RandomNumber).l
-		andi.w	#$C,d0
-		move.w	d0,d1
-		addq.w	#2,d1
-		tst.l	d0
-		bpl.s	loc_19EC6
-		exg	d1,d0
-
-loc_19EC6:
-		lea	word_19FD6(pc),a1
-		move.w	(a1,d0.w),d0
-		move.w	(a1,d1.w),d1
-		move.w	d0,$30(a0)
-		moveq	#-1,d2
-		move.w	$38(a0,d0.w),d2
-		movea.l	d2,a1
-		move.b	#-1,$29(a1)
-		move.w	#-1,$30(a1)
-		move.w	$38(a0,d1.w),d2
-		movea.l	d2,a1
-		move.b	#1,$29(a1)
-		move.w	#0,$30(a1)
-		move.w	#1,$32(a0)
-		clr.b	$35(a0)
-		move.w	#SndID_Rumble,d0
-		jsr	(PlaySound_Special).l ;	play rumbling sound
-
-loc_19F10:
-		tst.w	$32(a0)
-		bmi.w	loc_19FA6
-		bclr	#0,$22(a0)
-		move.w	(Object_Space_1+8).w,d0
-		sub.w	8(a0),d0
-		bcs.s	loc_19F2E
-		bset	#0,$22(a0)
-
-loc_19F2E:
-		move.w	#$2B,d1
-		move.w	#$14,d2
-		move.w	#$14,d3
-		move.w	8(a0),d4
-		jsr	SolidObject
-		tst.w	d4
-		bgt.s	loc_19F50
-
-loc_19F48:
-		tst.b	$35(a0)
-		bne.s	loc_19F88
-		bra.s	loc_19F96
-; ===========================================================================
-
-loc_19F50:
-		addq.w	#7,(Random_Seed).w
-		cmpi.b	#2,(Object_Space_1+$1C).w
-		bne.s	loc_19F48
-		move.w	#$300,d0
-		btst	#0,$22(a0)
-		bne.s	loc_19F6A
-		neg.w	d0
-
-loc_19F6A:
-		move.w	d0,(Object_Space_1+$10).w
-		tst.b	$35(a0)
-		bne.s	loc_19F88
-		subq.b	#1,$21(a0)
-		move.b	#$64,$35(a0)
-		move.w	#SndID_HitBoss,d0
-		jsr	(PlaySound_Special).l ;	play boss damage sound
-
-loc_19F88:
-		subq.b	#1,$35(a0)
-		beq.s	loc_19F96
-		move.b	#3,$1C(a0)
-		bra.s	loc_19F9C
-; ===========================================================================
-
-loc_19F96:
-		move.b	#1,$1C(a0)
-
-loc_19F9C:
-		lea	Ani_obj82(pc),a1
-		jmp	AnimateSprite
-; ===========================================================================
-
-loc_19FA6:
-		tst.b	$21(a0)
-		beq.s	loc_19FBC
-		addq.b	#2,$34(a0)
-		move.w	#-1,$30(a0)
-		clr.w	$32(a0)
-		rts	
-; ===========================================================================
-
-loc_19FBC:
-		move.b	#6,$34(a0)
-		move.w	#$25C0,8(a0)
-		move.w	#$53C,$C(a0)
-		move.b	#$14,$16(a0)
-		rts	
-; ===========================================================================
-word_19FD6:	dc.w 0,	2, 2, 4, 4, 6, 6, 0
-; ===========================================================================
-
-loc_19FE6:				; XREF: off_19E80
-		moveq	#-1,d0
-		move.w	$36(a0),d0
-		movea.l	d0,a1
-		tst.w	$30(a0)
-		bpl.s	loc_1A000
-		clr.w	$30(a0)
-		move.b	#-1,$29(a1)
-		bsr.s	loc_1A020
-
-loc_1A000:
-		moveq	#$F,d0
-		and.w	(V_Int_Counter+2).w,d0
-		bne.s	loc_1A00A
-		bsr.s	loc_1A020
-
-loc_1A00A:
-		tst.w	$32(a0)
-		beq.s	locret_1A01E
-		subq.b	#2,$34(a0)
-		move.w	#-1,$30(a0)
-		clr.w	$32(a0)
-
-locret_1A01E:
-		rts	
-; ===========================================================================
-
-loc_1A020:
-		move.w	#SndID_Electric,d0
-		jmp	(PlaySound_Special).l ;	play electricity sound
-; ===========================================================================
-
-loc_1A02A:				; XREF: off_19E80
-		move.b	#$30,$17(a0)
-		bset	#0,$22(a0)
-		jsr	SpeedToPos
-		move.b	#6,$1A(a0)
-		addi.w	#$10,$12(a0)
-		cmpi.w	#$59C,$C(a0)
-		bcs.s	loc_1A070
-		move.w	#$59C,$C(a0)
-		addq.b	#2,$34(a0)
-		move.b	#$20,$17(a0)
-		move.w	#$100,$10(a0)
-		move.w	#-$100,$12(a0)
-		addq.b	#2,(Dynamic_Resize_Routine).w
-
-loc_1A070:
-		bra.w	loc_1A166
-; ===========================================================================
-
-loc_1A074:				; XREF: off_19E80
-		bset	#0,$22(a0)
-		move.b	#4,$1C(a0)
-		jsr	SpeedToPos
-		addi.w	#$10,$12(a0)
-		cmpi.w	#$5A3,$C(a0)
-		bcs.s	loc_1A09A
-		move.w	#-$40,$12(a0)
-
-loc_1A09A:
-		move.w	#$400,$10(a0)
-		move.w	8(a0),d0
-		sub.w	(Object_Space_1+8).w,d0
-		bpl.s	loc_1A0B4
-		move.w	#$500,$10(a0)
-		bra.w	loc_1A0F2
-; ===========================================================================
-
-loc_1A0B4:
-		subi.w	#$70,d0
-		bcs.s	loc_1A0F2
-		subi.w	#$100,$10(a0)
-		subq.w	#8,d0
-		bcs.s	loc_1A0F2
-		subi.w	#$100,$10(a0)
-		subq.w	#8,d0
-		bcs.s	loc_1A0F2
-		subi.w	#$80,$10(a0)
-		subq.w	#8,d0
-		bcs.s	loc_1A0F2
-		subi.w	#$80,$10(a0)
-		subq.w	#8,d0
-		bcs.s	loc_1A0F2
-		subi.w	#$80,$10(a0)
-		subi.w	#$38,d0
-		bcs.s	loc_1A0F2
-		clr.w	$10(a0)
-
-loc_1A0F2:
-		cmpi.w	#$26A0,8(a0)
-		bcs.s	loc_1A110
-		move.w	#$26A0,8(a0)
-		move.w	#$240,$10(a0)
-		move.w	#-$4C0,$12(a0)
-		addq.b	#2,$34(a0)
-
-loc_1A110:
-		bra.s	loc_1A15C
-; ===========================================================================
-
-loc_1A112:				; XREF: off_19E80
-		jsr	SpeedToPos
-		cmpi.w	#$26E0,8(a0)
-		bcs.s	loc_1A124
-		clr.w	$10(a0)
-
-loc_1A124:
-		addi.w	#$34,$12(a0)
-		tst.w	$12(a0)
-		bmi.s	loc_1A142
-		cmpi.w	#$592,$C(a0)
-		bcs.s	loc_1A142
-		move.w	#$592,$C(a0)
-		clr.w	$12(a0)
-
-loc_1A142:
-		move.w	$10(a0),d0
-		or.w	$12(a0),d0
-		bne.s	loc_1A15C
-		addq.b	#2,$34(a0)
-		move.w	#-$180,$12(a0)
-		move.b	#1,$21(a0)
-
-loc_1A15C:
-		lea	Ani_obj82(pc),a1
-		jsr	AnimateSprite
-
-loc_1A166:
-		cmpi.w	#$2700,(Camera_Max_X_Pos).w
-		bge.s	loc_1A172
-		addq.w	#2,(Camera_Max_X_Pos).w
-
-loc_1A172:
-		cmpi.b	#$C,$34(a0)
-		bge.s	locret_1A190
-		move.w	#$1B,d1
-		move.w	#$70,d2
-		move.w	#$71,d3
-		move.w	8(a0),d4
-		jmp	SolidObject
-; ===========================================================================
-
-locret_1A190:
-		rts	
-; ===========================================================================
-
-loc_1A192:				; XREF: off_19E80
-		move.l	#Map_Eggman,4(a0)
-		move.w	#$400,2(a0)
-		move.b	#0,$1C(a0)
-		bset	#0,$22(a0)
-		jsr	SpeedToPos
-		cmpi.w	#$544,$C(a0)
-		bcc.s	loc_1A1D0
-		move.w	#$180,$10(a0)
-		move.w	#-$18,$12(a0)
-		move.b	#$F,$20(a0)
-		addq.b	#2,$34(a0)
-
-loc_1A1D0:
-		bra.w	loc_1A15C
-; ===========================================================================
-
-loc_1A1D4:				; XREF: off_19E80
-		bset	#0,$22(a0)
-		jsr	SpeedToPos
-		tst.w	$30(a0)
-		bne.s	loc_1A1FC
-		tst.b	$20(a0)
-		bne.s	loc_1A216
-		move.w	#$1E,$30(a0)
-		move.w	#SndID_HitBoss,d0
-		jsr	(PlaySound_Special).l ;	play boss damage sound
-
-loc_1A1FC:
-		subq.w	#1,$30(a0)
-		bne.s	loc_1A216
-		tst.b	$22(a0)
-		bpl.s	loc_1A210
-		move.w	#$60,$12(a0)
-		bra.s	loc_1A216
-; ===========================================================================
-
-loc_1A210:
-		move.b	#$F,$20(a0)
-
-loc_1A216:
-		cmpi.w	#$2790,(Object_Space_1+8).w
-		blt.s	loc_1A23A
-		move.b	#1,(Lock_Controls_Flag).w
-		move.w	#0,(Sonic_Ctrl_Held).w
-		clr.w	(Object_Space_1+$14).w
-		tst.w	$12(a0)
-		bpl.s	loc_1A248
-		move.w	#$100,(Sonic_Ctrl_Held).w
-
-loc_1A23A:
-		cmpi.w	#$27E0,(Object_Space_1+8).w
-		blt.s	loc_1A248
-		move.w	#$27E0,(Object_Space_1+8).w
-
-loc_1A248:
-		cmpi.w	#$2900,8(a0)
-		bcs.s	loc_1A260
-		tst.b	1(a0)
-		bmi.s	loc_1A260
-		move.b	#$18,(Game_Mode).w
-		bra.w	Obj85_Delete
-; ===========================================================================
-
-loc_1A260:
-		bra.w	loc_1A15C
-; ===========================================================================
-
-loc_1A264:				; XREF: Obj85_Index
-		movea.l	$34(a0),a1
-		move.b	(a1),d0
-		cmp.b	(a0),d0
-		bne.w	Obj85_Delete
-		move.b	#7,$1C(a0)
-		cmpi.b	#$C,$34(a1)
-		bge.s	loc_1A280
-		bra.s	loc_1A2A6
-; ===========================================================================
-
-loc_1A280:
-		tst.w	$10(a1)
-		beq.s	loc_1A28C
-		move.b	#$B,$1C(a0)
-
-loc_1A28C:
-		lea	Ani_Eggman(pc),a1
-		jsr	AnimateSprite
-
-loc_1A296:
-		movea.l	$34(a0),a1
-		move.w	8(a1),8(a0)
-		move.w	$C(a1),$C(a0)
-
-loc_1A2A6:
-		movea.l	$34(a0),a1
-		move.b	$22(a1),$22(a0)
-		moveq	#3,d0
-		and.b	$22(a0),d0
-		andi.b	#-4,1(a0)
-		or.b	d0,1(a0)
-		jmp	DisplaySprite
-; ===========================================================================
-
-loc_1A2C6:				; XREF: Obj85_Index
-		movea.l	$34(a0),a1
-		move.b	(a1),d0
-		cmp.b	(a0),d0
-		bne.w	Obj85_Delete
-		cmpi.l	#Map_Eggman,4(a1)
-		beq.s	loc_1A2E4
-		move.b	#$A,$1A(a0)
-		bra.s	loc_1A2A6
-; ===========================================================================
-
-loc_1A2E4:
-		move.b	#1,$1C(a0)
-		tst.b	$21(a1)
-		ble.s	loc_1A312
-		move.b	#6,$1C(a0)
-		move.l	#Map_Eggman,4(a0)
-		move.w	#$400,2(a0)
-		lea	Ani_Eggman(pc),a1
-		jsr	AnimateSprite
-		bra.w	loc_1A296
-; ===========================================================================
-
-loc_1A312:
-		tst.b	1(a0)
-		bpl.w	Obj85_Delete
-		bsr.w	BossDefeated
-		move.b	#2,$18(a0)
-		move.b	#0,$1C(a0)
-		move.l	#Map_Eggman2,4(a0)
-		move.w	#$3A0,2(a0)
-		lea	Ani_obj85(pc),a1
-		jsr	AnimateSprite
-		bra.w	loc_1A296
-; ===========================================================================
-
-loc_1A346:				; XREF: Obj85_Index
-		bset	#0,$22(a0)
-		movea.l	$34(a0),a1
-		cmpi.l	#Map_Eggman,4(a1)
-		beq.s	loc_1A35E
-		bra.w	loc_1A2A6
-; ===========================================================================
-
-loc_1A35E:
-		move.w	8(a1),8(a0)
-		move.w	$C(a1),$C(a0)
-		tst.b	$1E(a0)
-		bne.s	loc_1A376
-		move.b	#$14,$1E(a0)
-
-loc_1A376:
-		subq.b	#1,$1E(a0)
-		bgt.s	loc_1A38A
-		addq.b	#1,$1A(a0)
-		cmpi.b	#2,$1A(a0)
-		bgt.w	Obj85_Delete
-
-loc_1A38A:
-		bra.w	loc_1A296
-; ===========================================================================
-
-loc_1A38E:				; XREF: Obj85_Index
-		move.b	#$B,$1A(a0)
-		move.w	(Object_Space_1+8).w,d0
-		sub.w	8(a0),d0
-		bcs.s	loc_1A3A6
-		tst.b	1(a0)
-		bpl.w	Obj85_Delete
-
-loc_1A3A6:
-		jmp	DisplaySprite
-; ===========================================================================
-
-loc_1A3AC:				; XREF: Obj85_Index
-		move.b	#0,$1A(a0)
-		bset	#0,$22(a0)
-		movea.l	$34(a0),a1
-		cmpi.b	#$C,$34(a1)
-		bne.s	loc_1A3D0
-		cmpi.l	#Map_Eggman,4(a1)
-		beq.w	Obj85_Delete
-
-loc_1A3D0:
-		bra.w	loc_1A2A6
-; ===========================================================================
-Ani_obj85:
-	include "objects/animation/obj85.asm"
-
-Map_Eggman2:
-	include "mappings/sprite/Eggman2.asm"
-
-Map_FZBoss:
-	include "mappings/sprite/FZ boss.asm"
-
-; ===========================================================================
-
-Obj84_Delete:
-		jmp	DeleteObject
+		rts
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
-; Object 84 - cylinder Eggman	hides in (FZ)
+; Object 84 - Unused
 ; ---------------------------------------------------------------------------
 
 Obj84:					; XREF: Obj_Index
-		moveq	#0,d0
-		move.b	$24(a0),d0
-		move.w	Obj84_Index(pc,d0.w),d0
-		jmp	Obj84_Index(pc,d0.w)
-; ===========================================================================
-Obj84_Index:	dc.w Obj84_Main-Obj84_Index
-		dc.w loc_1A4CE-Obj84_Index
-		dc.w loc_1A57E-Obj84_Index
-
-Obj84_PosData:	dc.w $24D0, $620
-		dc.w $2550, $620
-		dc.w $2490, $4C0
-		dc.w $2510, $4C0
-; ===========================================================================
-
-Obj84_Main:				; XREF: Obj84_Index
-		lea	Obj84_PosData(pc),a1
-		moveq	#0,d0
-		move.b	$28(a0),d0
-		add.w	d0,d0
-		adda.w	d0,a1
-		move.b	#4,1(a0)
-		bset	#7,1(a0)
-		bset	#4,1(a0)
-		move.w	#$300,2(a0)
-		move.l	#Map_obj84,4(a0)
-		move.w	(a1)+,8(a0)
-		move.w	(a1),$C(a0)
-		move.w	(a1)+,$38(a0)
-		move.b	#$20,$16(a0)
-		move.b	#$60,$17(a0)
-		move.b	#$20,$19(a0)
-		move.b	#$60,$16(a0)
-		move.b	#3,$18(a0)
-		addq.b	#2,$24(a0)
-
-loc_1A4CE:				; XREF: Obj84_Index
-		cmpi.b	#2,$28(a0)
-		ble.s	loc_1A4DC
-		bset	#1,1(a0)
-
-loc_1A4DC:
-		clr.l	$3C(a0)
-		tst.b	$29(a0)
-		beq.s	loc_1A4EA
-		addq.b	#2,$24(a0)
-
-loc_1A4EA:
-		move.l	$3C(a0),d0
-		move.l	$38(a0),d1
-		add.l	d0,d1
-		swap	d1
-		move.w	d1,$C(a0)
-		cmpi.b	#4,$24(a0)
-		bne.s	loc_1A524
-		tst.w	$30(a0)
-		bpl.s	loc_1A524
-		moveq	#-$A,d0
-		cmpi.b	#2,$28(a0)
-		ble.s	loc_1A514
-		moveq	#$E,d0
-
-loc_1A514:
-		add.w	d0,d1
-		movea.l	$34(a0),a1
-		move.w	d1,$C(a1)
-		move.w	8(a0),8(a1)
-
-loc_1A524:
-		move.w	#$2B,d1
-		move.w	#$60,d2
-		move.w	#$61,d3
-		move.w	8(a0),d4
-		jsr	SolidObject
-		moveq	#0,d0
-		move.w	$3C(a0),d1
-		bpl.s	loc_1A550
-		neg.w	d1
-		subq.w	#8,d1
-		bcs.s	loc_1A55C
-		addq.b	#1,d0
-		asr.w	#4,d1
-		add.w	d1,d0
-		bra.s	loc_1A55C
-; ===========================================================================
-
-loc_1A550:
-		subi.w	#$27,d1
-		bcs.s	loc_1A55C
-		addq.b	#1,d0
-		asr.w	#4,d1
-		add.w	d1,d0
-
-loc_1A55C:
-		move.b	d0,$1A(a0)
-		move.w	(Object_Space_1+8).w,d0
-		sub.w	8(a0),d0
-		bmi.s	loc_1A578
-		subi.w	#$140,d0
-		bmi.s	loc_1A578
-		tst.b	1(a0)
-		bpl.w	Obj84_Delete
-
-loc_1A578:
-		jmp	DisplaySprite
-; ===========================================================================
-
-loc_1A57E:				; XREF: Obj84_Index
-		moveq	#0,d0
-		move.b	$28(a0),d0
-		move.w	off_1A590(pc,d0.w),d0
-		jsr	off_1A590(pc,d0.w)
-		bra.w	loc_1A4EA
-; ===========================================================================
-off_1A590:	dc.w loc_1A598-off_1A590
-		dc.w loc_1A598-off_1A590
-		dc.w loc_1A604-off_1A590
-		dc.w loc_1A604-off_1A590
-; ===========================================================================
-
-loc_1A598:				; XREF: off_1A590
-		tst.b	$29(a0)
-		bne.s	loc_1A5D4
-		movea.l	$34(a0),a1
-		tst.b	$21(a1)
-		bne.s	loc_1A5B4
-		bsr.w	BossDefeated
-		subi.l	#$10000,$3C(a0)
-
-loc_1A5B4:
-		addi.l	#$20000,$3C(a0)
-		bcc.s	locret_1A602
-		clr.l	$3C(a0)
-		movea.l	$34(a0),a1
-		subq.w	#1,$32(a1)
-		clr.w	$30(a1)
-		subq.b	#2,$24(a0)
-		rts	
-; ===========================================================================
-
-loc_1A5D4:
-		cmpi.w	#-$10,$3C(a0)
-		bge.s	loc_1A5E4
-		subi.l	#$28000,$3C(a0)
-
-loc_1A5E4:
-		subi.l	#$8000,$3C(a0)
-		cmpi.w	#-$A0,$3C(a0)
-		bgt.s	locret_1A602
-		clr.w	$3E(a0)
-		move.w	#-$A0,$3C(a0)
-		clr.b	$29(a0)
-
-locret_1A602:
-		rts	
-; ===========================================================================
-
-loc_1A604:				; XREF: off_1A590
-		bset	#1,1(a0)
-		tst.b	$29(a0)
-		bne.s	loc_1A646
-		movea.l	$34(a0),a1
-		tst.b	$21(a1)
-		bne.s	loc_1A626
-		bsr.w	BossDefeated
-		addi.l	#$10000,$3C(a0)
-
-loc_1A626:
-		subi.l	#$20000,$3C(a0)
-		bcc.s	locret_1A674
-		clr.l	$3C(a0)
-		movea.l	$34(a0),a1
-		subq.w	#1,$32(a1)
-		clr.w	$30(a1)
-		subq.b	#2,$24(a0)
-		rts	
-; ===========================================================================
-
-loc_1A646:
-		cmpi.w	#$10,$3C(a0)
-		blt.s	loc_1A656
-		addi.l	#$28000,$3C(a0)
-
-loc_1A656:
-		addi.l	#$8000,$3C(a0)
-		cmpi.w	#$A0,$3C(a0)
-		blt.s	locret_1A674
-		clr.w	$3E(a0)
-		move.w	#$A0,$3C(a0)
-		clr.b	$29(a0)
-
-locret_1A674:
-		rts	
+		rts
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
-; Sprite mappings - cylinders Eggman hides in (FZ)
-; ---------------------------------------------------------------------------
-Map_obj84:
-	include "mappings/sprite/obj84.asm"
-
-; ===========================================================================
-; ---------------------------------------------------------------------------
-; Object 86 - energy balls (FZ)
+; Object 86 - Unused
 ; ---------------------------------------------------------------------------
 
 Obj86:					; XREF: Obj_Index
-		moveq	#0,d0
-		move.b	$24(a0),d0
-		move.w	Obj86_Index(pc,d0.w),d0
-		jmp	Obj86_Index(pc,d0.w)
-; ===========================================================================
-Obj86_Index:	dc.w Obj86_Main-Obj86_Index
-		dc.w Obj86_Generator-Obj86_Index
-		dc.w Obj86_MakeBalls-Obj86_Index
-		dc.w loc_1A962-Obj86_Index
-		dc.w loc_1A982-Obj86_Index
-; ===========================================================================
-
-Obj86_Main:				; XREF: Obj86_Index
-		move.w	#$2588,8(a0)
-		move.w	#$53C,$C(a0)
-		move.w	#$300,2(a0)
-		move.l	#Map_obj86,4(a0)
-		move.b	#0,$1C(a0)
-		move.b	#3,$18(a0)
-		move.b	#8,$17(a0)
-		move.b	#8,$16(a0)
-		move.b	#4,1(a0)
-		bset	#7,1(a0)
-		addq.b	#2,$24(a0)
-
-Obj86_Generator:			; XREF: Obj86_Index
-		movea.l	$34(a0),a1
-		cmpi.b	#6,$34(a1)
-		bne.s	loc_1A850
-		move.b	#$3F,(a0)
-		move.b	#0,$24(a0)
-		jmp	DisplaySprite
-; ===========================================================================
-
-loc_1A850:
-		move.b	#0,$1C(a0)
-		tst.b	$29(a0)
-		beq.s	loc_1A86C
-		addq.b	#2,$24(a0)
-		move.b	#1,$1C(a0)
-		move.b	#$3E,$28(a0)
-
-loc_1A86C:
-		move.w	#$13,d1
-		move.w	#8,d2
-		move.w	#$11,d3
-		move.w	8(a0),d4
-		jsr	SolidObject
-		move.w	(Object_Space_1+8).w,d0
-		sub.w	8(a0),d0
-		bmi.s	loc_1A89A
-		subi.w	#$140,d0
-		bmi.s	loc_1A89A
-		tst.b	1(a0)
-		bpl.w	Obj84_Delete
-
-loc_1A89A:
-		lea	Ani_obj86(pc),a1
-		jsr	AnimateSprite
-		jmp	DisplaySprite
-; ===========================================================================
-
-Obj86_MakeBalls:			; XREF: Obj86_Index
-		tst.b	$29(a0)
-		beq.w	loc_1A954
-		clr.b	$29(a0)
-		add.w	$30(a0),d0
-		andi.w	#$1E,d0
-		adda.w	d0,a2
-		addq.w	#4,$30(a0)
-		clr.w	$32(a0)
-		moveq	#3,d2
-
-Obj86_Loop:
-		jsr	SingleObjLoad2
-		bne.w	loc_1A954
-		move.b	#$86,(a1)
-		move.w	8(a0),8(a1)
-		move.w	#$53C,$C(a1)
-		move.b	#8,$24(a1)
-		move.w	#$2300,2(a1)
-		move.l	#Map_obj86a,4(a1)
-		move.b	#$C,$16(a1)
-		move.b	#$C,$17(a1)
-		move.b	#0,$20(a1)
-		move.b	#3,$18(a1)
-		move.w	#$3E,$28(a1)
-		move.b	#4,1(a1)
-		bset	#7,1(a1)
-		move.l	a0,$34(a1)
-		jsr	(RandomNumber).l
-		move.w	$32(a0),d1
-		muls.w	#-$4F,d1
-		addi.w	#$2578,d1
-		andi.w	#$1F,d0
-		subi.w	#$10,d0
-		add.w	d1,d0
-		move.w	d0,$30(a1)
-		addq.w	#1,$32(a0)
-		move.w	$32(a0),$38(a0)
-		dbf	d2,Obj86_Loop	; repeat sequence 3 more times
-
-loc_1A954:
-		tst.w	$32(a0)
-		bne.s	loc_1A95E
-		addq.b	#2,$24(a0)
-
-loc_1A95E:
-		bra.w	loc_1A86C
-; ===========================================================================
-
-loc_1A962:				; XREF: Obj86_Index
-		move.b	#2,$1C(a0)
-		tst.w	$38(a0)
-		bne.s	loc_1A97E
-		move.b	#2,$24(a0)
-		movea.l	$34(a0),a1
-		move.w	#-1,$32(a1)
-
-loc_1A97E:
-		bra.w	loc_1A86C
-; ===========================================================================
-
-loc_1A982:				; XREF: Obj86_Index
-		moveq	#0,d0
-		move.b	$25(a0),d0
-		move.w	Obj86_Index2(pc,d0.w),d0
-		jsr	Obj86_Index2(pc,d0.w)
-		lea	Ani_obj86a(pc),a1
-		jsr	AnimateSprite
-		jmp	DisplaySprite
-; ===========================================================================
-Obj86_Index2:	dc.w loc_1A9A6-Obj86_Index2
-		dc.w loc_1A9C0-Obj86_Index2
-		dc.w loc_1AA1E-Obj86_Index2
-; ===========================================================================
-
-loc_1A9A6:				; XREF: Obj86_Index2
-		move.w	$30(a0),d0
-		sub.w	8(a0),d0
-		asl.w	#4,d0
-		move.w	d0,$10(a0)
-		move.w	#$B4,$28(a0)
-		addq.b	#2,$25(a0)
-		rts	
-; ===========================================================================
-
-loc_1A9C0:				; XREF: Obj86_Index2
-		tst.w	$10(a0)
-		beq.s	loc_1A9E6
-		jsr	SpeedToPos
-		move.w	8(a0),d0
-		sub.w	$30(a0),d0
-		bcc.s	loc_1A9E6
-		clr.w	$10(a0)
-		add.w	d0,8(a0)
-		movea.l	$34(a0),a1
-		subq.w	#1,$32(a1)
-
-loc_1A9E6:
-		move.b	#0,$1C(a0)
-		subq.w	#1,$28(a0)
-		bne.s	locret_1AA1C
-		addq.b	#2,$25(a0)
-		move.b	#1,$1C(a0)
-		move.b	#$9A,$20(a0)
-		move.w	#$B4,$28(a0)
-		moveq	#0,d0
-		move.w	(Object_Space_1+8).w,d0
-		sub.w	8(a0),d0
-		move.w	d0,$10(a0)
-		move.w	#$140,$12(a0)
-
-locret_1AA1C:
-		rts	
-; ===========================================================================
-
-loc_1AA1E:				; XREF: Obj86_Index2
-		jsr	SpeedToPos
-		cmpi.w	#$5E0,$C(a0)
-		bcc.s	loc_1AA34
-		subq.w	#1,$28(a0)
-		beq.s	loc_1AA34
-		rts	
-; ===========================================================================
-
-loc_1AA34:
-		movea.l	$34(a0),a1
-		subq.w	#1,$38(a1)
-		bra.w	Obj84_Delete
-; ===========================================================================
-Ani_obj86:
-	include "objects/animation/obj86.asm"
-
-; ---------------------------------------------------------------------------
-; Sprite mappings - energy ball	launcher (FZ)
-; ---------------------------------------------------------------------------
-Map_obj86:
-	include "mappings/sprite/obj86.asm"
-
-Ani_obj86a:
-	include "objects/animation/obj86a.asm"
-
-; ---------------------------------------------------------------------------
-; Sprite mappings - energy balls (FZ)
-; ---------------------------------------------------------------------------
-Map_obj86a:
-	include "mappings/sprite/obj86a.asm"
-
+		rts
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Object 3E - prison capsule
@@ -33747,7 +32737,7 @@ ArtLoadCues:
 	dc.w PLC_SLZAnimals-ArtLoadCues, PLC_SYZAnimals-ArtLoadCues
 	dc.w PLC_SBZAnimals-ArtLoadCues, PLC_SpeStResult-ArtLoadCues
 	dc.w PLC_Ending-ArtLoadCues, PLC_TryAgain-ArtLoadCues
-	dc.w PLC_Main-ArtLoadCues, PLC_FZBoss-ArtLoadCues
+	dc.w PLC_Main-ArtLoadCues, PLC_Main-ArtLoadCues
 	dc.w PLC_TimeOver-ArtLoadCues
 ; ---------------------------------------------------------------------------
 ; Pattern load cues - standard block 1
@@ -34122,21 +33112,6 @@ PLC_TryAgain:	dc.w 2
 		dc.w $7C20
 		dc.l Nem_CreditText	; credits alphabet
 		dc.w $B400
-; ---------------------------------------------------------------------------
-; Pattern load cues - final boss
-; ---------------------------------------------------------------------------
-PLC_FZBoss:	dc.w 4
-		dc.l Nem_FzEggman	; Eggman after boss
-		dc.w $7400
-		dc.l Nem_FzBoss		; FZ boss
-		dc.w $6000
-		dc.l Nem_Eggman		; Eggman main patterns
-		dc.w $8000
-		dc.l Nem_Sbz2Eggman	; Eggman without ship
-		dc.w $8E00
-		dc.l Nem_Exhaust	; exhaust flame
-		dc.w $A540
-		even
 ; ===========================================================================
 Nem_SegaLogo:	incbin	art/nemesis/segalogo.bin	; large Sega logo
 		even
