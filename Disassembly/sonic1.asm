@@ -3644,23 +3644,16 @@ loc_33E4:				; XREF: Demo
 		move.w	Demo_Levels(pc,d0.w),d0	; load level number for	demo
 		move.w	d0,(Current_Zone_And_Act).w
 		addq.w	#1,(Demo_Number).w ; add 1 to demo number
-		cmpi.w	#4,(Demo_Number).w ; is demo number less than 4?
+		cmpi.w	#3,(Demo_Number).w ; is demo number less than 4?
 		bcs.s	loc_3422	; if yes, branch
 		move.w	#0,(Demo_Number).w ; reset demo number to	0
 
 loc_3422:
 		move.w	#1,(Demo_Mode).w ; turn	demo mode on
 		move.b	#8,(Game_Mode).w ; set screen mode to 08 (demo)
-		cmpi.w	#$600,d0	; is level number 0600 (special	stage)?
-		bne.s	Demo_Level	; if not, branch
-		move.b	#$10,(Game_Mode).w ; set screen	mode to	$10 (Special Stage)
-		clr.w	(Current_Zone_And_Act).w	; clear	level number
-		clr.b	(Current_Special_Stage).w	; clear	special	stage number
-
-Demo_Level:
-		move.b	#4,(Life_Count).w ; set lives to	3
+		move.b	#4,(Life_Count).w ; set lives to 3
 		moveq	#0,d0
-		move.b	d0,Boss_Flag	; clear Boss flag
+		move.b	d0,Boss_Flag.w	; clear Boss flag
 		move.w	d0,(Ring_Count).w ; clear rings
 		move.l	d0,(Timer).w ; clear time
 		move.l	d0,(Score).w ; clear score
@@ -3673,7 +3666,6 @@ Demo_Levels:
 		dc.w $00
 		dc.w $200
 		dc.w $400
-		dc.w $600
 		even
 
 ; ---------------------------------------------------------------------------
