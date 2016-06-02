@@ -22232,7 +22232,6 @@ Obj01_GetPhysics:
 ; ===========================================================================
 Obj01_ApplySpeedCap:
 		move.w	$14(a0),d1
-		tst.w	d1
 		bpl.s	@not_negative
 		neg.w	d1
 		
@@ -22240,7 +22239,7 @@ Obj01_ApplySpeedCap:
 		move.w	(Sonic_Top_Speed).w,d2
 		cmp.w	d2,d1
 		ble.s	@no_cap
-		sub.w	(Sonic_Acceleration).w,d1
+		sub.w	(Sonic_Deceleration).w,d1
 		tst.w	$14(a0)
 		bpl.s	@not_negative2
 		neg.w	d1
