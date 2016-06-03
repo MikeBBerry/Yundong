@@ -22788,11 +22788,17 @@ loc_12FC2:
 		andi.b	#$C,d0		; is left/right	pressed?
 		bne.s	loc_12FEE	; if yes, branch
 		move.w	$14(a0),d0
+		bpl.s	@skip
+		neg.w	d0
+
+@skip:
+		cmp.w	(Sonic_Min_Speed).w,d0
 		beq.s	loc_12FEE
+		move.w	$14(a0),d0
 		bmi.s	loc_12FE2
 		sub.w	d5,d0
 		cmp.w	(Sonic_Min_Speed).w,d0
-		bcc.s	loc_12FDC
+		bge.s	loc_12FDC
 		move.w	(Sonic_Min_Speed).w,d0
 
 loc_12FDC:
@@ -22802,8 +22808,10 @@ loc_12FDC:
 
 loc_12FE2:
 		add.w	d5,d0
-		cmp.w	(Sonic_Min_Speed).w,d0
-		bcc.s	loc_12FEA
+		move.w	(Sonic_Min_Speed).w,d1
+		neg.w	d1
+		cmp.w	d1,d0
+		ble.s	loc_12FEA
 		move.w	(Sonic_Min_Speed).w,d0
 		neg.w	d0
 
@@ -22907,13 +22915,18 @@ loc_130A6:
 
 Sonic_TurnLeft:				; XREF: Sonic_MoveLeft
 		sub.w	d4,d0
-		cmp.w	(Sonic_Min_Speed).w,d0
+		move.w	(Sonic_Min_Speed).w,d1
+		tst.w	(Force_Scroll_Flag).w
+		bne.s	@cmp
+		move.w	#0,d1
+
+@cmp:
+		cmp.w	d1,d0
 		bcc.s	loc_130BA
 		move.w	(Sonic_Min_Speed).w,d0
 		tst.w	(Force_Scroll_Flag).w
 		bne.s	loc_130BA
 		move.w	#-$80,d0
-		sub.w	(Sonic_Min_Speed).w,d0
 
 loc_130BA:
 		move.w	d0,$14(a0)
@@ -22969,14 +22982,19 @@ loc_1310C:
 
 Sonic_TurnRight:				; XREF: Sonic_MoveRight
 		add.w	d4,d0
-		cmp.w	(Sonic_Min_Speed).w,d0
+		move.w	(Sonic_Min_Speed).w,d1
+		tst.w	(Force_Scroll_Flag).w
+		bne.s	@cmp
+		move.w	#0,d1
+
+@cmp:
+		cmp.w	d1,d0
 		bcc.s	loc_13120
 		move.w	(Sonic_Min_Speed).w,d0
 		neg.w	d0
 		tst.w	(Force_Scroll_Flag).w
 		bne.s	loc_13120
 		move.w	#$80,d0
-		add.w	(Sonic_Min_Speed).w,d0
 
 loc_13120:
 		move.w	d0,$14(a0)
