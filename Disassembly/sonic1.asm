@@ -5052,7 +5052,7 @@ Obj81_ChkLand:				; XREF: Obj81_Index
 ; ===========================================================================
 
 Obj81_ShowFall:				; XREF: Obj81_ChkLand
-		jsr	SpeedToPos
+		jsr	ObjectMove
 		jsr	Sonic_Animate
 		jmp	LoadSonicDynPLC
 ; ===========================================================================
@@ -5085,7 +5085,7 @@ Obj81_AddSpeed:				; XREF: Obj81_Run
 		addi.w	#$20,$14(a0)	; increase "run	speed"
 
 Obj81_ShowRun:				; XREF: Obj81_Run
-		jsr	SpeedToPos
+		jsr	ObjectMove
 		jsr	Sonic_Animate
 		jmp	LoadSonicDynPLC
 ; ===========================================================================
@@ -7725,7 +7725,11 @@ Resize_MZ1:
 		move.b	#1,(Right_Boundary_Lock).w
 		move.w	(Camera_Min_X_Pos).w,(Force_Scroll_Saved_Min_X_Pos).w
 		move.w	(Camera_Max_X_Pos).w,(Force_Scroll_Saved_Max_X_Pos).w
-		move.w	#3,(Force_Scroll_Speed).w
+		move.w	#5,(Force_Scroll_Speed).w
+		move.w	(Force_Scroll_Speed).w,d0
+		asl.w	#8,d0
+		subi.w	#$100,d0
+		move.w	d0,(Sonic_Min_Speed).w
 		move.b	#1,(Boss_Flag).w			; set boss flag
 
 @Skip:
@@ -9256,7 +9260,7 @@ locret_8308:
 ; ===========================================================================
 
 Obj1A_TimeZero:				; XREF: Obj1A_Display
-		bsr.w	ObjectFall
+		bsr.w	ObjectMoveAndFall
 		bsr.w	DisplaySprite
 		tst.b	1(a0)
 		bpl.s	Obj1A_Delete
@@ -9370,7 +9374,7 @@ locret_843A:
 ; ===========================================================================
 
 Obj53_TimeZero:				; XREF: Obj53_Display
-		bsr.w	ObjectFall
+		bsr.w	ObjectMoveAndFall
 		bsr.w	DisplaySprite
 		tst.b	1(a0)
 		bpl.s	Obj53_Delete
@@ -9818,7 +9822,7 @@ Obj1E_Main:				; XREF: Obj1E_Index
 		move.b	#4,$18(a0)
 		move.b	#5,$20(a0)
 		move.b	#$C,$19(a0)
-		bsr.w	ObjectFall
+		bsr.w	ObjectMoveAndFall
 		jsr	ObjHitFloor
 		tst.w	d1
 		bpl.s	locret_8BAC
@@ -9900,7 +9904,7 @@ Obj20_Main:				; XREF: Obj20_Index
 		move.b	#4,$1A(a0)
 
 Obj20_Bounce:				; XREF: Obj20_Index
-		jsr	ObjectFall
+		jsr	ObjectMoveAndFall
 		tst.w	$12(a0)
 		bmi.s	Obj20_ChkExplode
 		jsr	ObjHitFloor
@@ -10241,7 +10245,7 @@ loc_911C:
 loc_912A:				; XREF: Obj28_Index
 		tst.b	1(a0)
 		bpl.w	DeleteObject
-		bsr.w	ObjectFall
+		bsr.w	ObjectMoveAndFall
 		tst.w	$12(a0)
 		bmi.s	loc_9180
 		jsr	ObjHitFloor
@@ -10267,7 +10271,7 @@ loc_9180:
 ; ===========================================================================
 
 loc_9184:				; XREF: Obj28_Index
-		bsr.w	ObjectFall
+		bsr.w	ObjectMoveAndFall
 		move.b	#1,$1A(a0)
 		tst.w	$12(a0)
 		bmi.s	loc_91AE
@@ -10287,7 +10291,7 @@ loc_91AE:
 ; ===========================================================================
 
 loc_91C0:				; XREF: Obj28_Index
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		addi.w	#$18,$12(a0)
 		tst.w	$12(a0)
 		bmi.s	loc_91FC
@@ -10361,7 +10365,7 @@ loc_9280:				; XREF: Obj28_Index
 		bpl.s	loc_92B6
 		clr.w	$10(a0)
 		clr.w	$32(a0)
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		addi.w	#$18,$12(a0)
 		bsr.w	loc_93C4
 		bsr.w	loc_93EC
@@ -10385,7 +10389,7 @@ loc_92BA:				; XREF: Obj28_Index
 ; ===========================================================================
 
 loc_92D6:				; XREF: Obj28_Index
-		bsr.w	ObjectFall
+		bsr.w	ObjectMoveAndFall
 		move.b	#1,$1A(a0)
 		tst.w	$12(a0)
 		bmi.s	loc_9310
@@ -10411,7 +10415,7 @@ loc_9314:				; XREF: Obj28_Index
 		bpl.s	loc_932E
 		clr.w	$10(a0)
 		clr.w	$32(a0)
-		bsr.w	ObjectFall
+		bsr.w	ObjectMoveAndFall
 		bsr.w	loc_93C4
 		bsr.w	loc_93EC
 
@@ -10422,7 +10426,7 @@ loc_932E:
 loc_9332:				; XREF: Obj28_Index
 		bsr.w	sub_9404
 		bpl.s	loc_936C
-		bsr.w	ObjectFall
+		bsr.w	ObjectMoveAndFall
 		move.b	#1,$1A(a0)
 		tst.w	$12(a0)
 		bmi.s	loc_936C
@@ -10442,7 +10446,7 @@ loc_936C:
 loc_9370:				; XREF: Obj28_Index
 		bsr.w	sub_9404
 		bpl.s	loc_93C0
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		addi.w	#$18,$12(a0)
 		tst.w	$12(a0)
 		bmi.s	loc_93AA
@@ -10534,7 +10538,7 @@ Obj29_Slower:				; XREF: Obj29_Index
 		beq.w	DeleteObject
 		tst.w	$12(a0)		; is object moving?
 		bpl.w	DeleteObject	; if not, branch
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		addi.w	#$18,$12(a0)	; reduce object	speed
 		rts	
 ; ===========================================================================
@@ -10583,7 +10587,7 @@ Obj1F_Main:				; XREF: Obj1F_Index
 		move.b	#3,$18(a0)
 		move.b	#6,$20(a0)
 		move.b	#$15,$19(a0)
-		bsr.w	ObjectFall
+		bsr.w	ObjectMoveAndFall
 		jsr	ObjHitFloor
 		tst.w	d1
 		bpl.s	locret_955A
@@ -10661,7 +10665,7 @@ locret_9618:
 Obj1F_WalkOnFloor:			; XREF: Obj1F_Index2
 		subq.w	#1,$30(a0)
 		bmi.s	loc_966E
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		bchg	#0,$32(a0)
 		bne.s	loc_9654
 		move.w	8(a0),d3
@@ -10754,7 +10758,7 @@ Obj1F_BallMain:				; XREF: Obj1F_Index
 Obj1F_BallMove:				; XREF: Obj1F_Index
 		lea	(Ani_obj1F).l,a1
 		bsr.w	AnimateSprite
-		bsr.w	ObjectFall
+		bsr.w	ObjectMoveAndFall
 		bsr.w	DisplaySprite
 		move.w	(Camera_Max_Y_Pos).w,d0
 		addi.w	#$E0,d0
@@ -10861,7 +10865,7 @@ locret_98D0:
 Obj22_ChkNrSonic:			; XREF: Obj22_Index2
 		subq.w	#1,$32(a0)	; subtract 1 from time delay
 		bmi.s	Obj22_ChgDir
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		tst.b	$34(a0)
 		bne.s	locret_992A
 		move.w	(Object_Space_1+8).w,d0
@@ -10959,7 +10963,7 @@ Obj23_FromBuzz:				; XREF: Obj23_Index
 		bne.s	Obj23_Explode
 		move.b	#$87,$20(a0)
 		move.b	#1,$1C(a0)
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		lea	(Ani_obj23).l,a1
 		bsr.w	AnimateSprite
 		bsr.w	DisplaySprite
@@ -10984,7 +10988,7 @@ Obj23_Delete:				; XREF: Obj23_Index
 Obj23_FromNewt:				; XREF: Obj23_Index
 		tst.b	1(a0)
 		bpl.s	Obj23_Delete
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 
 Obj23_Animate2:				; XREF: Obj23_Main
 		lea	(Ani_obj23).l,a1
@@ -11265,7 +11269,7 @@ Obj37_ResetCounter:			; XREF: Obj37_Loop
 
 Obj37_Bounce:				; XREF: Obj37_Index
 		move.b	(Ring_Spill_Anim_Frame).w,$1A(a0)
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		addi.w	#$18,$12(a0)
 		tst.b	(Water_On).w		; Does the level have water?
 		beq.s	@skipbounceslow		; If not, branch and skip underwater checks
@@ -11551,7 +11555,7 @@ loc_A1BC:				; XREF: Obj26_Solid
 ; ===========================================================================
 
 Obj26_Fall:				; XREF: Obj26_Solid
-		bsr.w	ObjectFall
+		bsr.w	ObjectMoveAndFall
 		jsr	ObjHitFloor
 		tst.w	d1
 		bpl.w	Obj26_Animate
@@ -11710,7 +11714,7 @@ Obj2E_Main:				; XREF: Obj2E_Index
 Obj2E_Move:				; XREF: Obj2E_Index
 		tst.w	$12(a0)		; is object moving?
 		bpl.w	Obj2E_ChkEggman	; if not, branch
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		addi.w	#$18,$12(a0)	; reduce object	speed
 		rts	
 ; ===========================================================================
@@ -12134,7 +12138,7 @@ Obj2B_Main:				; XREF: Obj2B_Index
 Obj2B_ChgSpeed:				; XREF: Obj2B_Index
 		lea	(Ani_obj2B).l,a1
 		bsr.w	AnimateSprite
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		addi.w	#$18,$12(a0)	; reduce speed
 		move.w	$30(a0),d0
 		cmp.w	$C(a0),d0
@@ -12209,7 +12213,7 @@ Obj2C_Turn:				; XREF: Obj2C_Index
 Obj2C_Animate:
 		lea	(Ani_obj2C).l,a1
 		bsr.w	AnimateSprite
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		bra.w	MarkObjGone
 ; ===========================================================================
 Ani_obj2C:
@@ -12282,7 +12286,7 @@ locret_AD42:
 Obj2D_Move:				; XREF: Obj2D_Index2
 		subq.w	#1,$30(a0)
 		bmi.s	loc_AD84
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		bchg	#0,$32(a0)
 		bne.s	loc_AD78
 		move.w	8(a0),d3
@@ -12322,7 +12326,7 @@ loc_ADA4:
 ; ===========================================================================
 
 Obj2D_Jump:				; XREF: Obj2D_Index2
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		addi.w	#$18,$12(a0)
 		bmi.s	locret_ADF0
 		move.b	#3,$1C(a0)
@@ -13801,7 +13805,7 @@ loc_C046:				; XREF: loc_BF6E
 		move.w	8(a0),-(sp)
 		cmpi.b	#4,$25(a0)
 		bcc.s	loc_C056
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 
 loc_C056:
 		btst	#1,$22(a0)
@@ -13939,7 +13943,7 @@ loc_C1A4:
 loc_C1AA:
 		subq.b	#2,d0
 		bne.s	loc_C1F2
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		addi.w	#$18,$12(a0)
 		jsr	ObjHitFloor
 		tst.w	d1
@@ -13962,7 +13966,7 @@ locret_C1F0:
 ; ===========================================================================
 
 loc_C1F2:
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		move.w	8(a0),d0
 		andi.w	#$C,d0
 		bne.w	locret_C2E4
@@ -15226,7 +15230,7 @@ Obj3C_Smash:
 		bsr.s	SmashObject
 
 Obj3C_FragMove:				; XREF: Obj3C_Index
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		addi.w	#$70,$12(a0)	; make fragment	fall faster
 		bsr.w	DisplaySprite
 		tst.b	1(a0)
@@ -15275,7 +15279,7 @@ Smash_LoadFrag:				; XREF: SmashObject
 		bcc.s	loc_D268
 		move.l	a0,-(sp)
 		movea.l	a1,a0
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		add.w	d2,$12(a0)
 		movea.l	(sp)+,a0
 		bsr.w	DisplaySprite2
@@ -15371,8 +15375,8 @@ loc_D37C:
 ; Object pointers
 ; ---------------------------------------------------------------------------
 Obj_Index:
-	dc.l Obj01, ObjectFall,	Obj03, ObjectFall
-	dc.l Obj05, ObjectFall, ObjectFall, Obj08
+	dc.l Obj01, ObjectMoveAndFall,	Obj03, ObjectMoveAndFall
+	dc.l Obj05, ObjectMoveAndFall, ObjectMoveAndFall, Obj08
 	dc.l Obj09, Obj0A, Obj0B, Obj0C
 	dc.l Obj0D, Obj0E, Obj0F, Obj10
 	dc.l Obj11, Obj12, Obj13, Obj14
@@ -15415,7 +15419,7 @@ Obj_Index:
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 
-ObjectFall:
+ObjectMoveAndFall:
 		move.w	$10(a0),d0
 		ext.l	d0
 		lsl.l	#8,d0
@@ -15426,7 +15430,7 @@ ObjectFall:
 		lsl.l	#8,d0
 		add.l	d0,$C(a0)
 		rts	
-; End of function ObjectFall
+; End of function ObjectMoveAndFall
 
 ; ---------------------------------------------------------------------------
 ; Subroutine translating object	speed to update	object position
@@ -15435,7 +15439,7 @@ ObjectFall:
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 
-SpeedToPos:
+ObjectMove:
 		move.w	$10(a0),d0	; load horizontal speed
 		ext.l	d0
 		lsl.l	#8,d0		; multiply speed by $100
@@ -15445,7 +15449,7 @@ SpeedToPos:
 		lsl.l	#8,d0		; multiply by $100
 		add.l	d0,$C(a0)	; add to y-axis	position
 		rts	
-; End of function SpeedToPos
+; End of function ObjectMove
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	display	a sprite/object, when a0 is the	object RAM
@@ -16465,7 +16469,7 @@ Obj42_Fall:				; XREF: Obj42_Type00
 		move.b	#$C,$20(a0)
 
 loc_DE42:
-		bsr.w	ObjectFall
+		bsr.w	ObjectMoveAndFall
 		bsr.w	ObjHitFloor
 		tst.w	d1		; has newtron hit the floor?
 		bpl.s	locret_DE86	; if not, branch
@@ -16489,7 +16493,7 @@ locret_DE86:
 ; ===========================================================================
 
 Obj42_MatchFloor:			; XREF: Obj42_Index2
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		bsr.w	ObjHitFloor
 		cmpi.w	#-8,d1
 		blt.s	loc_DEA2
@@ -16505,7 +16509,7 @@ loc_DEA2:
 ; ===========================================================================
 
 Obj42_Speed:				; XREF: Obj42_Index2
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		rts	
 ; ===========================================================================
 
@@ -16572,7 +16576,7 @@ Obj43_Index:	dc.w Obj43_Main-Obj43_Index
 Obj43_Main:				; XREF: Obj43_Index
 		move.b	#$E,$16(a0)
 		move.b	#8,$17(a0)
-		bsr.w	ObjectFall
+		bsr.w	ObjectMoveAndFall
 		bsr.w	ObjHitFloor
 		tst.w	d1
 		bpl.s	locret_E052
@@ -16659,7 +16663,7 @@ loc_E0F8:
 
 Obj43_ChkJump:				; XREF: Obj43_Index2
 		bsr.w	Obj43_Stop
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		bsr.w	ObjHitFloor
 		cmpi.w	#-8,d1
 		blt.s	Obj43_Jump
@@ -16680,7 +16684,7 @@ locret_E12E:
 ; ===========================================================================
 
 Obj43_MatchFloor:			; XREF: Obj43_Index2
-		bsr.w	ObjectFall
+		bsr.w	ObjectMoveAndFall
 		tst.w	$12(a0)
 		bmi.s	locret_E150
 		bsr.w	ObjHitFloor
@@ -16884,7 +16888,7 @@ Obj14_Action:				; XREF: Obj14_Index
 		add.w	d0,d0
 		move.w	Obj14_TypeIndex(pc,d0.w),d1
 		jsr	Obj14_TypeIndex(pc,d1.w)
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		lea	(Ani_obj14).l,a1
 		bsr.w	AnimateSprite
 
@@ -17090,7 +17094,7 @@ loc_E8A8:
 ; ===========================================================================
 
 Obj46_Type03:				; XREF: Obj46_TypeIndex
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		addi.w	#$18,$12(a0)	; increase falling speed
 		bsr.w	ObjHitFloor
 		tst.w	d1		; has the block	hit the	floor?
@@ -17639,7 +17643,7 @@ Obj4D_Action:				; XREF: Obj4D_Index
 		add.w	d0,d0
 		move.w	Obj4D_TypeIndex(pc,d0.w),d1
 		jsr	Obj4D_TypeIndex(pc,d1.w)
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		lea	(Ani_obj4C).l,a1
 		bsr.w	AnimateSprite
 
@@ -17817,7 +17821,7 @@ Obj4E_Animate:
 		bsr.w	AnimateSprite
 		cmpi.b	#4,(Object_Space_1+$24).w
 		bcc.s	Obj4E_ChkDel
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 
 Obj4E_ChkDel:
 		bsr.w	DisplaySprite
@@ -17945,7 +17949,7 @@ Obj40_Main:				; XREF: Obj40_Index
 		move.b	#$E,$16(a0)
 		move.b	#8,$17(a0)
 		move.b	#$C,$20(a0)
-		bsr.w	ObjectFall
+		bsr.w	ObjectMoveAndFall
 		jsr	ObjHitFloor
 		tst.w	d1
 		bpl.s	locret_F68A
@@ -18017,7 +18021,7 @@ locret_F70A:
 ; ===========================================================================
 
 Obj40_FixToFloor:			; XREF: Obj40_Index2
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		jsr	ObjHitFloor
 		cmpi.w	#-8,d1
 		blt.s	Obj40_Pause
@@ -18129,7 +18133,7 @@ Obj50_Main:				; XREF: Obj50_Index
 		move.b	#$11,$16(a0)
 		move.b	#8,$17(a0)
 		move.b	#$CC,$20(a0)
-		bsr.w	ObjectFall
+		bsr.w	ObjectMoveAndFall
 		bsr.w	ObjHitFloor
 		tst.w	d1
 		bpl.s	locret_F89E
@@ -18170,7 +18174,7 @@ locret_F8E2:
 ; ===========================================================================
 
 Obj50_FixToFloor:			; XREF: Obj50_Index2
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		bsr.w	ObjHitFloor
 		cmpi.w	#-8,d1
 		blt.s	Obj50_Pause
@@ -18601,7 +18605,7 @@ loc_FD98:
 		move.b	d2,$1A(a1)
 
 Obj51_Display:				; XREF: Obj51_Index
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		addi.w	#$38,$12(a0)
 		bsr.w	DisplaySprite
 		tst.b	1(a0)
@@ -18772,7 +18776,7 @@ Obj52_05_End:
 ; ===========================================================================
 
 Obj52_Type06:				; XREF: Obj52_TypeIndex
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		addi.w	#$18,$12(a0)	; make the platform fall
 		bsr.w	ObjHitFloor
 		tst.w	d1		; has platform hit the floor?
@@ -18938,7 +18942,7 @@ Obj55_NoDrop:
 ; ===========================================================================
 
 Obj55_DropFly:				; XREF: Obj55_Index2
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		addi.w	#$18,$12(a0)	; make basaran fall
 		move.w	#$80,d2
 		bsr.w	Obj55_ChkSonic
@@ -18970,7 +18974,7 @@ Obj55_PlaySnd:				; XREF: Obj55_Index2
 		jsr	(PlaySound_Special).l ;	play flapping sound
 
 loc_101A0:
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		move.w	(Object_Space_1+8).w,d0
 		sub.w	8(a0),d0
 		bcc.s	loc_101B0
@@ -18990,7 +18994,7 @@ locret_101C6:
 ; ===========================================================================
 
 Obj55_FlyUp:				; XREF: Obj55_Index2
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		subi.w	#$18,$12(a0)	; make basaran fly upwards
 		bsr.w	ObjHitCeiling
 		tst.w	d1		; has basaran hit the ceiling?
@@ -19020,7 +19024,7 @@ loc_10214:
 		cmp.w	d2,d0
 		rts	
 ; ===========================================================================
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		bsr.w	DisplaySprite
 		tst.b	1(a0)
 		bpl.w	DeleteObject
@@ -21039,19 +21043,19 @@ loc_1185C:
 Obj5E_SpikeFall:			; XREF: Obj5E_Index
 		tst.w	$12(a0)
 		bpl.s	loc_1189A
-		bsr.w	ObjectFall
+		bsr.w	ObjectMoveAndFall
 		move.w	$34(a0),d0
 		subi.w	#$2F,d0
 		cmp.w	$C(a0),d0
 		bgt.s	locret_11898
-		bsr.w	ObjectFall
+		bsr.w	ObjectMoveAndFall
 
 locret_11898:
 		rts	
 ; ===========================================================================
 
 loc_1189A:				; XREF: Obj5E_SpikeFall
-		bsr.w	ObjectFall
+		bsr.w	ObjectMoveAndFall
 		movea.l	$3C(a0),a1
 		lea	(Obj5E_Speeds).l,a2
 		moveq	#0,d0
@@ -21187,7 +21191,7 @@ Obj5F_Wait:				; XREF: Obj5F_Index2
 		bsr.w	Obj5F_ChkSonic
 		subq.w	#1,$30(a0)	; subtract 1 from time delay
 		bmi.s	loc_11AA8
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		rts	
 ; ===========================================================================
 
@@ -21264,7 +21268,7 @@ Obj5F_Display:				; XREF: Obj5F_Index
 loc_11B70:
 		subq.w	#1,$30(a0)
 		bmi.s	loc_11B7C
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		rts	
 ; ===========================================================================
 
@@ -21299,7 +21303,7 @@ loc_11BCE:
 		move.b	#6,$24(a0)
 
 Obj5F_End:				; XREF: Obj5F_Index
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		addi.w	#$18,$12(a0)
 		lea	(Ani_obj5F).l,a1
 		bsr.w	AnimateSprite
@@ -21424,7 +21428,7 @@ Obj60_Animate:
 ; ===========================================================================
 
 Obj60_Display:				; XREF: Obj60_Index
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 
 Obj60_ChkDel:				; XREF: Obj60_Animate
 		move.w	8(a0),d0
@@ -21503,7 +21507,7 @@ Obj60_Circle:				; XREF: Obj60_MoveOrb
 ; ===========================================================================
 
 Obj60_ChkDel2:				; XREF: Obj60_Index
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		tst.b	1(a0)
 		bpl.w	DeleteObject
 		bra.w	DisplaySprite
@@ -21680,7 +21684,7 @@ loc_120D6:
 ; ===========================================================================
 
 Obj61_Type02:				; XREF: Obj61_TypeIndex
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		addq.w	#8,$12(a0)	; make object fall
 		bsr.w	ObjHitFloor
 		tst.w	d1
@@ -21695,7 +21699,7 @@ locret_12106:
 ; ===========================================================================
 
 Obj61_Type04:				; XREF: Obj61_TypeIndex
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		subq.w	#8,$12(a0)	; make object rise
 		bsr.w	ObjHitCeiling
 		tst.w	d1
@@ -21869,7 +21873,7 @@ Obj62_AniFire:				; XREF: Obj62_Index
 		bchg	#0,$1A(a0)	; switch between frame 01 and 02
 
 Obj62_StopFire:
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		btst	#0,$22(a0)
 		bne.s	Obj62_StopFire2
 		moveq	#-8,d3
@@ -21976,7 +21980,7 @@ Obj64_Wobble:				; XREF: Obj64_ChkWater
 ; ===========================================================================
 
 Obj64_Display:				; XREF: Obj64_Wobble
-		bsr.w	SpeedToPos
+		bsr.w	ObjectMove
 		tst.b	1(a0)
 		bpl.s	Obj64_Delete
 		jmp	DisplaySprite
@@ -22375,6 +22379,7 @@ Obj01_Main:				; XREF: Obj01_Index
 		move.w	#$600,(Sonic_Top_Speed).w 	; Sonic's top speed
 		move.w	#$C,(Sonic_Acceleration).w 	; Sonic's acceleration
 		move.w	#$80,(Sonic_Deceleration).w 	; Sonic's deceleration
+		move.w	#0,(Sonic_Min_Speed).w		; Sonic's minimum speed
 		move.b	#$1E,$28(a0)
 		move.b	#5,(Object_Space_8).w
 
@@ -22581,7 +22586,7 @@ Obj01_MdNormal:				; XREF: Obj01_Modes
 @is_crawling:
 		bsr.w	Sonic_Move
 		bsr.w	Sonic_LevelBound
-		jsr	SpeedToPos
+		jsr	ObjectMove
 		bsr.w	Sonic_AnglePos
 		tst.b	crawling(a0)
 		bne.s	@is_crawling2
@@ -22605,9 +22610,14 @@ Obj01_MdAir:				; XREF: Obj01_Modes
 @do:
 		move.b	#0,crawling(a0)
 		bsr.w	Sonic_JumpHeight
+		tst.b	(Force_Scroll_Touched_Boundary).w
+		beq.s	@skip
+		move.w	$14(a0),$10(a0)
+
+@skip:
 		bsr.w	Sonic_ChgJumpDir
 		bsr.w	Sonic_LevelBound
-		jsr	ObjectFall
+		jsr	ObjectMoveAndFall
 		btst	#6,$22(a0)
 		beq.s	loc_12E5C
 		subi.w	#$28,$12(a0)
@@ -22631,10 +22641,15 @@ Obj01_MdJump:				; XREF: Obj01_Modes
 @do:
 		move.b	#0,crawling(a0)
 		bsr.w	Sonic_JumpHeight
+		tst.b	(Force_Scroll_Touched_Boundary).w
+		beq.s	@skip
+		move.w	$14(a0),$10(a0)
+
+@skip:
 		bsr.w	Sonic_ChgJumpDir
 		bsr.w	Sonic_LevelBound
 		bsr.w 	Sonic_JumpAnimate
-		jsr	ObjectFall
+		jsr	ObjectMoveAndFall
 		btst	#6,$22(a0)
 		beq.s	loc_12EA6
 		subi.w	#$28,$12(a0)
@@ -22725,7 +22740,7 @@ loc_12F6A:
 
 loc_12F70:
 		move.b	#6,$1C(a0)	; use "balancing" animation
-		bra.s	Obj01_ResetScr
+		bra.w	Obj01_ResetScr
 ; ===========================================================================
 
 Sonic_LookUp:
@@ -22737,7 +22752,7 @@ Sonic_LookUp:
 		bcs.s	Obj01_ResetScr_Part2
 		move.b	#$78,(Sonic_Look_Delay_Counter+1).w
 		cmpi.w	#$C8,(Camera_Y_Pos_Bias).w
-		beq.s	loc_12FC2
+		beq.w	loc_12FC2
 		addq.w	#2,(Camera_Y_Pos_Bias).w
 		bra.s	loc_12FC2
 ; ===========================================================================
@@ -22776,8 +22791,9 @@ loc_12FC2:
 		beq.s	loc_12FEE
 		bmi.s	loc_12FE2
 		sub.w	d5,d0
+		cmp.w	(Sonic_Min_Speed).w,d0
 		bcc.s	loc_12FDC
-		move.w	#0,d0
+		move.w	(Sonic_Min_Speed).w,d0
 
 loc_12FDC:
 		move.w	d0,$14(a0)
@@ -22786,8 +22802,10 @@ loc_12FDC:
 
 loc_12FE2:
 		add.w	d5,d0
+		cmp.w	(Sonic_Min_Speed).w,d0
 		bcc.s	loc_12FEA
-		move.w	#0,d0
+		move.w	(Sonic_Min_Speed).w,d0
+		neg.w	d0
 
 loc_12FEA:
 		move.w	d0,$14(a0)
@@ -22870,6 +22888,8 @@ loc_13086:
 
 loc_1309A:
 		sub.w	d5,d0
+
+loc_1309A_2:
 		move.w	d6,d1
 		neg.w	d1
 		cmp.w	d1,d0
@@ -22887,11 +22907,18 @@ loc_130A6:
 
 Sonic_TurnLeft:				; XREF: Sonic_MoveLeft
 		sub.w	d4,d0
+		cmp.w	(Sonic_Min_Speed).w,d0
 		bcc.s	loc_130BA
+		move.w	(Sonic_Min_Speed).w,d0
+		tst.w	(Force_Scroll_Flag).w
+		bne.s	loc_130BA
 		move.w	#-$80,d0
+		sub.w	(Sonic_Min_Speed).w,d0
 
 loc_130BA:
 		move.w	d0,$14(a0)
+		tst.w	(Force_Scroll_Flag).w
+		bne.s	locret_130E8
 		move.b	$26(a0),d0
 		addi.b	#$20,d0
 		andi.b	#$C0,d0
@@ -22925,6 +22952,8 @@ Sonic_MoveRight:	   ; XREF: Sonic_Move
 
 loc_13104:
 		add.w	d5,d0
+
+loc_13104_2:
 		cmp.w	d6,d0
 		blt.s	loc_1310C
 		sub.w	d5,d0
@@ -22940,11 +22969,18 @@ loc_1310C:
 
 Sonic_TurnRight:				; XREF: Sonic_MoveRight
 		add.w	d4,d0
+		cmp.w	(Sonic_Min_Speed).w,d0
 		bcc.s	loc_13120
+		move.w	(Sonic_Min_Speed).w,d0
+		tst.w	(Force_Scroll_Flag).w
+		bne.s	loc_13120
 		move.w	#$80,d0
+		add.w	(Sonic_Min_Speed).w,d0
 
 loc_13120:
 		move.w	d0,$14(a0)
+		tst.w	(Force_Scroll_Flag).w
+		bne.s	locret_1314E
 		move.b	$26(a0),d0
 		addi.b	#$20,d0
 		andi.b	#$C0,d0
@@ -23098,6 +23134,7 @@ locret_13302:
 
 
 Sonic_LevelBound:			; XREF: Obj01_MdNormal; et al
+		move.b	#0,(Force_Scroll_Touched_Boundary).w
 		move.l	8(a0),d1
 		move.w	$10(a0),d0
 		ext.l	d0
@@ -23106,10 +23143,8 @@ Sonic_LevelBound:			; XREF: Obj01_MdNormal; et al
 		swap	d1
 		move.w	(Camera_Min_X_Pos).w,d0
 		addi.w	#$10,d0
-		move.w	#1,d2
 		cmp.w	d1,d0		; has Sonic touched the	side boundary?
 		bhi.s	Boundary_Sides	; if yes, branch
-		move.w	#-1,d2
 		move.w	(Camera_Max_X_Pos).w,d0
 		addi.w	#$128,d0
 		tst.b	(Right_Boundary_Lock).w
@@ -23133,24 +23168,27 @@ Boundary_Bottom:
 ; ===========================================================================
 
 Boundary_Sides:
+		move.w	#0,$10(a0)	; stop Sonic moving
 		move.w	d0,8(a0)
 		move.w	#0,$A(a0)
 		tst.b	(Force_Scroll_Flag).w
-		beq.s	@NoForce
-		moveq	#0,d1
-		move.b	(Force_Scroll_Flag).w,d1
-		move.w	(Force_Scroll_Speed).w,d0
-		asl.w	#8,d0
-		muls.w	d1,d0
-		muls.w	d2,d0
-		move.w	d0,$10(a0)
-		move.w	d0,$14(a0)
-		bra.s	loc_13336
-
-@NoForce:
-		move.w	#0,$10(a0)	; stop Sonic moving
+		bne.s	@forced_scroll
 		move.w	#0,$14(a0)
 		bra.s	loc_13336
+
+@forced_scroll:
+		move.w	(Force_Scroll_Speed).w,d0
+		asl.w	#8,d0
+		tst.b	(Force_Scroll_Flag).w
+		bpl.s	@apply
+		neg.w	d0
+
+@apply:
+		move.b	#1,(Force_Scroll_Touched_Boundary).w
+		move.w	d0,$14(a0)
+		move.b	#0,$1C(a0)
+		bra.s	loc_13336
+
 ; End of function Sonic_LevelBound
 
 ; ---------------------------------------------------------------------------
@@ -23604,7 +23642,7 @@ loc_137E4:
 ; ---------------------------------------------------------------------------
 
 Obj01_Hurt:				; XREF: Obj01_Index
-		jsr	SpeedToPos
+		jsr	ObjectMove
 		addi.w	#$30,$12(a0)
 		btst	#6,$22(a0)
 		beq.s	loc_1380C
@@ -23653,7 +23691,7 @@ locret_13860:
 Obj01_Death:				; XREF: Obj01_Index
 		move.b	#$18,$1C(a0)
 		bsr.w	GameOver
-		jsr	ObjectFall
+		jsr	ObjectMoveAndFall
 		bsr.w	Sonic_RecordPos
 		bsr.w	Sonic_Animate
 		bsr.w	LoadSonicDynPLC
@@ -23736,7 +23774,7 @@ locret_13914:
  
  
 Obj01_Drowned:
-        bsr.w   SpeedToPos              ; Make Sonic able to move
+        bsr.w   ObjectMove              ; Make Sonic able to move
         addi.w  #$10,$12(a0)          ; Apply gravity
         bsr.w   Sonic_RecordPos    ; Record position
         bsr.s   Sonic_Animate           ; Animate Sonic
@@ -24044,7 +24082,7 @@ loc_13D44:
 		add.w	$30(a0),d0
 		move.w	d0,8(a0)
 		bsr.s	Obj0A_ShowNumber
-		jsr	SpeedToPos
+		jsr	ObjectMove
 		tst.b	1(a0)
 		bpl.s	Obj0A_Delete
 		jmp	DisplaySprite
@@ -26000,7 +26038,7 @@ locret_16950:
 Obj78_Main:				; XREF: Obj78_Index
 		move.b	#7,$16(a0)
 		move.b	#8,$17(a0)
-		jsr	ObjectFall
+		jsr	ObjectMoveAndFall
 		jsr	ObjHitFloor
 		tst.w	d1
 		bpl.s	locret_16950
@@ -26286,7 +26324,7 @@ loc_16CAA:
 		andi.b	#-8,$1A(a0)
 
 loc_16CC0:				; XREF: Obj78_Index
-		jsr	ObjectFall
+		jsr	ObjectMoveAndFall
 		tst.w	$12(a0)
 		bmi.s	loc_16CE0
 		jsr	ObjHitFloor
@@ -26897,7 +26935,7 @@ Obj3D_ShipMove:				; XREF: Obj3D_ShipIndex
 		jsr	PlaySample
 		
 @Fall:
-		jsr	ObjectFall
+		jsr	ObjectMoveAndFall
 		jsr	ObjHitFloor
 		tst.w	d1
 		bpl.s	@NoExplode
@@ -27011,7 +27049,7 @@ Obj3D_Dead:
 		jsr	PlaySound_Special
 
 @loc_179AA:
-		jsr	ObjectFall
+		jsr	ObjectMoveAndFall
 		tst.w	$12(a0)
 		bmi.s	@Skip
 		jsr	ObjHitFloor
@@ -27351,7 +27389,7 @@ Obj48_Display2:				; XREF: Obj48_Index
 sub_17C2A:				; XREF: Obj48_Display; Obj48_Display2
 		tst.b	(Tutorial_Boss_Flags).w
 		beq.s	@Skip
-		jsr	ObjectFall
+		jsr	ObjectMoveAndFall
 		jsr	ObjHitFloor
 		addq.l	#4,sp
 		tst.w	d1
@@ -27390,7 +27428,7 @@ locret_17C66:
 loc_17C68:				; XREF: Obj48_Index
 		tst.b	(Tutorial_Boss_Flags).w
 		beq.s	@Skip
-		jsr	ObjectFall
+		jsr	ObjectMoveAndFall
 		jsr	ObjHitFloor
 		tst.w	d1
 		bpl.w	Obj48_Display3
@@ -27414,7 +27452,7 @@ Obj48_Display3:
 Obj48_ChkVanish:			; XREF: Obj48_Index
 		tst.b	(Tutorial_Boss_Flags).w
 		beq.w	@Skip
-		jsr	ObjectFall
+		jsr	ObjectMoveAndFall
 		jsr	ObjHitFloor
 		tst.w	d1
 		bpl.w	Obj48_Display4
@@ -28396,7 +28434,7 @@ Obj74_Action:				; XREF: Obj74_Index
 		move.b	$25(a0),d0
 		move.w	Obj74_Index2(pc,d0.w),d0
 		jsr	Obj74_Index2(pc,d0.w)
-		jsr	SpeedToPos
+		jsr	ObjectMove
 		lea	(Ani_obj14).l,a1
 		jsr	AnimateSprite
 		cmpi.w	#$2E8,$C(a0)
@@ -29023,7 +29061,7 @@ loc_18D68:
 		addq.b	#2,$24(a0)
 
 Obj7B_Fall:				; XREF: Obj7B_Index
-		jsr	ObjectFall
+		jsr	ObjectMoveAndFall
 		movea.l	$3C(a0),a1
 		lea	(word_19018).l,a2
 		moveq	#0,d0
@@ -29205,19 +29243,19 @@ loc_18EC0:
 loc_18F38:
 		tst.w	$12(a0)
 		bpl.s	loc_18F5C
-		jsr	ObjectFall
+		jsr	ObjectMoveAndFall
 		move.w	$34(a0),d0
 		subi.w	#$2F,d0
 		cmp.w	$C(a0),d0
 		bgt.s	loc_18F58
-		jsr	ObjectFall
+		jsr	ObjectMoveAndFall
 
 loc_18F58:
 		bra.w	loc_18E7A
 ; ===========================================================================
 
 loc_18F5C:
-		jsr	ObjectFall
+		jsr	ObjectMoveAndFall
 		movea.l	$3C(a0),a1
 		lea	(word_19018).l,a2
 		moveq	#0,d0
@@ -29327,7 +29365,7 @@ Obj7B_FragSpeed:dc.w $FF00, $FCC0	; horizontal, vertical
 ; ===========================================================================
 
 Obj7B_MoveFrag:				; XREF: Obj7B_Index
-		jsr	SpeedToPos
+		jsr	ObjectMove
 		move.w	8(a0),$30(a0)
 		move.w	$C(a0),$34(a0)
 		addi.w	#$18,$12(a0)
@@ -30040,7 +30078,7 @@ Obj76_Display:				; XREF: Obj76_Action
 loc_19762:				; XREF: Obj76_Index
 		tst.b	1(a0)
 		bpl.s	Obj76_Delete
-		jsr	ObjectFall
+		jsr	ObjectMoveAndFall
 		jmp	DisplaySprite
 ; ===========================================================================
 

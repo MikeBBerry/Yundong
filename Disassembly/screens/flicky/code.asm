@@ -311,7 +311,7 @@ ObjChick_Door:
 		move.w	d2,$10(a0)
 ; ===========================================================================
 ObjChick_Unfollow:
-		jsr	SpeedToPos
+		jsr	ObjectMove
 		jsr	Flicky_DoCollision
 		andi.w	#$FF,8(a0)
 		jmp	DisplaySprite
@@ -349,7 +349,7 @@ ObjCat_Init:
 ObjCat_Main:
 		tst.b	(Flicky_Door_Flag).w
 		bne.s	@Skip
-		jsr	SpeedToPos
+		jsr	ObjectMove
 		jsr	Flicky_DoCollision
 		bsr.s	ObjCat_Movement
 		
@@ -476,7 +476,7 @@ ObjFlicky_Init:
 ObjFlicky_Main:
 		tst.b	(Flicky_Door_Flag).w
 		bne.s	@Skip
-		jsr	SpeedToPos
+		jsr	ObjectMove
 		jsr	Sonic_RecordPos
 		jsr	Flicky_DoCollision
 		jsr	ObjFlicky_Jump
@@ -571,7 +571,7 @@ ObjFlicky_MoveRight:
 		rts
 ; ===========================================================================
 ObjFlicky_Dead:
-		jsr	SpeedToPos
+		jsr	ObjectMove
 		jsr	Flicky_DoCollision
 		
 		andi.w	#$FF,8(a0)

@@ -430,7 +430,9 @@ Osc_And_Misc_RAM_End				rs.b 0
 Level_Sel_Move_Timer				rs.w 1			; $FFFFFF80
 Level_Sel_Selection				rs.w 1			; $FFFFFF82
 Level_Sel_Sound_ID				rs.w 1			; $FFFFFF84
-						rs.b 6			; $FFFFFF86
+						rs.b 3			; $FFFFFF86
+Force_Scroll_Touched_Boundary			rs.b 1			; $FFFFFF89
+Sonic_Min_Speed					rs.w 1			; $FFFFFF8A
 Force_Scroll_Saved_Min_X_Pos			rs.w 1			; $FFFFFF8C
 Force_Scroll_Saved_Max_X_Pos			rs.w 1			; $FFFFFF8E
 Force_Scroll_Speed				rs.w 1			; $FFFFFF90
