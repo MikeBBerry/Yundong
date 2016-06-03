@@ -430,7 +430,12 @@ Osc_And_Misc_RAM_End				rs.b 0
 Level_Sel_Move_Timer				rs.w 1			; $FFFFFF80
 Level_Sel_Selection				rs.w 1			; $FFFFFF82
 Level_Sel_Sound_ID				rs.w 1			; $FFFFFF84
-						rs.b $E			; $FFFFFF86
+						rs.b 6			; $FFFFFF86
+Force_Scroll_Saved_Min_X_Pos			rs.w 1			; $FFFFFF8C
+Force_Scroll_Saved_Max_X_Pos			rs.w 1			; $FFFFFF8E
+Force_Scroll_Speed				rs.w 1			; $FFFFFF90
+Scroll_Lock					rs.b 1			; $FFFFFF92
+Force_Scroll_Flag				rs.b 1			; $FFFFFF93
 No_Music_Ctrl					rs.b 1			; $FFFFFF94
 Screen_Redraw_Flag				rs.b 1			; $FFFFFF95
 H_Wrap_Min					rs.w 1			; $FFFFFF96
@@ -503,8 +508,8 @@ MusID_FuckedUp					= MusicID_Start+1
 MusID_Tutorial					= MusicID_Start+2
 MusID_Unused					= MusicID_Start+3
 MusID_TeethFunny				= MusicID_Start+4
-MusID_Dendy						= MusicID_Start+5
-MusID_Invincibility				= MusicD_Start+6
+MusID_Dendy					= MusicID_Start+5
+MusID_Invincibility				= MusicID_Start+6
 MusID_1UP					= MusicID_Start+7
 MusID_Appendicitis				= MusicID_Start+8
 MusID_Title					= MusicID_Start+9

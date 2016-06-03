@@ -380,6 +380,7 @@ loc_CD4:
 		jsr	ProcessDMAQueue
 		bsr.w	WrapBGPos
 		bsr.w	DoHWrap
+		bsr.w	ForceScroll_SetBoundaries
 		movem.l	(Camera_RAM).w,d0-d7
 		movem.l	d0-d7,(Camera_RAM_Copy).w
 		movem.l	(Scroll_Flags).w,d0-d1
@@ -445,6 +446,7 @@ loc_ED8:
 		jsr	ProcessDMAQueue
 		bsr.w	WrapBGPos
 		bsr.w	DoHWrap
+		bsr.w	ForceScroll_SetBoundaries
 		movem.l	(Camera_RAM).w,d0-d7
 		movem.l	d0-d7,(Camera_RAM_Copy).w
 		movem.l	(Scroll_Flags).w,d0-d1
@@ -582,7 +584,7 @@ DoHWrap:
 		tst.w	(Camera_X_Pos_Diff).w		; Check what direction it's going
 		bmi.s	@Left				; If it's left, branch
 		bpl.s	@Right				; If it's right, branch
-		rts					; If not at all, return
+		bra.s	@End				; If not at all, return
 ; ---------------------------------------------------------------------------
 @Left:
 		cmp.w	(H_Wrap_Min).w,d0		; Has the camera passed the minimum x boundary for wrapping?
@@ -603,6 +605,28 @@ DoHWrap:
 @End:
 		rts
 ; ---------------------------------------------------------------------------
+; Set boundaries while the screen is forced to scroll
+; ---------------------------------------------------------------------------	
+ForceScroll_SetBoundaries:
+		tst.b	(Force_Scroll_Flag).w
+		beq.s	@End
+		bmi.s	@Left
+		move.w	(Camera_X_Pos).w,d0
+		move.w	d0,(Camera_Min_X_Pos).w
+		addi.w	#$10,d0
+		move.w	d0,(Camera_Max_X_Pos).w
+		bra.s	@End
+
+@Left:
+		move.w	(Camera_X_Pos).w,d0
+		addq.w	#8,d0
+		move.w	d0,(Camera_Max_X_Pos).w
+		subi.w	#$10,d0
+		move.w	d0,(Camera_Min_X_Pos).w
+
+@End:
+		rts
+; ---------------------------------------------------------------------------
 ; Subroutine to	move Palettes from the RAM to CRAM
 ; ---------------------------------------------------------------------------
 
@@ -616,9 +640,9 @@ H_Int:
 		move.w	#0,(H_Int_Flag).w
 		movem.l	a0-a1,-(sp)
 		lea	($C00000).l,a1
-		lea	(Underwater_Palette).w,a0 ; load	Palette from RAM
-		move.l	#$C0000000,4(a1) ; set VDP to CRAM write
-		move.l	(a0)+,(a1)	; move Palette to CRAM
+		lea	(Underwater_Palette).w,a0 	; load palette from RAM
+		move.l	#$C0000000,4(a1) 		; set VDP to CRAM write
+		move.l	(a0)+,(a1)			; move palette to CRAM
 		move.l	(a0)+,(a1)
 		move.l	(a0)+,(a1)
 		move.l	(a0)+,(a1)
@@ -5881,6 +5905,8 @@ Map_obj8B:
 
 LevelSizeLoad:				; XREF: TitleScreen; Level; EndingSequence
 		moveq	#0,d0
+		move.b	d0,(Scroll_Lock).w
+		move.b	d0,(Deform_Lock).w
 		move.b	d0,(Dynamic_Resize_Routine).w
 		move.w	(Current_Zone_And_Act).w,d0
 		lsl.b	#6,d0
@@ -6163,8 +6189,14 @@ loc_628E:
 		clr.w	(Scroll_Flags_BG).w
 		clr.w	(Scroll_Flags_BG2).w
 		clr.w	(Scroll_Flags_BG3).w
+		clr.w	(Camera_X_Pos_Diff).w
+		clr.w	(Camera_Y_Pos_Diff).w
+		tst.b	(Scroll_Lock).w
+		bne.s	@Skip
 		bsr.w	ScrollHoriz
 		bsr.w	ScrollVertical
+
+@Skip:
 		bsr.w	DynScrResizeLoad
 		move.w	(Camera_X_Pos).w,(H_Scroll_Value_FG).w
 		move.w	(Camera_Y_Pos).w,(V_Scroll_Value_FG).w
@@ -6575,6 +6607,19 @@ locret_65B0:
 
 
 ScrollHoriz2:				; XREF: ScrollHoriz
+		tst.b	(Force_Scroll_Flag).w		; Is the screen forced to scroll while wrapping?
+		beq.s	@NoForce			; If not, branch
+		bmi.s	@Left				; If scroll left, branch
+		move.w	(Camera_X_Pos).w,d0		; Increment the camera's x position
+		add.w	(Force_Scroll_Speed).w,d0
+		bra.s	loc_65E4
+
+@Left:
+		move.w	(Camera_X_Pos).w,d0		; Decrement the camera's x position
+		sub.w	(Force_Scroll_Speed).w,d0
+		bra.s	loc_65E4
+
+@NoForce:
 		move.w	(Object_Space_1+8).w,d0
 		sub.w	(Camera_X_Pos).w,d0
 		subi.w	#$90,d0
@@ -7673,6 +7718,11 @@ Resize_MZ1:
 		st.b	(H_Wrap_Flag).w
 		move.w	#$1A00,(H_Wrap_Min).w
 		move.w	#$1B00,(H_Wrap_Max).w
+		move.b	#1,(Force_Scroll_Flag).w
+		move.b	#1,(Right_Boundary_Lock).w
+		move.w	(Camera_Min_X_Pos).w,(Force_Scroll_Saved_Min_X_Pos).w
+		move.w	(Camera_Max_X_Pos).w,(Force_Scroll_Saved_Max_X_Pos).w
+		move.w	#3,(Force_Scroll_Speed).w
 		move.b	#1,(Boss_Flag).w			; set boss flag
 
 @Skip:
@@ -16245,7 +16295,7 @@ Obj41_BounceLR:				; XREF: Obj41_LR
 		neg.w	$10(a1)		; move Sonic to	the right
 		
 loc_DC36:
-		move.w	#$F,$3E(a1)
+		move.w	#$F,$2E(a1)
 		move.w	$10(a1),$14(a1)
 		bchg	#0,$22(a1)
 		btst	#2,$22(a1)
@@ -22249,7 +22299,9 @@ Obj01_ApplySpeedCap:
 		
 @no_cap:
 		rts						; Return
-; ===========================================================================	
+; ===========================================================================
+; Check for crawling
+; ===========================================================================
 Obj01_CheckCrawl:
 		btst	#1,(Sonic_Ctrl_Held).w			; Is the down button being held?
 		bne.s	@is_crawling				; If so, then allow Lover to crawl
@@ -22533,9 +22585,9 @@ Obj01_MdNormal:				; XREF: Obj01_Modes
 		bsr.w	Sonic_SlopeRepel
 		
 @is_crawling2:
-		tst.w	$3E(a0)
+		tst.w	$2E(a0)
 		beq.s	@no_movelock
-		subq.w	#1,$3E(a0)
+		subq.w	#1,$2E(a0)
 		
 @no_movelock:
 		bra.w	Obj01_CheckCrawl	
@@ -22601,7 +22653,7 @@ Sonic_Move:				; XREF: Obj01_MdNormal
 		move.w	(Sonic_Deceleration).w,d4
 		tst.b	(Jump_Only_Flag).w
 		bne.w	loc_12FEE
-		tst.w	$3E(a0)
+		tst.w	$2E(a0)
 		bne.w	Obj01_ResetScr
 		btst	#2,(Sonic_Ctrl_Held).w ; is left being pressed?
 		beq.s	Obj01_NotLeft	; if not, branch
@@ -23051,8 +23103,10 @@ Sonic_LevelBound:			; XREF: Obj01_MdNormal; et al
 		swap	d1
 		move.w	(Camera_Min_X_Pos).w,d0
 		addi.w	#$10,d0
+		move.w	#1,d2
 		cmp.w	d1,d0		; has Sonic touched the	side boundary?
 		bhi.s	Boundary_Sides	; if yes, branch
+		move.w	#-1,d2
 		move.w	(Camera_Max_X_Pos).w,d0
 		addi.w	#$128,d0
 		tst.b	(Right_Boundary_Lock).w
@@ -23078,6 +23132,19 @@ Boundary_Bottom:
 Boundary_Sides:
 		move.w	d0,8(a0)
 		move.w	#0,$A(a0)
+		tst.b	(Force_Scroll_Flag).w
+		beq.s	@NoForce
+		moveq	#0,d1
+		move.b	(Force_Scroll_Flag).w,d1
+		move.w	(Force_Scroll_Speed).w,d0
+		asl.w	#8,d0
+		muls.w	d1,d0
+		muls.w	d2,d0
+		move.w	d0,$10(a0)
+		move.w	d0,$14(a0)
+		bra.s	loc_13336
+
+@NoForce:
 		move.w	#0,$10(a0)	; stop Sonic moving
 		move.w	#0,$14(a0)
 		bra.s	loc_13336
@@ -23238,7 +23305,7 @@ Sonic_SlopeRepel:			; XREF: Obj01_MdNormal; Obj01_MdRoll
 		nop	
 		tst.b	$38(a0)
 		bne.s	locret_13580
-		tst.w	$3E(a0)
+		tst.w	$2E(a0)
 		bne.s	locret_13580
 		move.b	$26(a0),d0
 		addi.b	#$20,d0
@@ -23253,7 +23320,7 @@ loc_1356A:
 		bcc.s	locret_13580
 		clr.w	$14(a0)
 		bset	#1,$22(a0)
-		move.w	#$1E,$3E(a0)
+		move.w	#$1E,$2E(a0)
 
 locret_13580:
 		rts	
@@ -23644,6 +23711,15 @@ Obj01_ResetLevel:			; XREF: Obj01_Index
 		beq.s	locret_13914
 		subq.w	#1,$3A(a0)	; subtract 1 from time delay
 		bne.s	locret_13914
+		clr.w	(Ring_Count).w
+		clr.b	(Extra_Life_Flags).w
+		move.b	#5,$1C(a0)
+		move.w	#0,$10(a0)
+		move.w	#0,$12(a0)
+		move.w	#0,$14(a0)
+		move.b	#2,$22(a0)
+		move.w	#0,$2E(a0)
+		move.w	#0,$3A(a0)
 		move.w	#1,(Level_Inactive_Flag).w ; restart the level
 
 locret_13914:

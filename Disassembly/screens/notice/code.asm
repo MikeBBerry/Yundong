@@ -16,7 +16,7 @@
     move.l #$60000003,d0            ; prepare VRAM write mode address (Plane B E000)
     moveq  #$28-$01,d1              ; set map box draw width
     moveq  #$1E-$01,d2              ; set map box draw height
-    bsr.w  ShowVDPGraphics          ; flush mappings to VRAM
+    bsr.w  LoadPlaneMap          ; flush mappings to VRAM
     lea    ($C00004).l,a6         ; load VDP control port
     move.l #$68000000,(a6)          ; set VDP to VRAM write mode (Address 2800)
     lea    Art_Notice.l,a0            ; load compressed art address

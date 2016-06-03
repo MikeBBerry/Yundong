@@ -51,7 +51,7 @@ Owarisoft:
 		move.l	#$46040003,d0
 		moveq	#35-1,d1
 		moveq	#5-1,d2
-		jsr	ShowVDPGraphics
+		jsr	LoadPlaneMap
 
 	; load BG mappings
 		lea	General_Buffer,a1
@@ -62,7 +62,7 @@ Owarisoft:
 		move.l	#$659A0003,d0
 		moveq	#16-1,d1
 		moveq	#8-1,d2
-		jsr	ShowVDPGraphics
+		jsr	LoadPlaneMap
 
 	; decompress art
 		lea	Owari_tiles,a0

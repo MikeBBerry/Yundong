@@ -82,7 +82,7 @@ SoundTest:
 		moveq	#$3F,d1
 		moveq	#$1B,d2
 		move.w	#$80,d5
-		jsr	ShowVDPGraphics2
+		jsr	LoadPlaneMap2
 		
 		moveq	#$15,d0					; Load palette
 		jsr	PalLoad1
