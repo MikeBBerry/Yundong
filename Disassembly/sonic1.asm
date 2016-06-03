@@ -22211,84 +22211,84 @@ Obj01_PhysicsTable:
 ; Get physics for Sonic
 ; ===========================================================================
 Obj01_GetPhysics:
-		moveq	#0,d0							; Set up the crawling flag, speed shoes flag, and underwater flag into a bitfield in d0
-		move.b	crawling(a0),d0					; Like so:
-		asl.b	#1,d0							; 0000 0CSU
+		moveq	#0,d0					; Set up the crawling flag, speed shoes flag, and underwater flag into a bitfield in d0
+		move.b	crawling(a0),d0				; Like so:
+		asl.b	#1,d0					; 0000 0CSU
 		or.b	(Speed_Shoes_Flag).w,d0			; C = Crawling
-		asl.b	#1,d0							; S = Speed shoes
-		btst	#6,$22(a0)						; U = Underwater
+		asl.b	#1,d0					; S = Speed shoes
+		btst	#6,$22(a0)				; U = Underwater
 		beq.s	@not_underwater
 		ori.b	#1,d0
 		
 @not_underwater:
-		mulu.w	#6,d0							; Multiply by 6 to make it a table index
+		mulu.w	#6,d0					; Multiply by 6 to make it a table index
 		lea	Obj01_PhysicsTable(pc,d0.w),a1		; Get address where the values for Lover's physics are for the correct conditions
 		move.w	(a1)+,(Sonic_Top_Speed).w		; Apply speeds
 		move.w	(a1)+,(Sonic_Acceleration).w
 		move.w	(a1),(Sonic_Deceleration).w
-		rts										; Return
+		rts						; Return
 ; ===========================================================================
 ; Apply speed cap for Sonic
 ; ===========================================================================
 Obj01_ApplySpeedCap:
-		move.w	$14(a0),d1						; Get Lover's ground velocity
-		bpl.s	@not_negative					; If it's positive, skip having it negated
-		neg.w	d1								; If it's negative, negate it to make it positive
+		move.w	$14(a0),d1				; Get Lover's ground velocity
+		bpl.s	@not_negative				; If it's positive, skip having it negated
+		neg.w	d1					; If it's negative, negate it to make it positive
 		
 @not_negative:
 		move.w	(Sonic_Top_Speed).w,d2			; Get Lover's top speed
-		cmp.w	d2,d1							; Check if Lover's current speed has surpassed the top speed
-		ble.s	@no_cap							; If it didn't, branch
+		cmp.w	d2,d1					; Check if Lover's current speed has surpassed the top speed
+		ble.s	@no_cap					; If it didn't, branch
 		sub.w	(Sonic_Deceleration).w,d1		; Subtract Lover's deceleration from the speed
-		tst.w	$14(a0)							; Has Lover been moving right?
-		bpl.s	@apply							; If so, branch
-		neg.w	d1								; If Lover has been moving left, negate to set the correct value
+		tst.w	$14(a0)					; Has Lover been moving right?
+		bpl.s	@apply					; If so, branch
+		neg.w	d1					; If Lover has been moving left, negate to set the correct value
 		
 @apply:
-		move.w	d1,$14(a0)						; Apply the new value
+		move.w	d1,$14(a0)				; Apply the new value
 		
 @no_cap:
-		rts										; Return
+		rts						; Return
 ; ===========================================================================	
 Obj01_CheckCrawl:
 		btst	#1,(Sonic_Ctrl_Held).w			; Is the down button being held?
-		bne.s	@is_crawling					; If so, then allow Lover to crawl
-		moveq	#0,d0							; Check the distance between Lover and the ceiling
+		bne.s	@is_crawling				; If so, then allow Lover to crawl
+		moveq	#0,d0					; Check the distance between Lover and the ceiling
 		move.b	$26(a0),d0
 		addi.b	#$80,d0
 		bsr.w	sub_14D48
-		cmpi.w	#3,d1							; Is it less than 3?
-		blt.w	@end							; If so, branch
-		tst.b	crawling(a0)					; Has Lover already not been crawling beforehand?
-		beq.s	@end							; If so, branch
-		move.b	#$13,$16(a0)					; Reset y radius
-		subq.w	#5,$C(a0)						; Reset y position
-		move.b	#0,crawling(a0)					; Exit out of crawling mode
-		rts										; Return
+		cmpi.w	#3,d1					; Is it less than 3?
+		blt.w	@end					; If so, branch
+		tst.b	crawling(a0)				; Has Lover already not been crawling beforehand?
+		beq.s	@end					; If so, branch
+		move.b	#$13,$16(a0)				; Reset y radius
+		subq.w	#5,$C(a0)				; Reset y position
+		move.b	#0,crawling(a0)				; Exit out of crawling mode
+		rts						; Return
 		
 @is_crawling:
-		bsr.w	Obj01_ApplySpeedCap				; If crawling, apply a speed cap
-		bclr	#5,$22(a0)						; Clear push flag
-		move.b	#8,$1C(a0)						; If not moving, use the ducking animation
-		tst.w	$14(a0)							; Is Lover moving?
-		beq.s	@chk							; If not, branch
-		move.b	#$A,$1C(a0)						; If moving, use the crawling animation
+		bsr.w	Obj01_ApplySpeedCap			; If crawling, apply a speed cap
+		bclr	#5,$22(a0)				; Clear push flag
+		move.b	#8,$1C(a0)				; If not moving, use the ducking animation
+		tst.w	$14(a0)					; Is Lover moving?
+		beq.s	@chk					; If not, branch
+		move.b	#$A,$1C(a0)				; If moving, use the crawling animation
 
 @chk:
-		tst.b	crawling(a0)					; Has Lover already been crawling beforehand?
-		bne.s	@end							; If so, branch
-		move.b	#$E,$16(a0)						; Decrease y radius
-		addq.w	#5,$C(a0)						; Set new y position for the new y radius
-		move.b	#1,crawling(a0)					; Enter crawling mode
+		tst.b	crawling(a0)				; Has Lover already been crawling beforehand?
+		bne.s	@end					; If so, branch
+		move.b	#$E,$16(a0)				; Decrease y radius
+		addq.w	#5,$C(a0)				; Set new y position for the new y radius
+		move.b	#1,crawling(a0)				; Enter crawling mode
 		
 @end:
-		rts										; Return
+		rts						; Return
 ; ===========================================================================
 ; Main object code
 ; ===========================================================================
 Obj01:					; XREF: Obj_Index
 		tst.w	(Debug_Placement_Mode).w	; is debug mode	being used?
-		beq.s	Obj01_Normal	; if not, branch
+		beq.s	Obj01_Normal			; if not, branch
 		jmp	DebugMode
 ; ===========================================================================
 
@@ -22308,7 +22308,7 @@ Obj01_Index:
 ; ===========================================================================
 
 Obj01_Main:				; XREF: Obj01_Index
-		move.b	#$0,(Sonic_Current_Coll_Layer).w			; MJ: set collision to 1st
+		move.b	#$0,(Sonic_Current_Coll_Layer).w	; MJ: set collision to 1st
 		addq.b	#2,$24(a0)
 		move.b	#$13,$16(a0)
 		move.b	#9,$17(a0)
