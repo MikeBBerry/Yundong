@@ -22195,99 +22195,96 @@ Map_obj65:
 ; Object 01 - Sonic
 ; ---------------------------------------------------------------------------
 ; ===========================================================================
-crawling								= $39			; CRAWLING IN MY SKIN!
+crawling								= $39
 biting									= $3A
 ; ===========================================================================
 Obj01_PhysicsTable:
-		dc.w $600,   $C,  $80			; Normal
-		dc.w $300,    6,  $40			; Underwater
-		dc.w $C00,  $18,  $80			; Speed shoes
-		dc.w $600,   $C,  $80			; Speed shoes underwater
-		dc.w  $C0,  $18,  $24			; Crawling
-		dc.w  $60,   $C,  $12			; Crawling underwater
-		dc.w $180,  $30,  $48			; Crawling with speed shoes
-		dc.w  $C0,  $18,  $24			; Crawling with speed shoes underwater
+		dc.w $600,   $C,  $80				; Normal
+		dc.w $300,    6,  $40				; Underwater
+		dc.w $C00,  $18,  $80				; Speed shoes
+		dc.w $600,   $C,  $80				; Speed shoes underwater
+		dc.w  $C0,  $18,  $24				; Crawling
+		dc.w  $60,   $C,  $12				; Crawling underwater
+		dc.w $180,  $30,  $48				; Crawling with speed shoes
+		dc.w  $C0,  $18,  $24				; Crawling with speed shoes underwater
 ; ===========================================================================
 ; Get physics for Sonic
 ; ===========================================================================
 Obj01_GetPhysics:
-		moveq	#0,d0
-		move.b	crawling(a0),d0
-		asl.b	#1,d0
-		or.b	(Speed_Shoes_Flag).w,d0
-		asl.b	#1,d0
-		btst	#6,$22(a0)
+		moveq	#0,d0							; Set up the crawling flag, speed shoes flag, and underwater flag into a bitfield in d0
+		move.b	crawling(a0),d0					; Like so:
+		asl.b	#1,d0							; 0000 0CSU
+		or.b	(Speed_Shoes_Flag).w,d0			; C = Crawling
+		asl.b	#1,d0							; S = Speed shoes
+		btst	#6,$22(a0)						; U = Underwater
 		beq.s	@not_underwater
-		or.b	#1,d0
+		ori.b	#1,d0
 		
 @not_underwater:
-		mulu.w	#6,d0
-		lea	Obj01_PhysicsTable(pc,d0.w),a1
-		move.w	(a1)+,(Sonic_Top_Speed).w
+		mulu.w	#6,d0							; Multiply by 6 to make it a table index
+		lea	Obj01_PhysicsTable(pc,d0.w),a1		; Get address where the values for Lover's physics are for the correct conditions
+		move.w	(a1)+,(Sonic_Top_Speed).w		; Apply speeds
 		move.w	(a1)+,(Sonic_Acceleration).w
 		move.w	(a1),(Sonic_Deceleration).w
-		rts
+		rts										; Return
 ; ===========================================================================
 ; Apply speed cap for Sonic
 ; ===========================================================================
 Obj01_ApplySpeedCap:
-		move.w	$14(a0),d1
-		bpl.s	@not_negative
-		neg.w	d1
+		move.w	$14(a0),d1						; Get Lover's ground velocity
+		bpl.s	@not_negative					; If it's positive, skip having it negated
+		neg.w	d1								; If it's negative, negate it to make it positive
 		
 @not_negative:
-		move.w	(Sonic_Top_Speed).w,d2
-		cmp.w	d2,d1
-		ble.s	@no_cap
-		sub.w	(Sonic_Deceleration).w,d1
-		tst.w	$14(a0)
-		bpl.s	@not_negative2
-		neg.w	d1
+		move.w	(Sonic_Top_Speed).w,d2			; Get Lover's top speed
+		cmp.w	d2,d1							; Check if Lover's current speed has surpassed the top speed
+		ble.s	@no_cap							; If it didn't, branch
+		sub.w	(Sonic_Deceleration).w,d1		; Subtract Lover's deceleration from the speed
+		tst.w	$14(a0)							; Has Lover been moving right?
+		bpl.s	@apply							; If so, branch
+		neg.w	d1								; If Lover has been moving left, negate to set the correct value
 		
-@not_negative2:
-		move.w	d1,$14(a0)
+@apply:
+		move.w	d1,$14(a0)						; Apply the new value
 		
 @no_cap:
-		rts
+		rts										; Return
 ; ===========================================================================	
 Obj01_CheckCrawl:
-		btst	#1,(Sonic_Ctrl_Held).w
-		bne.s	@is_crawling3
-		moveq	#0,d0
+		btst	#1,(Sonic_Ctrl_Held).w			; Is the down button being held?
+		bne.s	@is_crawling					; If so, then allow Lover to crawl
+		moveq	#0,d0							; Check the distance between Lover and the ceiling
 		move.b	$26(a0),d0
 		addi.b	#$80,d0
 		bsr.w	sub_14D48
-		cmpi.w	#3,d1
-		blt.w	@end
+		cmpi.w	#3,d1							; Is it less than 3?
+		blt.w	@end							; If so, branch
+		tst.b	crawling(a0)					; Has Lover already not been crawling beforehand?
+		beq.s	@end							; If so, branch
+		move.b	#$13,$16(a0)					; Reset y radius
+		subq.w	#5,$C(a0)						; Reset y position
+		move.b	#0,crawling(a0)					; Exit out of crawling mode
+		rts										; Return
 		
-@not_crawling:
-		move.b	#0,d0
-		tst.b	crawling(a0)
-		beq.s	@do
-		move.b	#$13,$16(a0)
-		subq.w	#5,$C(a0)
-		bra.s	@do
-		
-@is_crawling3:
-		bsr.w	Obj01_ApplySpeedCap
-		move.b	#1,d0
-		bclr	#5,$22(a0)
-		move.b	#8,$1C(a0)
-		tst.w	$14(a0)
-		beq.s	@chk
-		move.b	#$A,$1C(a0)
+@is_crawling:
+		bsr.w	Obj01_ApplySpeedCap				; If crawling, apply a speed cap
+		bclr	#5,$22(a0)						; Clear push flag
+		move.b	#8,$1C(a0)						; If not moving, use the ducking animation
+		tst.w	$14(a0)							; Is Lover moving?
+		beq.s	@chk							; If not, branch
+		move.b	#$A,$1C(a0)						; If moving, use the crawling animation
 
 @chk:
-		tst.b	crawling(a0)
-		bne.s	@do
-		move.b	#$E,$16(a0)
-		addq.w	#5,$C(a0)
-
-@do:
-		move.b	d0,crawling(a0)
+		tst.b	crawling(a0)					; Has Lover already been crawling beforehand?
+		bne.s	@end							; If so, branch
+		move.b	#$E,$16(a0)						; Decrease y radius
+		addq.w	#5,$C(a0)						; Set new y position for the new y radius
+		move.b	#1,crawling(a0)					; Enter crawling mode
 		
 @end:
-		rts
+		rts										; Return
+; ===========================================================================
+; Main object code
 ; ===========================================================================
 Obj01:					; XREF: Obj_Index
 		tst.w	(Debug_Placement_Mode).w	; is debug mode	being used?
@@ -22301,12 +22298,13 @@ Obj01_Normal:
 		move.w	Obj01_Index(pc,d0.w),d1
 		jmp	Obj01_Index(pc,d1.w)
 ; ===========================================================================
-Obj01_Index:	dc.w Obj01_Main-Obj01_Index
+Obj01_Index:
+		dc.w Obj01_Main-Obj01_Index
 		dc.w Obj01_Control-Obj01_Index
 		dc.w Obj01_Hurt-Obj01_Index
 		dc.w Obj01_Death-Obj01_Index
 		dc.w Obj01_ResetLevel-Obj01_Index
-		dc.w Sonic_Drowned-Obj01_Index
+		dc.w Obj01_Drowned-Obj01_Index
 ; ===========================================================================
 
 Obj01_Main:				; XREF: Obj01_Index
@@ -23658,7 +23656,7 @@ locret_13914:
 ; ||||||||||||||| S U B R O U T I N E |||||||||||||||||||||||||||||||||||||||
  
  
-Sonic_Drowned:
+Obj01_Drowned:
         bsr.w   SpeedToPos              ; Make Sonic able to move
         addi.w  #$10,$12(a0)          ; Apply gravity
         bsr.w   Sonic_RecordPos    ; Record position
