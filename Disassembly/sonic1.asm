@@ -380,7 +380,7 @@ loc_CD4:
 		jsr	ProcessDMAQueue
 		bsr.w	WrapBGPos
 		bsr.w	DoHWrap
-		bsr.w	ForceScroll_SetBoundaries
+		bsr.w	HandleScreenLockBound
 		movem.l	(Camera_RAM).w,d0-d7
 		movem.l	d0-d7,(Camera_RAM_Copy).w
 		movem.l	(Scroll_Flags).w,d0-d1
@@ -446,7 +446,7 @@ loc_ED8:
 		jsr	ProcessDMAQueue
 		bsr.w	WrapBGPos
 		bsr.w	DoHWrap
-		bsr.w	ForceScroll_SetBoundaries
+		bsr.w	HandleScreenLockBound
 		movem.l	(Camera_RAM).w,d0-d7
 		movem.l	d0-d7,(Camera_RAM_Copy).w
 		movem.l	(Scroll_Flags).w,d0-d1
@@ -605,26 +605,32 @@ DoHWrap:
 @End:
 		rts
 ; ---------------------------------------------------------------------------
-; Set boundaries while the screen is forced to scroll
+; Set boundaries for when the screen is locked
 ; ---------------------------------------------------------------------------	
-ForceScroll_SetBoundaries:
-		tst.b	(Force_Scroll_Flag).w
+HandleScreenLockBound:
+		tst.b	(Screen_Lock).w
 		beq.s	@End
-		bmi.s	@Left
 		move.w	(Camera_X_Pos).w,d0
-		move.w	d0,(Camera_Min_X_Pos).w
-		addi.w	#$10,d0
 		move.w	d0,(Camera_Max_X_Pos).w
-		bra.s	@End
-
-@Left:
-		move.w	(Camera_X_Pos).w,d0
-		addq.w	#8,d0
-		move.w	d0,(Camera_Max_X_Pos).w
-		subi.w	#$10,d0
 		move.w	d0,(Camera_Min_X_Pos).w
 
 @End:
+		rts
+; ---------------------------------------------------------------------------
+; Lock the screen (V-INT via HandleScreenLockBound handles boundaries)
+; ---------------------------------------------------------------------------
+LockScreen:
+		move.w	(Camera_Min_X_Pos).w,(Saved_Camera_Min_X_Pos).w
+		move.w	(Camera_Max_X_Pos).w,(Saved_Camera_Max_X_Pos).w
+		move.b	#1,(Screen_Lock).w
+		rts
+; ---------------------------------------------------------------------------
+; Unlock the screen
+; ---------------------------------------------------------------------------
+UnlockScreen:
+		move.w	(Saved_Camera_Min_X_Pos).w,(Camera_Min_X_Pos).w
+		move.w	(Saved_Camera_Max_X_Pos).w,(Camera_Max_X_Pos).w
+		move.b	#0,(Screen_Lock).w
 		rts
 ; ---------------------------------------------------------------------------
 ; Subroutine to	move Palettes from the RAM to CRAM
@@ -7660,7 +7666,7 @@ loc_6EB0:
 
 loc_6ED0:
 		move.b	#1,(Boss_Flag).w			; set boss flag
-		move.b	#1,(Right_Boundary_Lock).w		; lock screen
+		bsr.w	LockScreen
 		addq.b	#2,(Dynamic_Resize_Routine).w
 		moveq	#$11,d0
 		bra.w	LoadPLC		; load boss patterns
@@ -7671,7 +7677,6 @@ locret_6EE8:
 ; ===========================================================================
 
 Resize_GHZ3end:
-		move.w	(Camera_X_Pos).w,(Camera_Min_X_Pos).w
 		rts	
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -7722,14 +7727,11 @@ Resize_MZ1:
 		move.w	#$1A00,(H_Wrap_Min).w
 		move.w	#$1B00,(H_Wrap_Max).w
 		move.b	#1,(Force_Scroll_Flag).w
-		move.b	#1,(Right_Boundary_Lock).w
-		move.w	(Camera_Min_X_Pos).w,(Force_Scroll_Saved_Min_X_Pos).w
-		move.w	(Camera_Max_X_Pos).w,(Force_Scroll_Saved_Max_X_Pos).w
 		move.w	#5,(Force_Scroll_Speed).w
 		move.w	(Force_Scroll_Speed).w,d0
 		asl.w	#8,d0
 		subi.w	#$100,d0
-		move.w	d0,(Sonic_Min_Speed).w
+		bsr.w	LockScreen
 		move.b	#1,(Boss_Flag).w			; set boss flag
 
 @Skip:
@@ -23177,7 +23179,7 @@ Sonic_LevelBound:			; XREF: Obj01_MdNormal; et al
 		bhi.s	Boundary_Sides	; if yes, branch
 		move.w	(Camera_Max_X_Pos).w,d0
 		addi.w	#$128,d0
-		tst.b	(Right_Boundary_Lock).w
+		tst.b	(Screen_Lock).w
 		bne.s	loc_13332
 		addi.w	#$40,d0
 
@@ -30324,7 +30326,8 @@ Obj3E_Switched:				; XREF: Obj3E_Index
 		move.b	#$A,$24(a0)
 		move.w	#$3C,$1E(a0)
 		clr.b	(Update_HUD_Timer).w	; stop time counter
-		clr.b	(Right_Boundary_Lock).w	; lock screen position
+		clr.b	(Screen_Lock).w	; lock screen position
+		move.w	(Camera_Max_X_Pos).w,(Camera_Min_X_Pos).w
 		move.b	#1,(Lock_Controls_Flag).w ; lock	controls
 		move.w	#$800,(Sonic_Ctrl_Held).w ; make Sonic run to	the right
 		clr.b	$25(a0)

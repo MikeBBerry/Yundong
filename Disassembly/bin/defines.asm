@@ -289,7 +289,7 @@ Obj31_Y_Pos					rs.w 1			; $FFFFF7A4
 						rs.b 1			; $FFFFF7A6
 Boss_Defeated_Flags				rs.b 1			; $FFFFF7A7
 Sonic_Pos_Record_Index				rs.w 1			; $FFFFF7A8
-Right_Boundary_Lock				rs.b 1			; $FFFFF7AA
+Screen_Lock					rs.b 1			; $FFFFF7AA
 						rs.b 5			; $FFFFF7AB
 Level_Ani0_Frame				rs.b 1			; $FFFFF7B0
 Level_Ani0_Timer				rs.b 1			; $FFFFF7B1
@@ -433,8 +433,8 @@ Level_Sel_Sound_ID				rs.w 1			; $FFFFFF84
 						rs.b 3			; $FFFFFF86
 Force_Scroll_Touched_Boundary			rs.b 1			; $FFFFFF89
 Sonic_Min_Speed					rs.w 1			; $FFFFFF8A
-Force_Scroll_Saved_Min_X_Pos			rs.w 1			; $FFFFFF8C
-Force_Scroll_Saved_Max_X_Pos			rs.w 1			; $FFFFFF8E
+Saved_Camera_Min_X_Pos				rs.w 1			; $FFFFFF8C
+Saved_Camera_Max_X_Pos				rs.w 1			; $FFFFFF8E
 Force_Scroll_Speed				rs.w 1			; $FFFFFF90
 Scroll_Lock					rs.b 1			; $FFFFFF92
 Force_Scroll_Flag				rs.b 1			; $FFFFFF93
