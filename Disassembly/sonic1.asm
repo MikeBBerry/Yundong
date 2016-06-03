@@ -22972,6 +22972,7 @@ Sonic_TurnRight:				; XREF: Sonic_MoveRight
 		cmp.w	(Sonic_Min_Speed).w,d0
 		bcc.s	loc_13120
 		move.w	(Sonic_Min_Speed).w,d0
+		neg.w	d0
 		tst.w	(Force_Scroll_Flag).w
 		bne.s	loc_13120
 		move.w	#$80,d0
