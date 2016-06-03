@@ -5908,6 +5908,9 @@ LevelSizeLoad:				; XREF: TitleScreen; Level; EndingSequence
 		move.b	d0,(Scroll_Lock).w
 		move.b	d0,(Deform_Lock).w
 		move.b	d0,(Dynamic_Resize_Routine).w
+		move.w	d0,(Camera_X_Pos).w
+		move.w	d0,(Camera_Y_Pos).w
+		move.b	d0,(Force_Scroll_Flag).w
 		move.w	(Current_Zone_And_Act).w,d0
 		lsl.b	#6,d0
 		lsr.w	#4,d0
