@@ -1026,7 +1026,7 @@ Pause_SlowMo:				; XREF: PauseGame
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 
-ShowVDPGraphics:			; XREF: SegaScreen; TitleScreen; SS_BGLoad
+LoadPlaneMap:			; XREF: SegaScreen; TitleScreen; SS_BGLoad
 		lea	($C00000).l,a6
 		move.l	#$800000,d4
 
@@ -1040,16 +1040,16 @@ loc_1432:
 		add.l	d4,d0
 		dbf	d2,loc_142C
 		rts	
-; End of function ShowVDPGraphics
+; End of function LoadPlaneMap
 
 ; ---------------------------------------------------------------------------
-; Subroutine to	display	patterns via the VDP
+; Subroutine to	display	patterns via the VDP (with modifier)
 ; ---------------------------------------------------------------------------
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 
-ShowVDPGraphics2:			; XREF: SegaScreen; TitleScreen; SS_BGLoad
+LoadPlaneMap2:			; XREF: SegaScreen; TitleScreen; SS_BGLoad
 		lea	($C00000).l,a6
 		move.l	#$800000,d4
 
@@ -1065,7 +1065,7 @@ loc2_1432:
 		add.l	d4,d0
 		dbf	d2,loc2_142C
 		rts	
-; End of function ShowVDPGraphics
+; End of function LoadPlaneMap
 
 ; ---------------------------------------------------------------------------
 ; Subroutine for queueing VDP commands (seems to only queue transfers to VRAM),
@@ -3077,12 +3077,12 @@ SegaScreen:				; XREF: GameModeArray
 		move.l	#$65100003,d0
 		moveq	#$17,d1
 		moveq	#7,d2
-		bsr.w	ShowVDPGraphics
+		bsr.w	LoadPlaneMap
 		lea	(General_Buffer+$180).l,a1
 		move.l	#$40000003,d0
 		moveq	#$27,d1
 		moveq	#$1B,d2
-		bsr.w	ShowVDPGraphics
+		bsr.w	LoadPlaneMap
 		moveq	#0,d0
 		bsr.w	PalLoad2	; load Sega logo Palette
 		move.w	#-$A,(Pal_Cycle_Frame).w
@@ -3263,7 +3263,7 @@ Title_ClrObjRam:
 		move.l	#$40000003,d0
 		moveq	#$27,d1
 		moveq	#$1B,d2
-		bsr.w	ShowVDPGraphics
+		bsr.w	LoadPlaneMap
 		lea	(Target_Palette).w,a1
 		moveq	#0,d0
 		move.w	#$1F,d1
@@ -3308,7 +3308,7 @@ Title_LoadText:
 		moveq	#$3F,d1
 		moveq	#$1B,d2
 		move.w	#$4001,d5
-		bsr.w	ShowVDPGraphics2
+		bsr.w	LoadPlaneMap2
 		
 		move.l	#$40200000,($C00004).l
 		lea	(Nem_TitleBG).l,a0
@@ -3322,7 +3322,7 @@ Title_LoadText:
 		move.l	#$42060003,d0
 		moveq	#$21,d1
 		moveq	#$15,d2
-		bsr.w	ShowVDPGraphics
+		bsr.w	LoadPlaneMap
 		moveq	#1,d0		; load title screen Palette
 		bsr.w	PalLoad1
 		move.b	#MusID_Title,d0		; play title screen music
@@ -22317,31 +22317,31 @@ Obj01_Main:				; XREF: Obj01_Index
 		move.b	#2,$18(a0)
 		move.b	#$18,$19(a0)
 		move.b	#4,1(a0)
-		move.w	#$600,(Sonic_Top_Speed).w ; Sonic's top speed
-		move.w	#$C,(Sonic_Acceleration).w ; Sonic's acceleration
-		move.w	#$80,(Sonic_Deceleration).w ; Sonic's deceleration
+		move.w	#$600,(Sonic_Top_Speed).w 	; Sonic's top speed
+		move.w	#$C,(Sonic_Acceleration).w 	; Sonic's acceleration
+		move.w	#$80,(Sonic_Deceleration).w 	; Sonic's deceleration
 		move.b	#$1E,$28(a0)
 		move.b	#5,(Object_Space_8).w
 
 Obj01_Control:				; XREF: Obj01_Index
-		tst.w	(Debug_Cheat_On).w	; is debug cheat enabled?
-		beq.s	loc_12C58	; if not, branch
-		btst	#4,(Ctrl_1_Press).w ; is button C pressed?
-		beq.s	loc_12C58	; if not, branch
-		move.w	#1,(Debug_Placement_Mode).w ; change Sonic	into a ring/item
+		tst.w	(Debug_Cheat_On).w		; is debug cheat enabled?
+		beq.s	loc_12C58			; if not, branch
+		btst	#4,(Ctrl_1_Press).w 		; is button C pressed?
+		beq.s	loc_12C58			; if not, branch
+		move.w	#1,(Debug_Placement_Mode).w 	; change Sonic into a ring/item
 		clr.b	(Lock_Controls_Flag).w
 		rts	
 ; ===========================================================================
 
 loc_12C58:
 		bsr.w	Obj01_GetPhysics
-		tst.b	(Lock_Controls_Flag).w	; are controls locked?
-		bne.s	loc_12C64	; if yes, branch
-		move.w	(Ctrl_1_Held).w,(Sonic_Ctrl_Held).w ; enable joypad control
+		tst.b	(Lock_Controls_Flag).w			; are controls locked?
+		bne.s	loc_12C64				; if yes, branch
+		move.w	(Ctrl_1_Held).w,(Sonic_Ctrl_Held).w 	; enable joypad control
 
 loc_12C64:
-		btst	#0,(No_Player_Physics_Flag).w ; are controls	locked?
-		bne.s	loc_12C7E	; if yes, branch
+		btst	#0,(No_Player_Physics_Flag).w 		; are controls locked?
+		bne.s	loc_12C7E				; if yes, branch
 		bsr.w	Obj01_DoModes
 
 loc_12C7E:
