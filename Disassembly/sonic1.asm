@@ -22771,6 +22771,30 @@ Sonic_Duck:
 		bra.s	loc_12FC2
 ; ===========================================================================
 
+Obj01_StopMove_OnForceScroll:
+		move.w	$14(a0),d0
+		bpl.s	@skip
+		neg.w	d0
+
+@skip:
+		cmp.w	(Sonic_Min_Speed).w,d0
+		beq.s	loc_12FEE
+
+		sub.w	d5,d0
+		cmp.w	(Sonic_Min_Speed).w,d0
+		bge.s	@skip2
+		move.w	(Sonic_Min_Speed).w,d0
+
+@skip2:
+		tst.w	$14(a0)
+		bpl.s	@skip3
+		neg.w	d0
+
+@skip3:
+		move.b	#0,$1C(a0)
+		bra.s	loc_12FEA
+; ===========================================================================
+
 Obj01_ResetScr:
 		move.b	#0,(Sonic_Look_Delay_Counter+1).w
 		
@@ -22787,19 +22811,14 @@ loc_12FC2:
 		move.b	(Sonic_Ctrl_Held).w,d0
 		andi.b	#$C,d0		; is left/right	pressed?
 		bne.s	loc_12FEE	; if yes, branch
+		tst.b	(Force_Scroll_Flag).w
+		bne.s	Obj01_StopMove_OnForceScroll
 		move.w	$14(a0),d0
-		bpl.s	@skip
-		neg.w	d0
-
-@skip:
-		cmp.w	(Sonic_Min_Speed).w,d0
 		beq.s	loc_12FEE
-		move.w	$14(a0),d0
 		bmi.s	loc_12FE2
 		sub.w	d5,d0
-		cmp.w	(Sonic_Min_Speed).w,d0
-		bge.s	loc_12FDC
-		move.w	(Sonic_Min_Speed).w,d0
+		bcc.s	loc_12FDC
+		move.w	#0,d0
 
 loc_12FDC:
 		move.w	d0,$14(a0)
@@ -22808,12 +22827,8 @@ loc_12FDC:
 
 loc_12FE2:
 		add.w	d5,d0
-		move.w	(Sonic_Min_Speed).w,d1
-		neg.w	d1
-		cmp.w	d1,d0
-		ble.s	loc_12FEA
-		move.w	(Sonic_Min_Speed).w,d0
-		neg.w	d0
+		bcc.s	loc_12FEA
+		move.w	#0,d0
 
 loc_12FEA:
 		move.w	d0,$14(a0)
@@ -22896,8 +22911,6 @@ loc_13086:
 
 loc_1309A:
 		sub.w	d5,d0
-
-loc_1309A_2:
 		move.w	d6,d1
 		neg.w	d1
 		cmp.w	d1,d0
@@ -22923,7 +22936,7 @@ Sonic_TurnLeft:				; XREF: Sonic_MoveLeft
 @cmp:
 		cmp.w	d1,d0
 		bcc.s	loc_130BA
-		move.w	(Sonic_Min_Speed).w,d0
+		move.w	d1,d0
 		tst.w	(Force_Scroll_Flag).w
 		bne.s	loc_130BA
 		move.w	#-$80,d0
@@ -22965,8 +22978,6 @@ Sonic_MoveRight:	   ; XREF: Sonic_Move
 
 loc_13104:
 		add.w	d5,d0
-
-loc_13104_2:
 		cmp.w	d6,d0
 		blt.s	loc_1310C
 		sub.w	d5,d0
@@ -22990,8 +23001,8 @@ Sonic_TurnRight:				; XREF: Sonic_MoveRight
 @cmp:
 		cmp.w	d1,d0
 		bcc.s	loc_13120
-		move.w	(Sonic_Min_Speed).w,d0
-		neg.w	d0
+		neg.w	d1
+		move.w	d1,d0
 		tst.w	(Force_Scroll_Flag).w
 		bne.s	loc_13120
 		move.w	#$80,d0
