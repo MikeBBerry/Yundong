@@ -22418,7 +22418,9 @@ loc_12C7E:
 		bclr	#5,$22(a0)
 		move.b	#13,biting(a0)
 		move.b	#1,(Bite_Flag).w
-
+		move.w #SndID_02,d0
+		jsr  (PlaySound_Special).l ; play bite
+		
 @chk_bite:
 		tst.b	biting(a0)
 		beq.s	@no_dec
@@ -33772,7 +33774,7 @@ MusicIndex:	dc.l Music81, Music82
 		dc.l Music91, Music92
 		dc.l Music93, Music94
 		dc.l Music95, Music96
-		dc.l Music97
+		dc.l Music97, Music98
 ; ===========================================================================
 Music81:	incbin	"sound\Music\Mind In The Gutter I.bin"
 		even
@@ -33819,6 +33821,8 @@ Music95:	incbin	"sound\Music\Spoony's Hangover.bin"
 Music96:	incbin	"sound\Music\Joe The Ho.bin"
 		even
 Music97:	incbin	"sound\Music\Mind In The Gutter II.bin"
+		even
+Music98:	incbin	"Sound\Music\Happy Roads.bin"
 		even
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
