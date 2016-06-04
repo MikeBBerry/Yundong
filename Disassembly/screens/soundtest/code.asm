@@ -5,7 +5,7 @@
 ; ===========================================================================
 SndTest_Settings:
 		dc.l Snd_Test_Music_ID	; RAM address for sound ID
-		dc.b $16				; Maximum ID
+		dc.b $17				; Maximum ID
 		dc.b MusicID_Start		; ID modifier (is added to ID)
 		dc.l Txt_Music			; Sound type text address
 		dc.l $429E0003			; VDP value to draw the text and ID number
@@ -21,7 +21,7 @@ SndTest_Settings:
 		dc.b 1
 		
 		dc.l Snd_Test_PCM_ID
-		dc.b $16
+		dc.b $17
 		dc.b $81
 		dc.l Txt_PCM
 		dc.l $449E0003
@@ -458,74 +458,77 @@ SndTest_InfoNothing:
 ; ===========================================================================
 SndTest_SongNames:
 		dc.b "        MIND IN THE GUTTER PART I       ",0,0		; 81
-		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
+		dc.b "      THROCKMORTON JAY  'BAKAYOTE'      ",0,0
 		dc.b "            YUNDONG ZIXINGCHE           ",0,0
 		dc.b "            I DIED ON JEOPARDY          ",0,0		; 82
-		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
+		dc.b "      THROCKMORTON JAY  'BAKAYOTE'      ",0,0
 		dc.b "            YUNDONG ZIXINGCHE           ",0,0
 		dc.b "          TUTORIAL WITH ATTITUDE        ",0,0		; 83
-		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
+		dc.b "      THROCKMORTON JAY  'BAKAYOTE'      ",0,0
 		dc.b "            YUNDONG ZIXINGCHE           ",0,0
 		dc.b "  THIS SONG HAS NO TITLE AND IS UNUSED  ",0,0		; 84
-		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
+		dc.b "      THROCKMORTON JAY  'BAKAYOTE'      ",0,0
 		dc.b "                BAKASONIC               ",0,0
 		dc.b "         IM AN EDGY MOTHERFUCKER        ",0,0		; 85
-		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
+		dc.b "      THROCKMORTON JAY  'BAKAYOTE'      ",0,0
 		dc.b "            YUNDONG ZIXINGCHE           ",0,0
 		dc.b "            GET THAT ELEPHANT           ",0,0		; 86
-		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
+		dc.b "      THROCKMORTON JAY  'BAKAYOTE'      ",0,0
 		dc.b "            YUNDONG ZIXINGCHE           ",0,0
 		dc.b "      INVINCIBILITY JEOPARDY THEME      ",0,0		; 87
 		dc.b "               MERV GRIFFIN             ",0,0
 		dc.b "                 JEOPARDY               ",0,0
 		dc.b "             RAT TATA TAT TAT           ",0,0		; 88
-		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
+		dc.b "      THROCKMORTON JAY  'BAKAYOTE'      ",0,0
 		dc.b "            YUNDONG ZIXINGCHE           ",0,0
 		dc.b "             AURORA NUMERIQUE           ",0,0		; 89
-		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
+		dc.b "      THROCKMORTON JAY  'BAKAYOTE'      ",0,0
 		dc.b "            YUNDONG ZIXINGCHE           ",0,0
 		dc.b "              JEOPARDY THEME            ",0,0		; 8A
 		dc.b "               MERV GRIFFIN             ",0,0
 		dc.b "                 JEOPARDY               ",0,0
 		dc.b "          PICK AN OPTION ALREADY        ",0,0		; 8B
-		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
+		dc.b "      THROCKMORTON JAY  'BAKAYOTE'      ",0,0
 		dc.b "            YUNDONG ZIXINGCHE           ",0,0
 		dc.b "               DEATH MARCH              ",0,0		; 8C
-		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
+		dc.b "      THROCKMORTON JAY  'BAKAYOTE'      ",0,0
 		dc.b "            YUNDONG ZIXINGCHE           ",0,0
 		dc.b "           CRANK THE DIAL TO 11         ",0,0		; 8D
-		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
+		dc.b "      THROCKMORTON JAY  'BAKAYOTE'      ",0,0
 		dc.b "            YUNDONG ZIXINGCHE           ",0,0
 		dc.b "             LOVER WENT RIGHT           ",0,0		; 8E
-		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
+		dc.b "      THROCKMORTON JAY  'BAKAYOTE'      ",0,0
 		dc.b "            YUNDONG ZIXINGCHE           ",0,0
 		dc.b "              DEATH SEGMENT             ",0,0		; 8F
 		dc.b "               SEIJI MOMOI              ",0,0
 		dc.b "            DAIKAIJUU DEBURAS           ",0,0
 		dc.b "           WILT THOU CONTINUE           ",0,0		; 90
-		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
+		dc.b "      THROCKMORTON JAY  'BAKAYOTE'      ",0,0
 		dc.b "                BAKASONIC               ",0,0
 		dc.b "     FLICKY TITLE (BAKAYOTE ARGMT.)     ",0,0		; 91
 		dc.b "                TS MUSIC                ",0,0
 		dc.b "                 FLICKY                 ",0,0
 		dc.b "            I CANNOT BREATHE            ",0,0		; 92
-		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
+		dc.b "      THROCKMORTON JAY  'BAKAYOTE'      ",0,0
 		dc.b "                BAKASONIC               ",0,0
 		dc.b "              CHAOS EMERALD             ",0,0		; 93
 		dc.b "             MASATO NAKAMURA            ",0,0
 		dc.b "           SONIC THE HEDGEHOG           ",0,0
 		dc.b "            OWARISOFT JINGLE            ",0,0		; 94
-		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
+		dc.b "      THROCKMORTON JAY  'BAKAYOTE'      ",0,0
 		dc.b "                OWARISOFT               ",0,0
 		dc.b "            SPOONYS HANGOVER            ",0,0		; 95
-		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
+		dc.b "      THROCKMORTON JAY  'BAKAYOTE'      ",0,0
 		dc.b "            YUNDONG ZIXINGCHE           ",0,0
 		dc.b "    JOE THE HOE PART 2  FT VADAPEGA     ",0,0		; 96
 		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
 		dc.b "            YUNDONG ZIXINGCHE           ",0,0
 		dc.b "        MIND IN THE GUTTER PART II      ",0,0		; 97
-		dc.b "       THROCKMORTON JAY 'BAKAYOTE'      ",0,0
+		dc.b "      THROCKMORTON JAY  'BAKAYOTE'      ",0,0
 		dc.b "            YUNDONG ZIXINGCHE           ",0,0
+		dc.b "               HAPPY ROADS              ",0,0		; 98
+		dc.b "  MICHEAL JAKIGH BERRY  'MIKE B BERRY'  ",0,0
+		dc.b "   YUNDONG AND 'THE FINAL INSTALMENT'   ",0,0
 		even
 ; ===========================================================================
 SndTest_SongNothing:
